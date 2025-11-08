@@ -74,7 +74,7 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
       animate="visible"
       exit="hidden"
       onClick={onClose}
-      className="fixed inset-0 bg-eerie-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-eerie-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
       aria-modal="true"
       role="dialog"
     >
@@ -162,24 +162,11 @@ const projectCardVariants: Variants = {
   },
 };
 
-const learnMoreVariants: Variants = {
-  onscreen: {
-    opacity: 0,
-    y: 10,
-    transition: { duration: 0.2, ease: 'easeOut' },
-  },
-  hover: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.3, ease: 'easeOut' },
-  },
-};
-
 const Projects: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   return (
-    <section id="projects" className="py-24">
+    <section id="projects" className="py-16 md:py-24">
       <motion.h2 
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -215,10 +202,7 @@ const Projects: React.FC = () => {
                   <p className="text-jet font-light mb-4">{project.description}</p>
                 </div>
                 
-                <motion.div 
-                  variants={learnMoreVariants}
-                  className="mt-auto pt-4"
-                >
+                <div className="mt-auto pt-4">
                   <button 
                     onClick={() => setSelectedProject(project)}
                     className="flex items-center text-sm font-semibold text-jet hover:text-saffron transition-colors group"
@@ -226,7 +210,7 @@ const Projects: React.FC = () => {
                   >
                     Learn More <ArrowUpRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                   </button>
-                </motion.div>
+                </div>
               </div>
             </GlassCard>
           </motion.div>

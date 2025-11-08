@@ -39,7 +39,7 @@ const Skills: React.FC = () => {
   };
 
   return (
-    <section id="skills" className="py-24">
+    <section id="skills" className="py-16 md:py-24">
       <motion.h2 
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -84,8 +84,8 @@ const Skills: React.FC = () => {
                       <h3 className="text-xl font-bold text-eerie-black">{category.title}</h3>
                     </div>
                     <ul className="flex flex-wrap gap-2">
-                      {/* FIX: Spreading `category.skills` into a new array resolves a TypeScript inference error when mapping over a `readonly` array created with 'as const'. */}
-                      {[...category.skills].map((skill) => (
+                      {/* FIX: Removed spread operator. Mapping directly over a readonly array from `as const` is valid and resolves the type error. */}
+                      {category.skills.map((skill) => (
                         <li
                           key={skill}
                           className="bg-silver/60 text-jet text-sm font-medium px-3 py-1 rounded-full"

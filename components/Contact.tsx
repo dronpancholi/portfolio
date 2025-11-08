@@ -15,7 +15,7 @@ type SocialProfile = (typeof SOCIAL_LINKS.profiles)[number];
 
 const Contact: React.FC = () => {
   return (
-    <section id="contact" className="py-24 text-center">
+    <section id="contact" className="py-16 md:py-24 text-center">
       <motion.h2 
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -58,8 +58,8 @@ const Contact: React.FC = () => {
         transition={{ duration: 0.5, delay: 0.3 }}
         className="flex items-center justify-center space-x-6"
       >
-        {/* FIX: Spreading `SOCIAL_LINKS.profiles` into a new array resolves a TypeScript inference issue when mapping directly over an array defined with `as const`. */}
-        {[...SOCIAL_LINKS.profiles].map((profile, i) => {
+        {/* FIX: Removed spread operator. Mapping directly over a readonly array from `as const` is valid and resolves the type error. */}
+        {SOCIAL_LINKS.profiles.map((profile, i) => {
           const Icon = icons[profile.name];
           return (
             // Using the index as the key is safe for this static, unchanging list.

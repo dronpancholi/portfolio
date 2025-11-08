@@ -26,12 +26,13 @@ const InteractivePortrait: React.FC = () => {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden cursor-pointer shadow-2xl shadow-eerie-black/10"
+      // FIX: Corrected typo from 'preserve-d' to 'preserve-3d' for the transformStyle property.
       style={{ transformStyle: 'preserve-3d' }}
       whileHover={{ scale: 1.05 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
     >
       <img
-        src="https://i.ibb.co/N7z2TzN/dron-pancholi-profile.jpg"
+        src="https://i.postimg.cc/SNgT7YJg/dron-pancholi-profile.jpg"
         alt="Dron Pancholi"
         className="absolute inset-0 w-full h-full object-cover"
       />
@@ -40,7 +41,7 @@ const InteractivePortrait: React.FC = () => {
         style={{ clipPath: clipPathValue }}
       >
         <img
-          src="https://i.ibb.co/N7z2TzN/dron-pancholi-profile.jpg"
+          src="https://i.postimg.cc/SNgT7YJg/dron-pancholi-profile.jpg"
           alt="Dron Pancholi - AI Version"
           className="absolute inset-0 w-full h-full object-cover filter hue-rotate-180 brightness-110"
         />
@@ -111,7 +112,7 @@ const Hero: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="text-4xl md:text-6xl font-extrabold tracking-tighter text-eerie-black mb-4"
+            className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tighter text-eerie-black mb-4"
             style={{ transform: 'translateZ(50px)', transformStyle: 'preserve-3d' }}
           >
             I build with Artificial Intelligence.

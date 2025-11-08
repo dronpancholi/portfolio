@@ -1,11 +1,10 @@
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import GlassCard from './ui/GlassCard';
 
 const About: React.FC = () => {
   return (
-    <section id="about" className="py-24">
+    <section id="about" className="py-16 md:py-24">
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
