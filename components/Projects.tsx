@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { motion, AnimatePresence, Variants, useReducedMotion } from 'framer-motion';
+import { motion, AnimatePresence, LayoutGroup, Variants, useReducedMotion } from 'framer-motion';
 import GlassCard from './ui/GlassCard';
 import { PROJECTS_DATA } from '../constants';
 import { ArrowUpRight, X, ExternalLink, Github } from 'lucide-react';
@@ -208,67 +208,69 @@ const Projects: React.FC = () => {
       >
         Current & Upcoming Projects
       </motion.h2>
-      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ${selectedProject ? 'pointer-events-none' : ''}`}>
-        {PROJECTS_DATA.map((project, index) => (
-          <motion.div
-            key={project.title}
-            layoutId={`project-card-${project.title}`}
-            custom={index}
-            variants={projectCardVariants}
-            initial="offscreen"
-            whileInView="onscreen"
-            whileHover="hover"
-            viewport={{ once: true, amount: 0.3 }}
-            whileTap={{ y: -2, scale: 0.99 }}
-            onClick={(e) => {
-              originRef.current = e.currentTarget;
-              setSelectedProject(project);
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
+      <LayoutGroup>
+        <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ${selectedProject ? 'pointer-events-none' : ''}`}>
+          {PROJECTS_DATA.map((project, index) => (
+            <motion.div
+              key={project.title}
+              layoutId={`project-card-${project.title}`}
+              custom={index}
+              variants={projectCardVariants}
+              initial="offscreen"
+              whileInView="onscreen"
+              whileHover="hover"
+              viewport={{ once: true, amount: 0.3 }}
+              whileTap={{ y: -2, scale: 0.99 }}
+              onClick={(e) => {
                 originRef.current = e.currentTarget;
                 setSelectedProject(project);
-              }
-            }}
-            className="cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-saffron rounded-3xl"
-            role="button"
-            tabIndex={0}
-            aria-label={`Learn more about ${project.title}`}
-          >
-            <GlassCard className="h-full group hover:!shadow-[0_8px_30px_rgba(36,36,35,0.2),_0_0_20px_rgba(245,203,92,0.4)]">
-              <div className="p-8 flex flex-col h-full">
-                <div className="flex-grow">
-                  <div className="flex justify-between items-start mb-4">
-                    <motion.h3 layoutId={`project-title-${project.title}`} className="text-xl font-bold text-eerie-black">{project.title}</motion.h3>
-                    <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
-                      project.status === 'Coming Soon' ? 'bg-saffron/20 text-saffron animate-pulse' : 'bg-silver/60 text-jet'
-                    }`}>
-                      {project.status}
-                    </span>
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  originRef.current = e.currentTarget;
+                  setSelectedProject(project);
+                }
+              }}
+              className="cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-saffron rounded-3xl"
+              role="button"
+              tabIndex={0}
+              aria-label={`Learn more about ${project.title}`}
+            >
+              <GlassCard className="h-full group hover:!shadow-[0_8px_30px_rgba(36,36,35,0.2),_0_0_20px_rgba(245,203,92,0.4)]">
+                <div className="p-8 flex flex-col h-full">
+                  <div className="flex-grow">
+                    <div className="flex justify-between items-start mb-4">
+                      <motion.h3 layoutId={`project-title-${project.title}`} className="text-xl font-bold text-eerie-black">{project.title}</motion.h3>
+                      <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
+                        project.status === 'Coming Soon' ? 'bg-saffron/20 text-saffron animate-pulse' : 'bg-silver/60 text-jet'
+                      }`}>
+                        {project.status}
+                      </span>
+                    </div>
+                    <motion.p layoutId={`project-description-${project.title}`} className="text-jet font-light mb-4">{project.description}</motion.p>
                   </div>
-                  <motion.p layoutId={`project-description-${project.title}`} className="text-jet font-light mb-4">{project.description}</motion.p>
-                </div>
-                
-                <div className="mt-auto pt-4">
-                  <div 
-                    className="inline-flex items-center text-sm font-semibold text-jet group-hover:text-saffron transition-colors group -ml-2 p-2 rounded-md"
-                    aria-hidden="true"
-                  >
-                    Learn More <ArrowUpRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                  
+                  <div className="mt-auto pt-4">
+                    <div 
+                      className="inline-flex items-center text-sm font-semibold text-jet group-hover:text-saffron transition-colors group -ml-2 p-2 rounded-md"
+                      aria-hidden="true"
+                    >
+                      Learn More <ArrowUpRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                    </div>
                   </div>
                 </div>
-              </div>
-            </GlassCard>
-          </motion.div>
-        ))}
-      </div>
+              </GlassCard>
+            </motion.div>
+          ))}
+        </div>
 
-      <AnimatePresence>
-        {selectedProject && (
-          <ProjectModal project={selectedProject} onClose={handleClose} transitionConfig={transitionConfig} />
-        )}
-      </AnimatePresence>
+        <AnimatePresence>
+          {selectedProject && (
+            <ProjectModal project={selectedProject} onClose={handleClose} transitionConfig={transitionConfig} />
+          )}
+        </AnimatePresence>
+      </LayoutGroup>
     </section>
   );
 };

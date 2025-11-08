@@ -84,7 +84,7 @@ const Skills: React.FC = () => {
                       <h3 className="text-xl font-bold text-eerie-black">{category.title}</h3>
                     </div>
                     <ul className="flex flex-wrap gap-2">
-                      {/* FIX: Spread the readonly tuple 'category.skills' into a new array to resolve a TypeScript type inference issue when mapping over a value with a 'const' assertion. */}
+                      {/* FIX: Create a mutable copy of the readonly 'category.skills' array before mapping. This resolves a TypeScript error when iterating over arrays defined with 'as const'. */}
                       {[...category.skills].map((skill) => (
                         <li
                           key={skill}
