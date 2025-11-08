@@ -4,10 +4,9 @@ import { motion, useMotionTemplate, useMotionValue, useSpring, useTransform } fr
 interface GlassCardProps {
   children: React.ReactNode;
   className?: string;
-  isStatic?: boolean;
 }
 
-const GlassCard: React.FC<GlassCardProps> = ({ children, className = '', isStatic = false }) => {
+const GlassCard: React.FC<GlassCardProps> = ({ children, className = '' }) => {
   const ref = useRef<HTMLDivElement>(null);
 
   const mouseX = useMotionValue(0);
@@ -50,15 +49,13 @@ const GlassCard: React.FC<GlassCardProps> = ({ children, className = '', isStati
   return (
     <motion.div
       ref={ref}
-      onMouseMove={isStatic ? undefined : handleMouseMove}
-      onMouseLeave={isStatic ? undefined : handleMouseLeave}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       style={{
         transformStyle: 'preserve-3d',
         perspective: '1200px',
-        rotateX: isStatic ? 0 : rotateX,
-        rotateY: isStatic ? 0 : rotateY,
-        backfaceVisibility: 'hidden',
-        willChange: 'transform',
+        rotateX,
+        rotateY,
       }}
       className={`relative bg-pearl/50 backdrop-blur-2xl rounded-3xl border border-silver/50 shadow-2xl shadow-eerie-black/10 transition-shadow duration-300 hover:shadow-eerie-black/20 ${className}`}
     >
@@ -81,7 +78,6 @@ const GlassCard: React.FC<GlassCardProps> = ({ children, className = '', isStati
                     transparent
                 )`,
                 opacity: useTransform(mouseYSpring, [-0.5, 0.5], [0.3, 1]),
-                willChange: 'opacity',
             }}
         />
 
@@ -99,9 +95,8 @@ const GlassCard: React.FC<GlassCardProps> = ({ children, className = '', isStati
         {/* Content with 3D lift */}
         <motion.div 
             style={{ 
-                transform: useMotionTemplate`translateZ(${isStatic ? 0 : contentTranslateZ}px)`,
-                scale: isStatic ? 1 : contentScale,
-                willChange: 'transform',
+                transform: useMotionTemplate`translateZ(${contentTranslateZ}px)`,
+                scale: contentScale,
             }}
             className="transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
         >
