@@ -95,7 +95,7 @@ const Header: React.FC = () => {
                 animate={{ y: '0%' }}
                 exit={{ y: '-10%' }}
                 transition={{ duration: 0.3, ease: 'easeOut' }}
-                className="flex flex-col items-center justify-center h-full space-y-6 pt-16"
+                className="flex flex-col items-center justify-center h-full space-y-6 pt-28"
             >
               {NAV_LINKS.map((link) => (
                 <li key={link.href}>
