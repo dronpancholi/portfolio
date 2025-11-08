@@ -10,7 +10,7 @@ const icons: { [key: string]: React.ElementType } = {
   Discord: MessageSquare,
 };
 
-// FIX: Define a specific type for a social profile to aid TypeScript's inference.
+// Define a specific type for a social profile to aid TypeScript's inference.
 type SocialProfile = (typeof SOCIAL_LINKS.profiles)[number];
 
 const Contact: React.FC = () => {
@@ -58,8 +58,9 @@ const Contact: React.FC = () => {
         transition={{ duration: 0.5, delay: 0.3 }}
         className="flex items-center justify-center space-x-6"
       >
-        {/* FIX: Spread profiles into a new array and explicitly type the mapped item to resolve potential type inference issues with `as const`. */}
-        {[...SOCIAL_LINKS.profiles].map((profile: SocialProfile, i) => {
+        {// Fix: Spreading profiles into a new array and explicitly typing the mapped `profile`
+         // item resolves potential type inference issues when mapping over an array defined with `as const`.
+        [...SOCIAL_LINKS.profiles].map((profile: SocialProfile, i) => {
           const Icon = icons[profile.name];
           return (
             // Using the index as the key is safe for this static, unchanging list.

@@ -161,10 +161,10 @@ const Projects: React.FC = () => {
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
-            whileHover={{ y: -8 }}
+            whileHover={{ y: -8, scale: 1.03 }}
             transition={{ duration: 0.5, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
           >
-            <GlassCard className="h-full group">
+            <GlassCard className="h-full group hover:!shadow-[0_8px_30px_rgba(36,36,35,0.2),_0_0_20px_rgba(245,203,92,0.4)]">
               <div className="p-8 flex flex-col h-full">
                 <div className="flex-grow">
                   <div className="flex justify-between items-start mb-4">

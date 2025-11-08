@@ -42,8 +42,10 @@ const Skills: React.FC = () => {
                     <h3 className="text-xl font-bold text-eerie-black">{category.title}</h3>
                   </div>
                   <ul className="flex flex-wrap gap-2">
-                    {/* FIX: Cast `category.skills` to `readonly string[]` to resolve type error when mapping over a union of tuples. */}
-                    {(category.skills as readonly string[]).map((skill) => (
+                    {// Fix: Cast `category.skills` to `readonly string[]` to prevent TypeScript
+                     // from inferring the mapped `skill` as `never` due to the union of
+                     // different array types from the `as const` assertion.
+                    (category.skills as readonly string[]).map((skill) => (
                       <li
                         key={skill}
                         className="bg-silver/60 text-jet text-sm font-medium px-3 py-1 rounded-full"
