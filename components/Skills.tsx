@@ -84,7 +84,7 @@ const Skills: React.FC = () => {
                       <h3 className="text-xl font-bold text-eerie-black">{category.title}</h3>
                     </div>
                     <ul className="flex flex-wrap gap-2">
-                      {/* FIX: `category.skills` is a readonly array due to `as const` in constants.ts. Spreading it into a new array creates a mutable copy that can be safely mapped over, resolving the type error. */}
+                      {/* FIX: Spreading `category.skills` (a readonly array) into a new array creates a mutable copy that can be safely mapped over, resolving a TypeScript type error. */}
                       {[...category.skills].map((skill) => (
                         <li
                           key={skill}

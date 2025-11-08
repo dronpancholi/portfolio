@@ -38,8 +38,8 @@ const App: React.FC = () => {
         htmlEl.style.setProperty("--my", `${y}px`);
 
         // Smooth 3D tilt angles
-        const rx = (y - rect.height / 2) / 22;
-        const ry = -(x - rect.width / 2) / 22;
+        const rx = (y - rect.height / 2) / 26;
+        const ry = -(x - rect.width / 2) / 26;
         htmlEl.style.setProperty("--rx", `${rx}deg`);
         htmlEl.style.setProperty("--ry", `${ry}deg`);
       });

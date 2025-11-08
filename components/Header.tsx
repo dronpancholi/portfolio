@@ -39,48 +39,46 @@ const Header: React.FC = () => {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled ? 'p-2' : 'p-4'
-        }`}
+        className={`liquid-glass fixed top-0 left-0 right-0 z-50`}
       >
-        <div className="container mx-auto max-w-5xl">
-          <nav
-            className="liquid-glass flex items-center justify-between p-3 px-6 relative"
-          >
-            <a href="#home" className="text-lg font-semibold tracking-tight text-eerie-black z-10">
-              Dron Pancholi
-            </a>
-            <ul className="hidden md:flex items-center space-x-1 z-10">
-              {NAV_LINKS.map((link) => (
-                <li key={link.href}>
-                  <a
-                    href={link.href}
-                    className="px-4 py-2 text-sm text-jet hover:text-eerie-black rounded-lg transition-colors duration-200 relative"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-            <div className="md:hidden z-10">
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="text-jet p-2"
-                aria-label="Toggle Menu"
-              >
-                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-              </button>
-            </div>
-            <motion.div
-              className="absolute bottom-0 left-0 right-0 h-1.5 bg-saffron rounded-r-full"
-              style={{
-                scaleX,
-                transformOrigin: '0%',
-                boxShadow: '0 0 10px #f5cb5c, 0 0 5px #f5cb5c',
-              }}
-            />
-          </nav>
+        <div
+          className={`container mx-auto max-w-5xl flex items-center justify-between relative transition-all duration-300 ${
+            scrolled ? 'p-2 px-6' : 'p-3 px-6'
+          }`}
+        >
+          <a href="#home" className="text-lg font-semibold tracking-tight text-eerie-black z-10">
+            Dron Pancholi
+          </a>
+          <ul className="hidden md:flex items-center space-x-1 z-10">
+            {NAV_LINKS.map((link) => (
+              <li key={link.href}>
+                <a
+                  href={link.href}
+                  className="px-4 py-2 text-sm text-jet hover:text-eerie-black rounded-lg transition-colors duration-200 relative"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <div className="md:hidden z-10">
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="text-jet p-2"
+              aria-label="Toggle Menu"
+            >
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
+        <motion.div
+          className="absolute bottom-0 left-0 right-0 h-1.5 bg-saffron"
+          style={{
+            scaleX,
+            transformOrigin: '0%',
+            boxShadow: '0 0 10px #f5cb5c, 0 0 5px #f5cb5c',
+          }}
+        />
       </motion.header>
 
       <AnimatePresence>
