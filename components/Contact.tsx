@@ -58,9 +58,10 @@ const Contact: React.FC = () => {
         transition={{ duration: 0.5, delay: 0.3 }}
         className="flex items-center justify-center space-x-6"
       >
-        {// Fix: Spreading profiles into a new array and explicitly typing the mapped `profile`
-         // item resolves potential type inference issues when mapping over an array defined with `as const`.
-        [...SOCIAL_LINKS.profiles].map((profile: SocialProfile, i) => {
+        {// FIX: By spreading `SOCIAL_LINKS.profiles`, we create a new array that TypeScript
+         // can easily infer types from, resolving potential issues when mapping directly
+         // over an array defined with `as const`.
+        [...SOCIAL_LINKS.profiles].map((profile, i) => {
           const Icon = icons[profile.name];
           return (
             // Using the index as the key is safe for this static, unchanging list.
