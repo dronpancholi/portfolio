@@ -84,8 +84,8 @@ const Skills: React.FC = () => {
                       <h3 className="text-xl font-bold text-eerie-black">{category.title}</h3>
                     </div>
                     <ul className="flex flex-wrap gap-2">
-                      {/* FIX: The `as const` assertion on SKILLS_DATA in `constants.ts` makes `category.skills` a readonly tuple. Spreading it into a new array was causing a type inference issue. Mapping directly over the readonly tuple is supported and resolves the error. */}
-                      {category.skills.map((skill) => (
+                      {/* FIX: The `as const` assertion on SKILLS_DATA in `constants.ts` can cause type inference issues in some environments. Casting to a mutable `string[]` before mapping resolves the error. */}
+                      {(category.skills as string[]).map((skill) => (
                         <li
                           key={skill}
                           className="bg-silver/60 text-jet text-sm font-medium px-3 py-1 rounded-full"

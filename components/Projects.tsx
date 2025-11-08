@@ -65,7 +65,7 @@ const ProjectModal = ({ project, onClose, transitionConfig }: { project: Project
         layoutId={`project-card-${project.title}`}
         transition={transitionConfig}
         isStatic={true}
-        className="!shadow-eerie-black/30 max-w-3xl w-full z-10"
+        className="max-w-3xl w-full z-10"
         style={{ backfaceVisibility: 'hidden' }}
       >
         <div className="p-8 md:p-12 relative max-h-[90vh] overflow-y-auto">
@@ -210,14 +210,14 @@ const Projects: React.FC = () => {
                 setSelectedProject(project);
               }
             }}
-            className="cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-saffron rounded-3xl"
+            className="cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-saffron rounded-[28px]"
             role="button"
             tabIndex={0}
             aria-label={`Learn more about ${project.title}`}
           >
             <GlassCard 
               layoutId={`project-card-${project.title}`}
-              className="h-full group hover:!shadow-[0_8px_30px_rgba(36,36,35,0.2),_0_0_20px_rgba(245,203,92,0.4)]"
+              className="h-full group"
             >
               <div className="p-8 flex flex-col h-full">
                 <div className="flex-grow">

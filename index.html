@@ -30,13 +30,48 @@
         font-family: 'Inter', sans-serif;
         font-optical-sizing: auto;
       }
+      /* Liquid Glass Material */
       .liquid-glass {
-        background: rgba(255, 255, 255, 0.5); /* Pearl base with higher translucency */
-        -webkit-backdrop-filter: blur(24px) saturate(150%);
-        backdrop-filter: blur(24px) saturate(150%);
-        border: 1px solid rgba(232, 235, 239, 0.5); /* Silver border */
-        /* Dual shadow system: soft ambient + inner rim */
-        box-shadow: 0 8px 32px 0 rgba(51, 53, 51, 0.1), inset 0 1px 1px 0 rgba(255, 255, 255, 0.6);
+        position: relative;
+        backdrop-filter: blur(28px) saturate(180%);
+        -webkit-backdrop-filter: blur(28px) saturate(180%);
+        background: rgba(255, 255, 255, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.36);
+        border-radius: 28px;
+        overflow: hidden;
+      }
+
+      /* Internal light diffusion layer */
+      .liquid-glass::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.35) 0%,
+          rgba(255, 255, 255, 0.12) 45%,
+          rgba(255, 255, 255, 0.06) 100%
+        );
+        opacity: 0.65;
+        pointer-events: none;
+      }
+
+      /* Dynamic "Glass Shine" highlight hotspot */
+      .liquid-glass::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: radial-gradient(
+          circle at var(--mx, 50%) var(--my, 50%),
+          rgba(255, 255, 255, 0.55),
+          transparent 55%
+        );
+        opacity: 0.35;
+        transition: opacity 0.3s ease;
+      }
+      .liquid-glass:hover::after {
+        opacity: 0.55;
       }
     </style>
   <script type="importmap">

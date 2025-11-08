@@ -21,27 +21,35 @@ const GlassCard: React.FC<GlassCardProps> = ({ children, className = '', isStati
   const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['3deg', '-3deg']);
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-3deg', '3deg']);
 
-  const glareX = useTransform(mouseXSpring, [-0.5, 0.5], ['150%', '-50%']);
-  const glareY = useTransform(mouseYSpring, [-0.5, 0.5], ['120%', '-20%']);
-  
-  const noiseX = useTransform(mouseXSpring, [-0.5, 0.5], [-25, 25]);
-  const noiseY = useTransform(mouseYSpring, [-0.5, 0.5], [-25, 25]);
-
   const contentScale = useSpring(1, { stiffness: 150, damping: 20 });
   const contentTranslateZ = useSpring(0, { stiffness: 150, damping: 20 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!ref.current) return;
     const { left, top, width, height } = ref.current.getBoundingClientRect();
+
+    // Update CSS variables for the glass shine effect
+    const xShine = e.clientX - left;
+    const yShine = e.clientY - top;
+    ref.current.style.setProperty('--mx', `${xShine}px`);
+    ref.current.style.setProperty('--my', `${yShine}px`);
+
+    // Update motion values for 3D tilt
     const x = (e.clientX - left - width / 2) / (width / 2);
     const y = (e.clientY - top - height / 2) / (height / 2);
     mouseX.set(x);
     mouseY.set(y);
+    
+    // Update motion values for content lift
     contentScale.set(1.02);
     contentTranslateZ.set(60);
   };
 
   const handleMouseLeave = () => {
+    if (ref.current) {
+        ref.current.style.setProperty('--mx', '50%');
+        ref.current.style.setProperty('--my', '50%');
+    }
     mouseX.set(0);
     mouseY.set(0);
     contentScale.set(1);
@@ -63,43 +71,9 @@ const GlassCard: React.FC<GlassCardProps> = ({ children, className = '', isStati
       onMouseMove={isStatic ? undefined : handleMouseMove}
       onMouseLeave={isStatic ? undefined : handleMouseLeave}
       style={{...internalStyles, ...style}}
-      className={`relative bg-pearl/50 backdrop-blur-2xl rounded-3xl border border-silver/50 shadow-2xl shadow-eerie-black/10 transition-shadow duration-300 hover:shadow-eerie-black/20 ${className}`}
+      className={`liquid-glass ${className}`}
       {...props}
     >
-        {/* Subsurface Scattering Layer */}
-        <div 
-            className="absolute inset-0 pointer-events-none"
-            style={{
-                background: 'radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.2), transparent 80%)',
-                opacity: 0.5,
-            }}
-        />
-
-        {/* Dynamic Specular Highlight Layer */}
-        <motion.div
-            className="absolute inset-0 pointer-events-none rounded-3xl overflow-hidden"
-            style={{
-                background: useMotionTemplate`radial-gradient(
-                    600px circle at ${glareX} ${glareY}, 
-                    rgba(255, 255, 255, 0.4), 
-                    transparent
-                )`,
-                opacity: useTransform(mouseYSpring, [-0.5, 0.5], [0.3, 1]),
-                willChange: 'opacity',
-            }}
-        />
-
-        {/* Micro-roughness/Refraction Noise Layer */}
-        <motion.div
-            className="absolute inset-0 pointer-events-none opacity-[0.025] mix-blend-overlay"
-            style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-                backgroundPositionX: noiseX,
-                backgroundPositionY: noiseY,
-                backgroundSize: '200%',
-            }}
-        />
-        
         {/* Content with 3D lift */}
         <motion.div 
             style={{ 
@@ -111,10 +85,6 @@ const GlassCard: React.FC<GlassCardProps> = ({ children, className = '', isStati
         >
             {children}
         </motion.div>
-
-         {/* Inner Rim-Shadow for thickness simulation */}
-         <div className="absolute inset-0 rounded-3xl pointer-events-none shadow-[inset_0_1px_4px_0_rgba(255,255,255,0.8),_inset_0_0_20px_rgba(232,235,239,0.8)]" />
-
     </motion.div>
   );
 };

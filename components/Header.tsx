@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
 import { NAV_LINKS } from '../constants';
 import { Menu, X } from 'lucide-react';
@@ -6,6 +6,7 @@ import { Menu, X } from 'lucide-react';
 const Header: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
 
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
@@ -32,6 +33,23 @@ const Header: React.FC = () => {
       document.body.style.overflow = 'auto';
     };
   }, [isMenuOpen]);
+  
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    if (!navRef.current) return;
+    const rect = navRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    navRef.current.style.setProperty('--mx', `${x}px`);
+    navRef.current.style.setProperty('--my', `${y}px`);
+  };
+
+  const handleMouseLeave = () => {
+      if (navRef.current) {
+          navRef.current.style.setProperty('--mx', '50%');
+          navRef.current.style.setProperty('--my', '50%');
+      }
+  };
+
 
   return (
     <>
@@ -44,11 +62,16 @@ const Header: React.FC = () => {
         }`}
       >
         <div className="container mx-auto max-w-5xl">
-          <nav className="liquid-glass flex items-center justify-between p-3 px-6 rounded-2xl relative overflow-hidden">
-            <a href="#home" className="text-lg font-semibold tracking-tight text-eerie-black z-50">
+          <nav 
+            ref={navRef}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            className="liquid-glass flex items-center justify-between p-3 px-6 relative"
+          >
+            <a href="#home" className="text-lg font-semibold tracking-tight text-eerie-black z-10">
               Dron Pancholi
             </a>
-            <ul className="hidden md:flex items-center space-x-1">
+            <ul className="hidden md:flex items-center space-x-1 z-10">
               {NAV_LINKS.map((link) => (
                 <li key={link.href}>
                   <a
@@ -60,7 +83,7 @@ const Header: React.FC = () => {
                 </li>
               ))}
             </ul>
-            <div className="md:hidden z-50">
+            <div className="md:hidden z-10">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="text-jet p-2"
