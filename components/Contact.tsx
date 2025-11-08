@@ -19,7 +19,7 @@ const Contact: React.FC = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.5 }}
         transition={{ duration: 0.5 }}
-        className="text-3xl md:text-4xl font-bold text-alabaster mb-4 tracking-tight"
+        className="text-3xl md:text-4xl font-bold text-eerie-black mb-4 tracking-tight"
       >
         Get In Touch
       </motion.h2>
@@ -28,7 +28,7 @@ const Contact: React.FC = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.5 }}
         transition={{ duration: 0.5, delay: 0.1 }}
-        className="text-lg text-platinum mb-8 max-w-xl mx-auto"
+        className="text-lg text-jet mb-8 max-w-xl mx-auto"
       >
         I'm actively exploring new opportunities and collaborations. Feel free to reach out.
       </motion.p>
@@ -59,7 +59,7 @@ const Contact: React.FC = () => {
         {SOCIAL_LINKS.profiles.map((profile) => {
           const Icon = icons[profile.name];
           return (
-            <a key={profile.name} href={profile.url} target="_blank" rel="noopener noreferrer" className="text-platinum hover:text-saffron transition-colors duration-200">
+            <a key={profile.name} href={profile.url} target="_blank" rel="noopener noreferrer" className="text-jet hover:text-saffron transition-colors duration-200">
               <Icon className="w-7 h-7" />
               <span className="sr-only">{profile.name}</span>
             </a>

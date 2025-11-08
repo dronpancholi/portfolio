@@ -54,7 +54,7 @@ const GlassCard: React.FC<GlassCardProps> = ({ children, className = '' }) => {
         rotateX,
         rotateY,
       }}
-      className={`relative bg-jet/10 backdrop-blur-xl rounded-3xl border border-platinum/10 shadow-2xl shadow-eerie-black/30 overflow-hidden ${className}`}
+      className={`relative bg-white/40 backdrop-blur-xl rounded-3xl border border-jet/10 shadow-2xl shadow-eerie-black/10 overflow-hidden ${className}`}
     >
         {/* Fluid Glare Effect */}
         <motion.div
@@ -62,7 +62,7 @@ const GlassCard: React.FC<GlassCardProps> = ({ children, className = '' }) => {
             style={{
                 background: useMotionTemplate`radial-gradient(
                     450px circle at ${glareX} ${glareY}, 
-                    rgba(232, 237, 223, 0.08), 
+                    rgba(36, 36, 35, 0.04), 
                     transparent
                 )`,
                 opacity: useTransform(mouseYSpring, [-0.5, 0.5], [0.5, 1]),
@@ -91,7 +91,7 @@ const GlassCard: React.FC<GlassCardProps> = ({ children, className = '' }) => {
         </motion.div>
 
          {/* Inner shadow for depth */}
-         <div className="absolute inset-0 rounded-3xl pointer-events-none shadow-[inset_0_0_20px_rgba(36,36,35,0.5)]" />
+         <div className="absolute inset-0 rounded-3xl pointer-events-none shadow-[inset_0_0_20px_rgba(36,36,35,0.1)]" />
 
     </motion.div>
   );

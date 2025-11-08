@@ -25,10 +25,10 @@ class ErrorBoundary extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-eerie-black">
-            <div className="text-center p-8 bg-jet border border-jet/50 rounded-lg shadow-md">
+        <div className="min-h-screen flex items-center justify-center bg-alabaster">
+            <div className="text-center p-8 bg-white border border-platinum rounded-lg shadow-md">
                 <h1 className="text-2xl font-bold text-saffron mb-4">Something went wrong.</h1>
-                <p className="text-platinum">Please try refreshing the page. If the problem persists, please contact support.</p>
+                <p className="text-jet">Please try refreshing the page. If the problem persists, please contact support.</p>
             </div>
         </div>
       );

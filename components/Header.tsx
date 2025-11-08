@@ -25,7 +25,7 @@ const Header: React.FC = () => {
     >
       <div className="container mx-auto max-w-5xl">
         <nav className="liquid-glass flex items-center justify-between p-3 px-6 rounded-2xl shadow-lg shadow-black/5">
-          <a href="#home" className="text-xl font-bold tracking-tight text-alabaster">
+          <a href="#home" className="text-xl font-bold tracking-tight text-eerie-black">
             Dron Pancholi
           </a>
           <ul className="hidden md:flex items-center space-x-2">
@@ -33,7 +33,7 @@ const Header: React.FC = () => {
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className="px-4 py-2 text-sm text-platinum hover:text-alabaster rounded-lg transition-colors duration-200 relative"
+                  className="px-4 py-2 text-sm text-jet hover:text-eerie-black rounded-lg transition-colors duration-200 relative"
                 >
                   {link.label}
                 </a>
