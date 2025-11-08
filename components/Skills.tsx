@@ -84,8 +84,8 @@ const Skills: React.FC = () => {
                       <h3 className="text-xl font-bold text-eerie-black">{category.title}</h3>
                     </div>
                     <ul className="flex flex-wrap gap-2">
-                      {/* FIX: Create a mutable copy of the readonly array before mapping. This resolves a TypeScript type inference issue with readonly arrays from 'as const' in JSX. */}
-                      {[...category.skills].map((skill) => (
+                      {/* FIX: Removed Array.from to map directly over the readonly array from the constant, resolving the TypeScript error. */}
+                      {category.skills.map((skill) => (
                         <li
                           key={skill}
                           className="bg-silver/60 text-jet text-sm font-medium px-3 py-1 rounded-full"

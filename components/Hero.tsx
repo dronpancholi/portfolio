@@ -1,6 +1,45 @@
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useTransform, useScroll, useSpring } from 'framer-motion';
 
+const PortraitImage = ({ isFiltered = false }: { isFiltered?: boolean }) => {
+  const imageBase = '/images/dron-pancholi';
+  const widths = [384, 512];
+  const sizes = '(min-width: 768px) 256px, 192px';
+
+  const makeSrcSet = (format: 'jpg' | 'webp' | 'avif') =>
+    widths.map(w => `${imageBase}-${w}.${format} ${w}w`).join(', ');
+
+  const jpgSrcSet = makeSrcSet('jpg');
+  const webpSrcSet = makeSrcSet('webp');
+  const avifSrcSet = makeSrcSet('avif');
+
+  return (
+    <picture>
+      <source type="image/avif" srcSet={avifSrcSet} sizes={sizes} />
+      <source type="image/webp" srcSet={webpSrcSet} sizes={sizes} />
+      <source type="image/jpeg" srcSet={jpgSrcSet} sizes={sizes} />
+      <img
+        src={`${imageBase}-512.jpg`}
+        srcSet={jpgSrcSet}
+        sizes={sizes}
+        alt={isFiltered ? "Dron Pancholi - AI Version" : "Dron Pancholi"}
+        className={`absolute inset-0 w-full h-full object-cover ${isFiltered ? 'filter hue-rotate-180 brightness-110' : ''}`}
+        width={256}
+        height={256}
+        loading="eager"
+        decoding="async"
+        onError={(e) => {
+          if (e.currentTarget.src !== `${imageBase}-512.jpg`) {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = `${imageBase}-512.jpg`;
+          }
+        }}
+      />
+    </picture>
+  );
+};
+
+
 const InteractivePortrait: React.FC = () => {
   const ref = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0.5);
@@ -26,25 +65,16 @@ const InteractivePortrait: React.FC = () => {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden cursor-pointer shadow-2xl shadow-eerie-black/10"
-      // FIX: Corrected typo from 'preserve-d' to 'preserve-3d' for the transformStyle property.
       style={{ transformStyle: 'preserve-3d' }}
       whileHover={{ scale: 1.05 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
     >
-      <img
-        src="https://i.ibb.co/7jX1pCf/dron-pancholi.jpg"
-        alt="Dron Pancholi"
-        className="absolute inset-0 w-full h-full object-cover"
-      />
+      <PortraitImage />
       <motion.div
         className="absolute inset-0 w-full h-full"
         style={{ clipPath: clipPathValue }}
       >
-        <img
-          src="https://i.ibb.co/7jX1pCf/dron-pancholi.jpg"
-          alt="Dron Pancholi - AI Version"
-          className="absolute inset-0 w-full h-full object-cover filter hue-rotate-180 brightness-110"
-        />
+        <PortraitImage isFiltered={true} />
       </motion.div>
     </motion.div>
   );
@@ -122,7 +152,6 @@ const Hero: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="max-w-2xl text-base sm:text-lg md:text-xl text-jet font-light mx-auto"
-            // FIX: Corrected typo from 'preserve-d' to 'preserve-3d' for the transformStyle property.
             style={{ transform: 'translateZ(25px)', transformStyle: 'preserve-3d' }}
           >
             Pursuing a Diploma in Computer Engineering and advancing into AI & ML specialization to architect the next generation of intelligent systems.

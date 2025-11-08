@@ -58,8 +58,8 @@ const Contact: React.FC = () => {
         transition={{ duration: 0.5, delay: 0.3 }}
         className="flex items-center justify-center space-x-4"
       >
-        {/* FIX: Create a mutable copy of the readonly array before mapping. This resolves a TypeScript type inference issue with readonly arrays from 'as const' in JSX. */}
-        {[...SOCIAL_LINKS.profiles].map((profile, i) => {
+        {/* FIX: Removed Array.from to map directly over the readonly array from the constant, resolving the TypeScript error. */}
+        {SOCIAL_LINKS.profiles.map((profile, i) => {
           const Icon = icons[profile.name];
           return (
             // Using the index as the key is safe for this static, unchanging list.

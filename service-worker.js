@@ -1,10 +1,14 @@
 
-const CACHE_NAME = 'dron-pancholi-portfolio-v1';
+const CACHE_NAME = 'dron-pancholi-portfolio-v3';
 const urlsToCache = [
   '/',
   '/index.html',
-  // Add other static assets here if they were local
-  // For this project, most assets are from CDNs which are cached by the browser anyway.
+  '/images/dron-pancholi-384.avif',
+  '/images/dron-pancholi-512.avif',
+  '/images/dron-pancholi-384.webp',
+  '/images/dron-pancholi-512.webp',
+  '/images/dron-pancholi-384.jpg',
+  '/images/dron-pancholi-512.jpg',
 ];
 
 self.addEventListener('install', event => {
@@ -12,12 +16,36 @@ self.addEventListener('install', event => {
     caches.open(CACHE_NAME)
       .then(cache => {
         console.log('Opened cache');
-        return cache.addAll(urlsToCache);
+        // Add a .catch to prevent a single failed asset from breaking the entire SW installation.
+        return cache.addAll(urlsToCache).catch(error => {
+          console.error('SW cache.addAll failed:', error);
+        });
       })
   );
 });
 
 self.addEventListener('fetch', event => {
+  // For image assets, use a cache-first strategy.
+  if (event.request.destination === 'image') {
+    event.respondWith(
+      caches.open(CACHE_NAME).then(cache => {
+        return cache.match(event.request).then(response => {
+          // Fetch from network, cache it, and return the response.
+          const fetchPromise = fetch(event.request).then(networkResponse => {
+            if (networkResponse && networkResponse.status === 200) {
+              cache.put(event.request, networkResponse.clone());
+            }
+            return networkResponse;
+          });
+          // Return from cache if available, otherwise fetch from network.
+          return response || fetchPromise;
+        });
+      })
+    );
+    return;
+  }
+
+  // For all other requests, use a cache-first strategy for pre-cached assets.
   event.respondWith(
     caches.match(event.request)
       .then(response => {
@@ -44,4 +72,3 @@ self.addEventListener('activate', event => {
     })
   );
 });
-   
