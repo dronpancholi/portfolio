@@ -1,10 +1,16 @@
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useSpring } from 'framer-motion';
 import { NAV_LINKS } from '../constants';
 
 const Header: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,7 +30,7 @@ const Header: React.FC = () => {
       }`}
     >
       <div className="container mx-auto max-w-5xl">
-        <nav className="liquid-glass flex items-center justify-between p-3 px-6 rounded-2xl">
+        <nav className="liquid-glass flex items-center justify-between p-3 px-6 rounded-2xl relative overflow-hidden">
           <a href="#home" className="text-lg font-semibold tracking-tight text-eerie-black">
             Dron Pancholi
           </a>
@@ -40,6 +46,10 @@ const Header: React.FC = () => {
               </li>
             ))}
           </ul>
+           <motion.div
+            className="absolute bottom-0 left-0 right-0 h-1 bg-saffron"
+            style={{ scaleX, transformOrigin: '0%' }}
+          />
         </nav>
       </div>
     </motion.header>

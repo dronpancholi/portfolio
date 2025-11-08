@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Linkedin, Github, Instagram, MessageSquare } from 'lucide-react';
@@ -56,10 +55,12 @@ const Contact: React.FC = () => {
         transition={{ duration: 0.5, delay: 0.3 }}
         className="flex items-center justify-center space-x-6"
       >
-        {SOCIAL_LINKS.profiles.map((profile) => {
+        {/* FIX: Spread profiles into a new array to resolve potential type inference issues with `as const`. */}
+        {[...SOCIAL_LINKS.profiles].map((profile, i) => {
           const Icon = icons[profile.name];
           return (
-            <a key={profile.name} href={profile.url} target="_blank" rel="noopener noreferrer" className="text-jet hover:text-saffron transition-colors duration-200">
+            // FIX: Using the index as the key to resolve a strange TypeScript error. This is safe for a static list.
+            <a key={i} href={profile.url} target="_blank" rel="noopener noreferrer" className="text-jet hover:text-saffron transition-colors duration-200">
               <Icon className="w-7 h-7" />
               <span className="sr-only">{profile.name}</span>
             </a>
