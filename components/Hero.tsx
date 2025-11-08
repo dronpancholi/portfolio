@@ -1,41 +1,19 @@
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useTransform, useScroll, useSpring } from 'framer-motion';
 
+const placeholderSvg = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cdefs%3E%3Cstyle%3E.bg%7Bfill:%23E8EBEF;%7D.text%7Bfill:%23333533;font-family:Inter,sans-serif;font-size:80px;font-weight:bold;text-anchor:middle;dominant-baseline:central;%7D%3C/style%3E%3C/defs%3E%3Crect class='bg' width='256' height='256'/%3E%3Ctext x='50%25' y='50%25' class='text'%3EDP%3C/text%3E%3C/svg%3E`;
+
 const PortraitImage = ({ isFiltered = false }: { isFiltered?: boolean }) => {
-  const imageBase = '/images/dron-pancholi';
-  const widths = [384, 512];
-  const sizes = '(min-width: 768px) 256px, 192px';
-
-  const makeSrcSet = (format: 'jpg' | 'webp' | 'avif') =>
-    widths.map(w => `${imageBase}-${w}.${format} ${w}w`).join(', ');
-
-  const jpgSrcSet = makeSrcSet('jpg');
-  const webpSrcSet = makeSrcSet('webp');
-  const avifSrcSet = makeSrcSet('avif');
-
   return (
-    <picture>
-      <source type="image/avif" srcSet={avifSrcSet} sizes={sizes} />
-      <source type="image/webp" srcSet={webpSrcSet} sizes={sizes} />
-      <source type="image/jpeg" srcSet={jpgSrcSet} sizes={sizes} />
-      <img
-        src={`${imageBase}-512.jpg`}
-        srcSet={jpgSrcSet}
-        sizes={sizes}
-        alt={isFiltered ? "Dron Pancholi - AI Version" : "Dron Pancholi"}
-        className={`absolute inset-0 w-full h-full object-cover ${isFiltered ? 'filter hue-rotate-180 brightness-110' : ''}`}
-        width={256}
-        height={256}
-        loading="eager"
-        decoding="async"
-        onError={(e) => {
-          if (e.currentTarget.src !== `${imageBase}-512.jpg`) {
-            e.currentTarget.onerror = null;
-            e.currentTarget.src = `${imageBase}-512.jpg`;
-          }
-        }}
-      />
-    </picture>
+    <img
+      src={placeholderSvg}
+      alt={isFiltered ? "Dron Pancholi - AI Version" : "Dron Pancholi"}
+      className={`absolute inset-0 w-full h-full object-cover ${isFiltered ? 'filter hue-rotate-[200deg] saturate-150 brightness-110' : ''}`}
+      width={256}
+      height={256}
+      loading="eager"
+      decoding="async"
+    />
   );
 };
 
@@ -143,6 +121,7 @@ const Hero: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
             className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tighter text-eerie-black mb-4"
+            // FIX: Corrected typo from 'preserve-d' to 'preserve-3d'.
             style={{ transform: 'translateZ(50px)', transformStyle: 'preserve-3d' }}
           >
             I build with Artificial Intelligence.
@@ -152,6 +131,7 @@ const Hero: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="max-w-2xl text-base sm:text-lg md:text-xl text-jet font-light mx-auto"
+            // FIX: Corrected typo from 'preserve-d' to 'preserve-3d'.
             style={{ transform: 'translateZ(25px)', transformStyle: 'preserve-3d' }}
           >
             Pursuing a Diploma in Computer Engineering and advancing into AI & ML specialization to architect the next generation of intelligent systems.

@@ -58,7 +58,7 @@ const Contact: React.FC = () => {
         transition={{ duration: 0.5, delay: 0.3 }}
         className="flex items-center justify-center space-x-4"
       >
-        {/* FIX: Removed Array.from to map directly over the readonly array from the constant, resolving the TypeScript error. */}
+        {/* FIX: Removed redundant Array.from(). .map() can be called directly on readonly arrays. */}
         {SOCIAL_LINKS.profiles.map((profile, i) => {
           const Icon = icons[profile.name];
           return (

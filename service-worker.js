@@ -1,14 +1,8 @@
 
-const CACHE_NAME = 'dron-pancholi-portfolio-v3';
+const CACHE_NAME = 'dron-pancholi-portfolio-v4';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/images/dron-pancholi-384.avif',
-  '/images/dron-pancholi-512.avif',
-  '/images/dron-pancholi-384.webp',
-  '/images/dron-pancholi-512.webp',
-  '/images/dron-pancholi-384.jpg',
-  '/images/dron-pancholi-512.jpg',
 ];
 
 self.addEventListener('install', event => {

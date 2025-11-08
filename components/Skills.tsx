@@ -84,7 +84,7 @@ const Skills: React.FC = () => {
                       <h3 className="text-xl font-bold text-eerie-black">{category.title}</h3>
                     </div>
                     <ul className="flex flex-wrap gap-2">
-                      {/* FIX: Removed Array.from to map directly over the readonly array from the constant, resolving the TypeScript error. */}
+                      {/* FIX: Removed redundant Array.from(). .map() can be called directly on readonly arrays. */}
                       {category.skills.map((skill) => (
                         <li
                           key={skill}

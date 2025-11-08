@@ -133,6 +133,17 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
                   </a>
                 )}
               </motion.div>
+              
+              <motion.div variants={contentItemVariants} className="flex justify-end mt-8">
+                <button
+                  onClick={onClose}
+                  className="px-6 py-2 bg-silver/60 text-jet font-semibold rounded-lg hover:bg-silver transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-saffron"
+                  aria-label="Close modal"
+                >
+                  Close
+                </button>
+              </motion.div>
+
             </motion.div>
           </div>
         </GlassCard>
