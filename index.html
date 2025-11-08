@@ -30,48 +30,67 @@
         font-family: 'Inter', sans-serif;
         font-optical-sizing: auto;
       }
-      /* Liquid Glass Material */
+      /* ===========================================
+         MAX LIQUID GLASS MATERIAL (NETLIFY SAFE)
+         =========================================== */
       .liquid-glass {
         position: relative;
-        backdrop-filter: blur(28px) saturate(180%);
-        -webkit-backdrop-filter: blur(28px) saturate(180%);
-        background: rgba(255, 255, 255, 0.18);
-        border: 1px solid rgba(255, 255, 255, 0.36);
-        border-radius: 28px;
+        border-radius: 30px;
+        background: rgba(255, 255, 255, 0.14);
+        backdrop-filter: blur(32px) saturate(180%) contrast(1.07);
+        -webkit-backdrop-filter: blur(32px) saturate(180%) contrast(1.07);
+        border: 1.5px solid rgba(255, 255, 255, 0.35);
         overflow: hidden;
+        box-shadow:
+          0 12px 40px rgba(0,0,0,0.25),
+          inset 0 1px 2px rgba(255,255,255,0.8),
+          inset 0 -1px 2px rgba(0,0,0,0.15);
       }
 
-      /* Internal light diffusion layer */
+      /* Soft internal diffusion glow */
       .liquid-glass::before {
         content: "";
         position: absolute;
         inset: 0;
-        background: linear-gradient(
-          135deg,
-          rgba(255, 255, 255, 0.35) 0%,
-          rgba(255, 255, 255, 0.12) 45%,
-          rgba(255, 255, 255, 0.06) 100%
+        background: radial-gradient(
+            circle at 30% 35%,
+            rgba(255, 255, 255, 0.65),
+            rgba(255, 255, 255, 0.12) 60%,
+            transparent 100%
         );
-        opacity: 0.65;
+        opacity: 0.55;
         pointer-events: none;
       }
 
-      /* Dynamic "Glass Shine" highlight hotspot */
+      /* Cursor-controlled refractive highlight */
       .liquid-glass::after {
         content: "";
         position: absolute;
         inset: 0;
-        pointer-events: none;
         background: radial-gradient(
-          circle at var(--mx, 50%) var(--my, 50%),
-          rgba(255, 255, 255, 0.55),
-          transparent 55%
+            circle at var(--mx, 50%) var(--my, 50%),
+            rgba(255, 255, 255, 0.75),
+            rgba(255, 255, 255, 0.15) 28%,
+            transparent 72%
         );
-        opacity: 0.35;
-        transition: opacity 0.3s ease;
+        opacity: 0;
+        transition: opacity 0.35s ease;
+        pointer-events: none;
       }
+
+      /* Increase highlight on hover */
       .liquid-glass:hover::after {
-        opacity: 0.55;
+        opacity: 0.8;
+      }
+
+      /* Smooth 3D tilt for fluidity */
+      .liquid-glass {
+        transform-style: preserve-3d;
+        will-change: transform;
+        transition: transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+      }
+      .liquid-glass:hover {
+        transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(8px);
       }
     </style>
   <script type="importmap">

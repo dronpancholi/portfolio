@@ -1,9 +1,10 @@
 
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useEffect } from 'react';
 import { motion, useMotionValue, useSpring, useTransform, useScroll } from 'framer-motion';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Footer from './components/Footer';
+import Loader from './components/ui/Loader';
 
 const Skills = lazy(() => import('./components/Skills'));
 const Projects = lazy(() => import('./components/Projects'));
@@ -24,6 +25,32 @@ const App: React.FC = () => {
   const { scrollY } = useScroll();
   const bgGradientY = useTransform(scrollY, [0, 1000], [0, 150]);
   const bgPatternY = useTransform(scrollY, [0, 1000], [0, 300]);
+
+  useEffect(() => {
+    const handlePointerMove = (e: PointerEvent) => {
+      document.querySelectorAll(".liquid-glass").forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const htmlEl = el as HTMLElement;
+        htmlEl.style.setProperty("--mx", `${x}px`);
+        htmlEl.style.setProperty("--my", `${y}px`);
+
+        // Smooth 3D tilt angles
+        const rx = (y - rect.height / 2) / 22;
+        const ry = -(x - rect.width / 2) / 22;
+        htmlEl.style.setProperty("--rx", `${rx}deg`);
+        htmlEl.style.setProperty("--ry", `${ry}deg`);
+      });
+    };
+
+    document.addEventListener("pointermove", handlePointerMove);
+
+    return () => {
+      document.removeEventListener("pointermove", handlePointerMove);
+    };
+  }, []);
 
   return (
     <div 
@@ -57,7 +84,7 @@ const App: React.FC = () => {
       <Header />
       <main className="container mx-auto px-6 md:px-8 pt-24 relative z-10">
         <Hero />
-        <Suspense fallback={<div className="text-center py-20">Loading...</div>}>
+        <Suspense fallback={<Loader />}>
           <About />
           <Skills />
           <Projects />

@@ -58,7 +58,7 @@ const Contact: React.FC = () => {
         transition={{ duration: 0.5, delay: 0.3 }}
         className="flex items-center justify-center space-x-4"
       >
-        {/* FIX: `SOCIAL_LINKS.profiles` is a readonly array due to `as const`. Spreading it into a new array `[...SOCIAL_LINKS.profiles]` creates a mutable copy that can be mapped without type errors. */}
+        {/* FIX: `SOCIAL_LINKS.profiles` is a readonly array due to `as const`. Spreading it into a new array creates a mutable copy that can be mapped without type errors. */}
         {[...SOCIAL_LINKS.profiles].map((profile, i) => {
           const Icon = icons[profile.name];
           return (
