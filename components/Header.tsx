@@ -47,8 +47,12 @@ const Header: React.FC = () => {
             ))}
           </ul>
            <motion.div
-            className="absolute bottom-0 left-0 right-0 h-1 bg-saffron"
-            style={{ scaleX, transformOrigin: '0%' }}
+            className="absolute bottom-0 left-0 right-0 h-1.5 bg-saffron rounded-r-full"
+            style={{ 
+              scaleX, 
+              transformOrigin: '0%',
+              boxShadow: '0 0 10px #f5cb5c, 0 0 5px #f5cb5c',
+            }}
           />
         </nav>
       </div>

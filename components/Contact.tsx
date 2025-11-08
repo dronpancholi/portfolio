@@ -10,6 +10,9 @@ const icons: { [key: string]: React.ElementType } = {
   Discord: MessageSquare,
 };
 
+// FIX: Define a specific type for a social profile to aid TypeScript's inference.
+type SocialProfile = (typeof SOCIAL_LINKS.profiles)[number];
+
 const Contact: React.FC = () => {
   return (
     <section id="contact" className="py-24 text-center">
@@ -55,11 +58,11 @@ const Contact: React.FC = () => {
         transition={{ duration: 0.5, delay: 0.3 }}
         className="flex items-center justify-center space-x-6"
       >
-        {/* FIX: Spread profiles into a new array to resolve potential type inference issues with `as const`. */}
-        {[...SOCIAL_LINKS.profiles].map((profile, i) => {
+        {/* FIX: Spread profiles into a new array and explicitly type the mapped item to resolve potential type inference issues with `as const`. */}
+        {[...SOCIAL_LINKS.profiles].map((profile: SocialProfile, i) => {
           const Icon = icons[profile.name];
           return (
-            // FIX: Using the index as the key to resolve a strange TypeScript error. This is safe for a static list.
+            // Using the index as the key is safe for this static, unchanging list.
             <a key={i} href={profile.url} target="_blank" rel="noopener noreferrer" className="text-jet hover:text-saffron transition-colors duration-200">
               <Icon className="w-7 h-7" />
               <span className="sr-only">{profile.name}</span>
