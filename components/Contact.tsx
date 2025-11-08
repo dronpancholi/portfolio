@@ -58,7 +58,7 @@ const Contact: React.FC = () => {
         transition={{ duration: 0.5, delay: 0.3 }}
         className="flex items-center justify-center space-x-4"
       >
-        {/* FIX: The `as const` assertion on SOCIAL_LINKS in `constants.ts` makes `profiles` a readonly tuple. Spreading it into a new array resolves a type inference issue with mapping directly over a readonly tuple in this context. */}
+        {/* FIX: Spread the readonly tuple 'SOCIAL_LINKS.profiles' into a new array to resolve a TypeScript type inference issue when mapping over a value with a 'const' assertion. */}
         {[...SOCIAL_LINKS.profiles].map((profile, i) => {
           const Icon = icons[profile.name];
           return (

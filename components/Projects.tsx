@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, Variants, useReducedMotion } from 'framer-motion';
 import GlassCard from './ui/GlassCard';
 import { PROJECTS_DATA } from '../constants';
@@ -32,6 +33,11 @@ const contentItemVariants: Variants = {
 
 
 const ProjectModal = ({ project, onClose, transitionConfig }: { project: Project; onClose: () => void; transitionConfig: any }) => {
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -44,7 +50,7 @@ const ProjectModal = ({ project, onClose, transitionConfig }: { project: Project
     };
   }, [onClose]);
 
-  return (
+  const modalUI = (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center p-4"
       aria-modal="true"
@@ -65,7 +71,11 @@ const ProjectModal = ({ project, onClose, transitionConfig }: { project: Project
         layoutId={`project-card-${project.title}`}
         transition={transitionConfig}
         className="relative max-w-3xl w-full z-10"
-        style={{ backfaceVisibility: 'hidden' }}
+        style={{
+          willChange: 'transform, opacity',
+          transform: 'translateZ(0)',
+          backfaceVisibility: 'hidden',
+        }}
       >
         <GlassCard isStatic={true} className="!shadow-eerie-black/30">
           <div className="p-8 md:p-12 relative max-h-[90vh] overflow-y-auto">
@@ -128,6 +138,15 @@ const ProjectModal = ({ project, onClose, transitionConfig }: { project: Project
       </motion.div>
     </div>
   );
+
+  if (isClient) {
+    const portalRoot = document.getElementById('modal-root');
+    if (portalRoot) {
+      return createPortal(modalUI, portalRoot);
+    }
+  }
+
+  return null;
 };
 
 
