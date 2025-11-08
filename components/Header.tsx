@@ -1,0 +1,50 @@
+
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { NAV_LINKS } from '../constants';
+
+const Header: React.FC = () => {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return (
+    <motion.header
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled ? 'p-2' : 'p-4'
+      }`}
+    >
+      <div className="container mx-auto max-w-5xl">
+        <nav className="liquid-glass flex items-center justify-between p-3 px-6 rounded-2xl shadow-lg shadow-black/5">
+          <a href="#home" className="text-xl font-bold tracking-tight text-gray-900">
+            Dron Pancholi
+          </a>
+          <ul className="hidden md:flex items-center space-x-2">
+            {NAV_LINKS.map((link) => (
+              <li key={link.href}>
+                <a
+                  href={link.href}
+                  className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 rounded-lg transition-colors duration-200 relative"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </motion.header>
+  );
+};
+
+export default Header;
+   
