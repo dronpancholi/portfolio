@@ -1,13 +1,14 @@
 import React, { useRef } from 'react';
-import { motion, useMotionTemplate, useMotionValue, useSpring, useTransform } from 'framer-motion';
+// FIX: Import `MotionStyle` to explicitly type the style object, preventing type widening issues.
+import { motion, useMotionTemplate, useMotionValue, useSpring, useTransform, MotionProps, MotionStyle } from 'framer-motion';
 
-interface GlassCardProps {
+interface GlassCardProps extends MotionProps {
   children: React.ReactNode;
   className?: string;
   isStatic?: boolean;
 }
 
-const GlassCard: React.FC<GlassCardProps> = ({ children, className = '', isStatic = false }) => {
+const GlassCard: React.FC<GlassCardProps> = ({ children, className = '', isStatic = false, style, ...props }) => {
   const ref = useRef<HTMLDivElement>(null);
 
   const mouseX = useMotionValue(0);
@@ -46,21 +47,24 @@ const GlassCard: React.FC<GlassCardProps> = ({ children, className = '', isStati
     contentScale.set(1);
     contentTranslateZ.set(0);
   };
+  
+  // FIX: Explicitly typing `internalStyles` with `MotionStyle` prevents TypeScript from widening string literal types (e.g., 'preserve-3d') to `string`, ensuring compatibility with `motion.div`'s `style` prop.
+  const internalStyles: MotionStyle = {
+    transformStyle: 'preserve-3d',
+    perspective: '1200px',
+    rotateX: isStatic ? 0 : rotateX,
+    rotateY: isStatic ? 0 : rotateY,
+    willChange: 'transform',
+  };
 
   return (
     <motion.div
       ref={ref}
       onMouseMove={isStatic ? undefined : handleMouseMove}
       onMouseLeave={isStatic ? undefined : handleMouseLeave}
-      style={{
-        transformStyle: 'preserve-3d',
-        perspective: '1200px',
-        rotateX: isStatic ? 0 : rotateX,
-        rotateY: isStatic ? 0 : rotateY,
-        backfaceVisibility: 'hidden',
-        willChange: 'transform',
-      }}
+      style={{...internalStyles, ...style}}
       className={`relative bg-pearl/50 backdrop-blur-2xl rounded-3xl border border-silver/50 shadow-2xl shadow-eerie-black/10 transition-shadow duration-300 hover:shadow-eerie-black/20 ${className}`}
+      {...props}
     >
         {/* Subsurface Scattering Layer */}
         <div 

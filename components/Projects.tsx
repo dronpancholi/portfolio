@@ -61,71 +61,70 @@ const ProjectModal = ({ project, onClose, transitionConfig }: { project: Project
         className="absolute inset-0 bg-eerie-black/60"
       />
       
-      <motion.div
+      <GlassCard
         layoutId={`project-card-${project.title}`}
         transition={transitionConfig}
-        className="relative max-w-3xl w-full z-10"
+        isStatic={true}
+        className="!shadow-eerie-black/30 max-w-3xl w-full z-10"
         style={{ backfaceVisibility: 'hidden' }}
       >
-        <GlassCard isStatic={true} className="!shadow-eerie-black/30">
-          <div className="p-8 md:p-12 relative max-h-[90vh] overflow-y-auto">
-            <motion.button
-              onClick={onClose}
-              className="absolute top-4 right-4 z-20 text-jet p-2 rounded-full hover:bg-silver transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-saffron"
-              aria-label="Close modal"
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1, transition: { delay: 0.3 } }}
-              exit={{ opacity: 0, scale: 0.5 }}
-            >
-              <X size={24} />
-            </motion.button>
+        <div className="p-8 md:p-12 relative max-h-[90vh] overflow-y-auto">
+          <motion.button
+            onClick={onClose}
+            className="absolute top-4 right-4 z-20 text-jet p-2 rounded-full hover:bg-silver transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-saffron"
+            aria-label="Close modal"
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1, transition: { delay: 0.3 } }}
+            exit={{ opacity: 0, scale: 0.5 }}
+          >
+            <X size={24} />
+          </motion.button>
+          
+          <motion.div variants={contentContainerVariants} initial="hidden" animate="visible" exit="exit">
+            <div className="flex justify-between items-start mb-4">
+              <motion.h3 layoutId={`project-title-${project.title}`} id={`modal-title-${project.title}`} className="text-2xl md:text-3xl font-bold text-eerie-black pr-12">{project.title}</motion.h3>
+              <motion.div variants={contentItemVariants}>
+                <span className={`text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap self-start ${
+                  project.status === 'Coming Soon' ? 'bg-saffron/20 text-saffron animate-pulse' : 'bg-silver/60 text-jet'
+                }`}>
+                  {project.status}
+                </span>
+              </motion.div>
+            </div>
             
-            <motion.div variants={contentContainerVariants} initial="hidden" animate="visible" exit="exit">
-              <div className="flex justify-between items-start mb-4">
-                <motion.h3 layoutId={`project-title-${project.title}`} id={`modal-title-${project.title}`} className="text-2xl md:text-3xl font-bold text-eerie-black pr-12">{project.title}</motion.h3>
-                <motion.div variants={contentItemVariants}>
-                  <span className={`text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap self-start ${
-                    project.status === 'Coming Soon' ? 'bg-saffron/20 text-saffron animate-pulse' : 'bg-silver/60 text-jet'
-                  }`}>
-                    {project.status}
-                  </span>
-                </motion.div>
-              </div>
-              
-              <motion.p layoutId={`project-description-${project.title}`} id={`modal-desc-${project.title}`} className="text-jet font-light text-base md:text-lg leading-relaxed mb-6">{project.longDescription}</motion.p>
+            <motion.p layoutId={`project-description-${project.title}`} id={`modal-desc-${project.title}`} className="text-jet font-light text-base md:text-lg leading-relaxed mb-6">{project.longDescription}</motion.p>
 
-              <motion.div variants={contentItemVariants} className="mb-6">
-                <h4 className="text-lg font-semibold text-eerie-black mb-3">Key Features</h4>
-                <ul className="list-disc list-inside space-y-1 text-jet font-light">
-                  {project.features.map(feature => <li key={feature}>{feature}</li>)}
-                </ul>
-              </motion.div>
-              
-              <motion.div variants={contentItemVariants} className="mb-8">
-                <h4 className="text-lg font-semibold text-eerie-black mb-3">Tech Stack</h4>
-                <div className="flex flex-wrap gap-2">
-                  {project.techStack.map(tech => (
-                    <span key={tech} className="bg-silver/60 text-jet text-sm font-medium px-3 py-1 rounded-full">{tech}</span>
-                  ))}
-                </div>
-              </motion.div>
-
-              <motion.div variants={contentItemVariants} className="flex items-center space-x-4">
-                {project.liveUrl && (
-                  <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-sm font-semibold text-jet hover:text-saffron transition-colors">
-                    View Live Demo <ExternalLink className="w-4 h-4 ml-1.5" />
-                  </a>
-                )}
-                {project.repoUrl && (
-                  <a href={project.repoUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-sm font-semibold text-jet hover:text-saffron transition-colors">
-                    Source Code <Github className="w-4 h-4 ml-1.5" />
-                  </a>
-                )}
-              </motion.div>
+            <motion.div variants={contentItemVariants} className="mb-6">
+              <h4 className="text-lg font-semibold text-eerie-black mb-3">Key Features</h4>
+              <ul className="list-disc list-inside space-y-1 text-jet font-light">
+                {project.features.map(feature => <li key={feature}>{feature}</li>)}
+              </ul>
             </motion.div>
-          </div>
-        </GlassCard>
-      </motion.div>
+            
+            <motion.div variants={contentItemVariants} className="mb-8">
+              <h4 className="text-lg font-semibold text-eerie-black mb-3">Tech Stack</h4>
+              <div className="flex flex-wrap gap-2">
+                {project.techStack.map(tech => (
+                  <span key={tech} className="bg-silver/60 text-jet text-sm font-medium px-3 py-1 rounded-full">{tech}</span>
+                ))}
+              </div>
+            </motion.div>
+
+            <motion.div variants={contentItemVariants} className="flex items-center space-x-4">
+              {project.liveUrl && (
+                <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-sm font-semibold text-jet hover:text-saffron transition-colors">
+                  View Live Demo <ExternalLink className="w-4 h-4 ml-1.5" />
+                </a>
+              )}
+              {project.repoUrl && (
+                <a href={project.repoUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-sm font-semibold text-jet hover:text-saffron transition-colors">
+                  Source Code <Github className="w-4 h-4 ml-1.5" />
+                </a>
+              )}
+            </motion.div>
+          </motion.div>
+        </div>
+      </GlassCard>
     </div>
   );
 };
@@ -193,7 +192,6 @@ const Projects: React.FC = () => {
         {PROJECTS_DATA.map((project, index) => (
           <motion.div
             key={project.title}
-            layoutId={`project-card-${project.title}`}
             custom={index}
             variants={projectCardVariants}
             initial="offscreen"
@@ -217,7 +215,10 @@ const Projects: React.FC = () => {
             tabIndex={0}
             aria-label={`Learn more about ${project.title}`}
           >
-            <GlassCard className="h-full group hover:!shadow-[0_8px_30px_rgba(36,36,35,0.2),_0_0_20px_rgba(245,203,92,0.4)]">
+            <GlassCard 
+              layoutId={`project-card-${project.title}`}
+              className="h-full group hover:!shadow-[0_8px_30px_rgba(36,36,35,0.2),_0_0_20px_rgba(245,203,92,0.4)]"
+            >
               <div className="p-8 flex flex-col h-full">
                 <div className="flex-grow">
                   <div className="flex justify-between items-start mb-4">
