@@ -84,7 +84,7 @@ const Skills: React.FC = () => {
                       <h3 className="text-xl font-bold text-eerie-black">{category.title}</h3>
                     </div>
                     <ul className="flex flex-wrap gap-2">
-                      {/* FIX: Removed spread operator. Mapping directly over a readonly array from `as const` is valid and resolves the type error. */}
+                      {/* FIX: Using .map directly on a readonly array is the correct way to render a list in React and avoids potential TypeScript errors with spread syntax in JSX. */}
                       {category.skills.map((skill) => (
                         <li
                           key={skill}

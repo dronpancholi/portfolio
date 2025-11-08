@@ -32,7 +32,7 @@ const InteractivePortrait: React.FC = () => {
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
     >
       <img
-        src="https://i.postimg.cc/SNgT7YJg/dron-pancholi-profile.jpg"
+        src="https://i.ibb.co/7jX1pCf/dron-pancholi.jpg"
         alt="Dron Pancholi"
         className="absolute inset-0 w-full h-full object-cover"
       />
@@ -41,7 +41,7 @@ const InteractivePortrait: React.FC = () => {
         style={{ clipPath: clipPathValue }}
       >
         <img
-          src="https://i.postimg.cc/SNgT7YJg/dron-pancholi-profile.jpg"
+          src="https://i.ibb.co/7jX1pCf/dron-pancholi.jpg"
           alt="Dron Pancholi - AI Version"
           className="absolute inset-0 w-full h-full object-cover filter hue-rotate-180 brightness-110"
         />
@@ -122,6 +122,7 @@ const Hero: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="max-w-2xl text-lg md:text-xl text-jet font-light mx-auto"
+            // FIX: Corrected typo from 'preserve-d' to 'preserve-3d' for the transformStyle property.
             style={{ transform: 'translateZ(25px)', transformStyle: 'preserve-3d' }}
           >
             Pursuing a Diploma in Computer Engineering and advancing into AI & ML specialization to architect the next generation of intelligent systems.

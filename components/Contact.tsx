@@ -58,7 +58,7 @@ const Contact: React.FC = () => {
         transition={{ duration: 0.5, delay: 0.3 }}
         className="flex items-center justify-center space-x-6"
       >
-        {/* FIX: Removed spread operator. Mapping directly over a readonly array from `as const` is valid and resolves the type error. */}
+        {/* FIX: Using .map directly on a readonly array is the correct way to render a list in React and avoids potential TypeScript errors with spread syntax in JSX. */}
         {SOCIAL_LINKS.profiles.map((profile, i) => {
           const Icon = icons[profile.name];
           return (
