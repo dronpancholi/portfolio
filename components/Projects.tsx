@@ -79,6 +79,7 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
       role="dialog"
     >
       <motion.div
+        layoutId={`project-card-${project.title}`}
         variants={modalVariants}
         initial="hidden"
         animate="visible"
@@ -165,6 +166,18 @@ const projectCardVariants: Variants = {
 const Projects: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
+  useEffect(() => {
+    if (selectedProject) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [selectedProject]);
+
+
   return (
     <section id="projects" className="py-16 md:py-24 scroll-mt-24">
       <motion.h2 
@@ -179,7 +192,8 @@ const Projects: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {PROJECTS_DATA.map((project, index) => (
           <motion.div
-            key={index}
+            key={project.title}
+            layoutId={`project-card-${project.title}`}
             custom={index}
             variants={projectCardVariants}
             initial="offscreen"
@@ -187,6 +201,17 @@ const Projects: React.FC = () => {
             whileHover="hover"
             viewport={{ once: true, amount: 0.3 }}
             whileTap={{ y: -2, scale: 0.99 }}
+            onClick={() => setSelectedProject(project)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setSelectedProject(project);
+              }
+            }}
+            className="cursor-pointer"
+            role="button"
+            tabIndex={0}
+            aria-label={`Learn more about ${project.title}`}
           >
             <GlassCard className="h-full group hover:!shadow-[0_8px_30px_rgba(36,36,35,0.2),_0_0_20px_rgba(245,203,92,0.4)]">
               <div className="p-8 flex flex-col h-full">
@@ -203,13 +228,12 @@ const Projects: React.FC = () => {
                 </div>
                 
                 <div className="mt-auto pt-4">
-                  <button 
-                    onClick={() => setSelectedProject(project)}
-                    className="inline-flex items-center text-sm font-semibold text-jet hover:text-saffron transition-colors group -ml-2 p-2 rounded-md"
-                    aria-label={`Learn more about ${project.title}`}
+                  <div 
+                    className="inline-flex items-center text-sm font-semibold text-jet group-hover:text-saffron transition-colors group -ml-2 p-2 rounded-md"
+                    aria-hidden="true"
                   >
                     Learn More <ArrowUpRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
-                  </button>
+                  </div>
                 </div>
               </div>
             </GlassCard>
