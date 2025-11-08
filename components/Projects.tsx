@@ -24,7 +24,7 @@ const Projects: React.FC = () => {
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
+            transition={{ duration: 0.5, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
           >
             <GlassCard className="h-full group">
               <div className="p-8 flex flex-col h-full">
@@ -32,12 +32,12 @@ const Projects: React.FC = () => {
                   <div className="flex justify-between items-start mb-4">
                     <h3 className="text-xl font-bold text-eerie-black">{project.title}</h3>
                     <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
-                      project.status === 'Coming Soon' ? 'bg-saffron/20 text-saffron' : 'bg-jet/10 text-jet'
+                      project.status === 'Coming Soon' ? 'bg-saffron/20 text-saffron-dark' : 'bg-silver/60 text-jet'
                     }`}>
                       {project.status}
                     </span>
                   </div>
-                  <p className="text-jet">{project.description}</p>
+                  <p className="text-jet font-light">{project.description}</p>
                 </div>
                 {project.link && (
                   <a href={project.link} target="_blank" rel="noopener noreferrer" className="mt-6 flex items-center text-sm font-semibold text-jet hover:text-saffron transition-colors">

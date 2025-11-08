@@ -14,49 +14,43 @@ const App: React.FC = () => {
   const mouseX = useMotionValue(Infinity);
   const mouseY = useMotionValue(Infinity);
 
-  const springConfig = { damping: 25, stiffness: 200, mass: 0.5 };
+  const springConfig = { damping: 100, stiffness: 150, mass: 1 };
   const smoothMouseX = useSpring(mouseX, springConfig);
   const smoothMouseY = useSpring(mouseY, springConfig);
-
-  const springConfig2 = { damping: 40, stiffness: 100, mass: 1 };
-  const smoothMouseX2 = useSpring(mouseX, springConfig2);
-  const smoothMouseY2 = useSpring(mouseY, springConfig2);
-
+  
   const backgroundPositionX = useTransform(smoothMouseX, [0, window.innerWidth], ["0%", "100%"]);
   const backgroundPositionY = useTransform(smoothMouseY, [0, window.innerHeight], ["0%", "100%"]);
   
-  const backgroundPositionX2 = useTransform(smoothMouseX2, [0, window.innerWidth], ["20%", "80%"]);
-  const backgroundPositionY2 = useTransform(smoothMouseY2, [0, window.innerHeight], ["20%", "80%"]);
-
   const { scrollY } = useScroll();
   const bgGradientY = useTransform(scrollY, [0, 1000], [0, 150]);
   const bgPatternY = useTransform(scrollY, [0, 1000], [0, 300]);
 
   return (
     <div 
-      className="bg-alabaster text-jet selection:bg-saffron/30 min-h-screen"
+      className="bg-mist text-jet selection:bg-saffron/30 min-h-screen"
       onMouseMove={(e) => {
         mouseX.set(e.clientX);
         mouseY.set(e.clientY);
       }}
     >
+      {/* Ambient background lighting */}
       <motion.div
-        className="fixed top-0 left-0 w-full h-full pointer-events-none -z-10"
+        className="fixed top-0 left-0 w-full h-full pointer-events-none -z-10 opacity-60"
         style={{
-          background: `radial-gradient(800px circle at ${backgroundPositionX2} ${backgroundPositionY2}, rgba(245, 203, 92, 0.1), transparent 80%)`,
+          background: `radial-gradient(800px circle at ${backgroundPositionX} ${backgroundPositionY}, rgba(245, 203, 92, 0.05), transparent 80%)`,
           y: bgGradientY,
         }}
       />
       <motion.div
         className="fixed top-0 left-0 w-full h-full pointer-events-none -z-10"
         style={{
-          background: `radial-gradient(600px circle at ${backgroundPositionX} ${backgroundPositionY}, rgba(207, 219, 213, 0.4), transparent 80%)`,
+          background: `radial-gradient(1200px circle at 50% 0%, rgba(232, 235, 239, 0.5), transparent 80%)`,
           y: bgGradientY,
         }}
       />
       
       <motion.div 
-        className="fixed inset-0 w-full h-full bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%220%200%2040%2040%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22%23333533%22%20fill-opacity%3D%220.03%22%20fill-rule%3D%22evenodd%22%3E%3Cpath%20d%3D%22M0%2040L40%200H20L0%2020M40%2040V20L20%2040%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-50 -z-20"
+        className="fixed inset-0 w-full h-full bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%220%200%2040%2040%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22%23E8EBEF%22%20fill-opacity%3D%220.4%22%20fill-rule%3D%22evenodd%22%3E%3Cpath%20d%3D%22M0%2040L40%200H20L0%2020M40%2040V20L20%2040%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-50 -z-20"
         style={{ y: bgPatternY }}
       ></motion.div>
 

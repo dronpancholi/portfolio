@@ -18,17 +18,17 @@ const Header: React.FC = () => {
     <motion.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      transition={{ duration: 0.5, ease: 'easeOut' }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }} // easeOutQuad
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled ? 'p-2' : 'p-4'
       }`}
     >
       <div className="container mx-auto max-w-5xl">
-        <nav className="liquid-glass flex items-center justify-between p-3 px-6 rounded-2xl shadow-lg shadow-black/5">
-          <a href="#home" className="text-xl font-bold tracking-tight text-eerie-black">
+        <nav className="liquid-glass flex items-center justify-between p-3 px-6 rounded-2xl">
+          <a href="#home" className="text-lg font-semibold tracking-tight text-eerie-black">
             Dron Pancholi
           </a>
-          <ul className="hidden md:flex items-center space-x-2">
+          <ul className="hidden md:flex items-center space-x-1">
             {NAV_LINKS.map((link) => (
               <li key={link.href}>
                 <a

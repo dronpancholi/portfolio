@@ -10,12 +10,12 @@ const About: React.FC = () => {
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.8 }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       >
         <GlassCard>
-          <div className="p-8 md:p-12">
+          <div className="p-10 md:p-16">
             <h2 className="text-3xl md:text-4xl font-bold text-eerie-black mb-6 tracking-tight">About Me</h2>
-            <div className="space-y-4 text-jet text-lg leading-relaxed">
+            <div className="space-y-4 text-jet text-lg leading-relaxed font-light">
               <p>
                 I am a forward-thinking engineer driven by a profound fascination with artificial intelligence and its potential to reshape our world. My current academic path in Computer Engineering serves as a robust foundation for my primary ambition: to specialize in deep learning, applied machine learning, and the creation of AI-augmented systems.
               </p>

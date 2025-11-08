@@ -12,20 +12,21 @@ const GlassCard: React.FC<GlassCardProps> = ({ children, className = '' }) => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  const springConfig = { stiffness: 150, damping: 20, mass: 0.1 };
+  const springConfig = { stiffness: 100, damping: 20, mass: 0.5 };
   const mouseXSpring = useSpring(mouseX, springConfig);
   const mouseYSpring = useSpring(mouseY, springConfig);
 
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['4deg', '-4deg']);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-4deg', '4deg']);
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['3deg', '-3deg']);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-3deg', '3deg']);
 
-  const glareX = useTransform(mouseXSpring, [-0.5, 0.5], ['120%', '-20%']);
+  const glareX = useTransform(mouseXSpring, [-0.5, 0.5], ['150%', '-50%']);
   const glareY = useTransform(mouseYSpring, [-0.5, 0.5], ['120%', '-20%']);
   
-  const noiseX = useTransform(mouseXSpring, [-0.5, 0.5], [-20, 20]);
-  const noiseY = useTransform(mouseYSpring, [-0.5, 0.5], [-20, 20]);
+  const noiseX = useTransform(mouseXSpring, [-0.5, 0.5], [-25, 25]);
+  const noiseY = useTransform(mouseYSpring, [-0.5, 0.5], [-25, 25]);
 
-  const contentScale = useSpring(1, { stiffness: 200, damping: 25 });
+  const contentScale = useSpring(1, { stiffness: 150, damping: 20 });
+  const contentTranslateZ = useSpring(0, { stiffness: 150, damping: 20 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!ref.current) return;
@@ -34,13 +35,15 @@ const GlassCard: React.FC<GlassCardProps> = ({ children, className = '' }) => {
     const y = (e.clientY - top - height / 2) / (height / 2);
     mouseX.set(x);
     mouseY.set(y);
-    contentScale.set(1.03);
+    contentScale.set(1.02);
+    contentTranslateZ.set(60);
   };
 
   const handleMouseLeave = () => {
     mouseX.set(0);
     mouseY.set(0);
     contentScale.set(1);
+    contentTranslateZ.set(0);
   };
 
   return (
@@ -50,48 +53,58 @@ const GlassCard: React.FC<GlassCardProps> = ({ children, className = '' }) => {
       onMouseLeave={handleMouseLeave}
       style={{
         transformStyle: 'preserve-3d',
-        perspective: '1000px',
+        perspective: '1200px',
         rotateX,
         rotateY,
       }}
-      className={`relative bg-white/40 backdrop-blur-xl rounded-3xl border border-jet/10 shadow-2xl shadow-eerie-black/10 overflow-hidden ${className}`}
+      className={`relative bg-pearl/50 backdrop-blur-2xl rounded-3xl border border-silver/50 shadow-2xl shadow-eerie-black/10 transition-shadow duration-300 hover:shadow-eerie-black/20 ${className}`}
     >
-        {/* Fluid Glare Effect */}
-        <motion.div
+        {/* Subsurface Scattering Layer */}
+        <div 
             className="absolute inset-0 pointer-events-none"
             style={{
-                background: useMotionTemplate`radial-gradient(
-                    450px circle at ${glareX} ${glareY}, 
-                    rgba(36, 36, 35, 0.04), 
-                    transparent
-                )`,
-                opacity: useTransform(mouseYSpring, [-0.5, 0.5], [0.5, 1]),
+                background: 'radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.2), transparent 80%)',
+                opacity: 0.5,
             }}
         />
 
-        {/* Noisy texture for a frosted glass look, with parallax */}
+        {/* Dynamic Specular Highlight Layer */}
         <motion.div
-            className="absolute inset-0 pointer-events-none opacity-[0.03] mix-blend-soft-light"
+            className="absolute inset-0 pointer-events-none rounded-3xl overflow-hidden"
+            style={{
+                background: useMotionTemplate`radial-gradient(
+                    600px circle at ${glareX} ${glareY}, 
+                    rgba(255, 255, 255, 0.4), 
+                    transparent
+                )`,
+                opacity: useTransform(mouseYSpring, [-0.5, 0.5], [0.3, 1]),
+            }}
+        />
+
+        {/* Micro-roughness/Refraction Noise Layer */}
+        <motion.div
+            className="absolute inset-0 pointer-events-none opacity-[0.025] mix-blend-overlay"
             style={{
                 backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
                 backgroundPositionX: noiseX,
                 backgroundPositionY: noiseY,
+                backgroundSize: '200%',
             }}
         />
-
-        {/* Content with 3D lift and refractive scaling */}
+        
+        {/* Content with 3D lift */}
         <motion.div 
             style={{ 
-                transform: 'translateZ(40px)',
+                transform: useMotionTemplate`translateZ(${contentTranslateZ}px)`,
                 scale: contentScale,
             }}
-            className="transition-transform duration-200 ease-out"
+            className="transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
         >
             {children}
         </motion.div>
 
-         {/* Inner shadow for depth */}
-         <div className="absolute inset-0 rounded-3xl pointer-events-none shadow-[inset_0_0_20px_rgba(36,36,35,0.1)]" />
+         {/* Inner Rim-Shadow for thickness simulation */}
+         <div className="absolute inset-0 rounded-3xl pointer-events-none shadow-[inset_0_1px_4px_0_rgba(255,255,255,0.8),_inset_0_0_20px_rgba(232,235,239,0.8)]" />
 
     </motion.div>
   );

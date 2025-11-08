@@ -11,11 +11,12 @@
         theme: {
           extend: {
             colors: {
-              'platinum': '#cfdbd5',
-              'alabaster': '#e8eddf',
-              'saffron': '#f5cb5c',
-              'eerie-black': '#242423',
-              'jet': '#333533',
+              'mist': '#F7F9FB',      // Primary light background
+              'silver': '#E8EBEF',    // Borders, subtle UI elements
+              'pearl': '#FFFFFF',     // Glass background color
+              'saffron': '#f5cb5c',   // Accent
+              'eerie-black': '#242423', // Primary heading text
+              'jet': '#333533',       // Body text
             },
           },
         },
@@ -27,13 +28,15 @@
     <style>
       body {
         font-family: 'Inter', sans-serif;
+        font-optical-sizing: auto;
       }
       .liquid-glass {
-        background: rgba(255, 255, 255, 0.5); /* translucent white base */
-        -webkit-backdrop-filter: blur(16px) saturate(180%);
-        backdrop-filter: blur(16px) saturate(180%);
-        border: 1px solid rgba(51, 53, 51, 0.1); /* jet subtle border */
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); 
+        background: rgba(255, 255, 255, 0.5); /* Pearl base with higher translucency */
+        -webkit-backdrop-filter: blur(24px) saturate(150%);
+        backdrop-filter: blur(24px) saturate(150%);
+        border: 1px solid rgba(232, 235, 239, 0.5); /* Silver border */
+        /* Dual shadow system: soft ambient + inner rim */
+        box-shadow: 0 8px 32px 0 rgba(51, 53, 51, 0.1), inset 0 1px 1px 0 rgba(255, 255, 255, 0.6);
       }
     </style>
   <script type="importmap">
