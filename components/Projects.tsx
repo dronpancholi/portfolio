@@ -1,33 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence, Variants } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, Variants, useReducedMotion } from 'framer-motion';
 import GlassCard from './ui/GlassCard';
 import { PROJECTS_DATA } from '../constants';
 import { ArrowUpRight, X, ExternalLink, Github } from 'lucide-react';
 
-// Define the Project type for clarity and type safety
-// FIX: Changed from `[0]` to `[number]` to correctly type `Project` as a union of all possible project types.
 type Project = (typeof PROJECTS_DATA)[number];
-
-// Animation variants for the modal and its content
-const backdropVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.25, ease: 'easeOut' } },
-  exit: { opacity: 0, transition: { duration: 0.25, ease: 'easeOut' } },
-};
-
-const modalContentVariants: Variants = {
-  hidden: { opacity: 0, scale: 0.95 },
-  visible: { 
-    opacity: 1, 
-    scale: 1,
-    transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] }
-  },
-  exit: { 
-    opacity: 0, 
-    scale: 0.95,
-    transition: { duration: 0.3, ease: 'easeIn' }
-  },
-};
 
 const contentContainerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -35,9 +12,13 @@ const contentContainerVariants: Variants = {
     opacity: 1,
     transition: {
       staggerChildren: 0.07,
-      delayChildren: 0.2, // Delay to let layout animation start
+      delayChildren: 0.16,
     },
   },
+  exit: {
+      opacity: 0,
+      transition: { duration: 0.1 }
+  }
 };
 
 const contentItemVariants: Variants = {
@@ -45,13 +26,12 @@ const contentItemVariants: Variants = {
   visible: { 
     opacity: 1, 
     y: 0,
-    transition: { duration: 0.4, ease: 'easeOut' }
+    transition: { duration: 0.3, ease: 'easeOut' }
   },
 };
 
 
-const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => void }) => {
-  // Effect to handle closing the modal with the Escape key
+const ProjectModal = ({ project, onClose, transitionConfig }: { project: Project; onClose: () => void; transitionConfig: any }) => {
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -59,41 +39,60 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
       }
     };
     window.addEventListener('keydown', handleEsc);
-
     return () => {
       window.removeEventListener('keydown', handleEsc);
     };
   }, [onClose]);
 
   return (
-    <motion.div
-      variants={backdropVariants}
-      initial="hidden"
-      animate="visible"
-      exit="exit"
-      onClick={onClose}
-      className="fixed inset-0 bg-eerie-black/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
       aria-modal="true"
       role="dialog"
+      aria-labelledby={`modal-title-${project.title}`}
+      aria-describedby={`modal-desc-${project.title}`}
     >
       <motion.div
-        variants={modalContentVariants}
-        onClick={(e) => e.stopPropagation()}
-        className="relative max-w-3xl w-full"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3, ease: 'easeOut' }}
+        onClick={onClose}
+        className="absolute inset-0 bg-eerie-black/60"
+      />
+      
+      <motion.div
+        layoutId={`project-card-${project.title}`}
+        transition={transitionConfig}
+        className="relative max-w-3xl w-full z-10"
+        style={{ backfaceVisibility: 'hidden' }}
       >
-        <GlassCard>
-          <div className="p-8 md:p-12 relative">
-            <motion.div variants={contentContainerVariants} initial="hidden" animate="visible">
-              <motion.div variants={contentItemVariants} className="flex justify-between items-start mb-4">
-                <h3 className="text-2xl md:text-3xl font-bold text-eerie-black pr-4">{project.title}</h3>
-                <span className={`text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap self-start ${
-                  project.status === 'Coming Soon' ? 'bg-saffron/20 text-saffron animate-pulse' : 'bg-silver/60 text-jet'
-                }`}>
-                  {project.status}
-                </span>
-              </motion.div>
+        <GlassCard isStatic={true} className="!shadow-eerie-black/30">
+          <div className="p-8 md:p-12 relative max-h-[90vh] overflow-y-auto">
+            <motion.button
+              onClick={onClose}
+              className="absolute top-4 right-4 z-20 text-jet p-2 rounded-full hover:bg-silver transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-saffron"
+              aria-label="Close modal"
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1, transition: { delay: 0.3 } }}
+              exit={{ opacity: 0, scale: 0.5 }}
+            >
+              <X size={24} />
+            </motion.button>
+            
+            <motion.div variants={contentContainerVariants} initial="hidden" animate="visible" exit="exit">
+              <div className="flex justify-between items-start mb-4">
+                <motion.h3 layoutId={`project-title-${project.title}`} id={`modal-title-${project.title}`} className="text-2xl md:text-3xl font-bold text-eerie-black pr-12">{project.title}</motion.h3>
+                <motion.div variants={contentItemVariants}>
+                  <span className={`text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap self-start ${
+                    project.status === 'Coming Soon' ? 'bg-saffron/20 text-saffron animate-pulse' : 'bg-silver/60 text-jet'
+                  }`}>
+                    {project.status}
+                  </span>
+                </motion.div>
+              </div>
               
-              <motion.p variants={contentItemVariants} className="text-jet font-light text-base md:text-lg leading-relaxed mb-6">{project.longDescription}</motion.p>
+              <motion.p layoutId={`project-description-${project.title}`} id={`modal-desc-${project.title}`} className="text-jet font-light text-base md:text-lg leading-relaxed mb-6">{project.longDescription}</motion.p>
 
               <motion.div variants={contentItemVariants} className="mb-6">
                 <h4 className="text-lg font-semibold text-eerie-black mb-3">Key Features</h4>
@@ -123,22 +122,11 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
                   </a>
                 )}
               </motion.div>
-              
-              <motion.div variants={contentItemVariants} className="flex justify-end mt-8">
-                <button
-                  onClick={onClose}
-                  className="px-6 py-2 bg-silver/60 text-jet font-semibold rounded-lg hover:bg-silver transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-saffron"
-                  aria-label="Close modal"
-                >
-                  Close
-                </button>
-              </motion.div>
-
             </motion.div>
           </div>
         </GlassCard>
       </motion.div>
-    </motion.div>
+    </div>
   );
 };
 
@@ -166,6 +154,8 @@ const projectCardVariants: Variants = {
 
 const Projects: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const originRef = useRef<HTMLButtonElement | HTMLDivElement | null>(null);
+  const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
     if (selectedProject) {
@@ -177,6 +167,15 @@ const Projects: React.FC = () => {
       document.body.style.overflow = 'auto';
     };
   }, [selectedProject]);
+
+  const handleClose = () => {
+    setSelectedProject(null);
+    originRef.current?.focus();
+  }
+  
+  const springTransition = { type: 'spring', stiffness: 350, damping: 30 };
+  const reducedTransition = { duration: 0.3, ease: 'easeOut' };
+  const transitionConfig = shouldReduceMotion ? reducedTransition : springTransition;
 
 
   return (
@@ -190,10 +189,11 @@ const Projects: React.FC = () => {
       >
         Current & Upcoming Projects
       </motion.h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ${selectedProject ? 'pointer-events-none' : ''}`}>
         {PROJECTS_DATA.map((project, index) => (
           <motion.div
             key={project.title}
+            layoutId={`project-card-${project.title}`}
             custom={index}
             variants={projectCardVariants}
             initial="offscreen"
@@ -201,14 +201,18 @@ const Projects: React.FC = () => {
             whileHover="hover"
             viewport={{ once: true, amount: 0.3 }}
             whileTap={{ y: -2, scale: 0.99 }}
-            onClick={() => setSelectedProject(project)}
+            onClick={(e) => {
+              originRef.current = e.currentTarget;
+              setSelectedProject(project);
+            }}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
+                originRef.current = e.currentTarget;
                 setSelectedProject(project);
               }
             }}
-            className="cursor-pointer"
+            className="cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-saffron rounded-3xl"
             role="button"
             tabIndex={0}
             aria-label={`Learn more about ${project.title}`}
@@ -217,14 +221,14 @@ const Projects: React.FC = () => {
               <div className="p-8 flex flex-col h-full">
                 <div className="flex-grow">
                   <div className="flex justify-between items-start mb-4">
-                    <h3 className="text-xl font-bold text-eerie-black">{project.title}</h3>
+                    <motion.h3 layoutId={`project-title-${project.title}`} className="text-xl font-bold text-eerie-black">{project.title}</motion.h3>
                     <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
                       project.status === 'Coming Soon' ? 'bg-saffron/20 text-saffron animate-pulse' : 'bg-silver/60 text-jet'
                     }`}>
                       {project.status}
                     </span>
                   </div>
-                  <p className="text-jet font-light mb-4">{project.description}</p>
+                  <motion.p layoutId={`project-description-${project.title}`} className="text-jet font-light mb-4">{project.description}</motion.p>
                 </div>
                 
                 <div className="mt-auto pt-4">
@@ -243,7 +247,7 @@ const Projects: React.FC = () => {
 
       <AnimatePresence>
         {selectedProject && (
-          <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
+          <ProjectModal project={selectedProject} onClose={handleClose} transitionConfig={transitionConfig} />
         )}
       </AnimatePresence>
     </section>
