@@ -84,7 +84,7 @@ const Skills: React.FC = () => {
                       <h3 className="text-xl font-bold text-eerie-black">{category.title}</h3>
                     </div>
                     <ul className="flex flex-wrap gap-2">
-                      {/* FIX: Spreading `category.skills` into a new array helps TypeScript correctly infer the type of `skill` as a string. This resolves an issue where mapping directly over a `readonly` array union (from `as const`) could lead to type inference errors. */}
+                      {/* FIX: Spreading `category.skills` into a new array resolves a TypeScript inference error when mapping over a `readonly` array created with 'as const'. */}
                       {[...category.skills].map((skill) => (
                         <li
                           key={skill}

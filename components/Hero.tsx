@@ -1,4 +1,3 @@
-
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useTransform, useScroll, useSpring } from 'framer-motion';
 
@@ -32,8 +31,8 @@ const InteractivePortrait: React.FC = () => {
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
     >
       <img
-        src="https://picsum.photos/seed/real-face/300/300?grayscale"
-        alt="Dron Pancholi - Real"
+        src="https://i.ibb.co/N7z2TzN/dron-pancholi-profile.jpg"
+        alt="Dron Pancholi"
         className="absolute inset-0 w-full h-full object-cover"
       />
       <motion.div
@@ -41,9 +40,9 @@ const InteractivePortrait: React.FC = () => {
         style={{ clipPath: clipPathValue }}
       >
         <img
-          src="https://picsum.photos/seed/ai-face/300/300"
-          alt="Dron Pancholi - AI"
-          className="absolute inset-0 w-full h-full object-cover"
+          src="https://i.ibb.co/N7z2TzN/dron-pancholi-profile.jpg"
+          alt="Dron Pancholi - AI Version"
+          className="absolute inset-0 w-full h-full object-cover filter hue-rotate-180 brightness-110"
         />
       </motion.div>
     </motion.div>
