@@ -58,8 +58,8 @@ const Contact: React.FC = () => {
         transition={{ duration: 0.5, delay: 0.3 }}
         className="flex items-center justify-center space-x-4"
       >
-        {/* FIX: Spreading the readonly `SOCIAL_LINKS.profiles` tuple into a new array to resolve a TypeScript type inference issue. */}
-        {[...SOCIAL_LINKS.profiles].map((profile, i) => {
+        {/* FIX: The `as const` assertion on SOCIAL_LINKS in `constants.ts` makes `profiles` a readonly tuple. It can be mapped over directly without spreading. */}
+        {SOCIAL_LINKS.profiles.map((profile, i) => {
           const Icon = icons[profile.name];
           return (
             // Using the index as the key is safe for this static, unchanging list.

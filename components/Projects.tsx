@@ -15,20 +15,6 @@ const backdropVariants: Variants = {
   exit: { opacity: 0, transition: { duration: 0.25, ease: 'easeOut' } },
 };
 
-const modalContentVariants: Variants = {
-  hidden: { opacity: 0, scale: 0.95 },
-  visible: { 
-    opacity: 1, 
-    scale: 1,
-    transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] }
-  },
-  exit: { 
-    opacity: 0, 
-    scale: 0.95,
-    transition: { duration: 0.3, ease: 'easeIn' }
-  },
-};
-
 const contentContainerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -77,9 +63,11 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
       role="dialog"
     >
       <motion.div
-        variants={modalContentVariants}
+        layoutId={`project-card-${project.title}`}
         onClick={(e) => e.stopPropagation()}
         className="relative max-w-3xl w-full"
+        // The transition for the shared layout animation is defined here for a smooth, custom feel.
+        transition={{ duration: 0.6, ease: [0.22, 0.61, 0.36, 1] }}
       >
         <GlassCard>
           <div className="p-8 md:p-12 relative">
@@ -194,6 +182,7 @@ const Projects: React.FC = () => {
         {PROJECTS_DATA.map((project, index) => (
           <motion.div
             key={project.title}
+            layoutId={`project-card-${project.title}`}
             custom={index}
             variants={projectCardVariants}
             initial="offscreen"
