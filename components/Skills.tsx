@@ -39,7 +39,7 @@ const Skills: React.FC = () => {
   };
 
   return (
-    <section id="skills" className="py-16 md:py-24">
+    <section id="skills" className="py-16 md:py-24 scroll-mt-24">
       <motion.h2 
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -84,8 +84,8 @@ const Skills: React.FC = () => {
                       <h3 className="text-xl font-bold text-eerie-black">{category.title}</h3>
                     </div>
                     <ul className="flex flex-wrap gap-2">
-                      {/* FIX: Using .map directly on a readonly array is the correct way to render a list in React and avoids potential TypeScript errors with spread syntax in JSX. */}
-                      {category.skills.map((skill) => (
+                      {/* FIX: Create a mutable copy of the readonly array before mapping. This resolves a TypeScript type inference issue with readonly arrays from 'as const' in JSX. */}
+                      {[...category.skills].map((skill) => (
                         <li
                           key={skill}
                           className="bg-silver/60 text-jet text-sm font-medium px-3 py-1 rounded-full"

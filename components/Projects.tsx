@@ -88,7 +88,7 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
       >
         <GlassCard>
           <div className="p-8 md:p-12 relative">
-            <button onClick={onClose} className="absolute top-4 right-4 text-jet hover:text-saffron transition-colors z-10" aria-label="Close modal">
+            <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-full text-jet hover:text-saffron hover:bg-silver transition-colors z-10" aria-label="Close modal">
               <X size={24} />
             </button>
 
@@ -166,7 +166,7 @@ const Projects: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   return (
-    <section id="projects" className="py-16 md:py-24">
+    <section id="projects" className="py-16 md:py-24 scroll-mt-24">
       <motion.h2 
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -205,7 +205,7 @@ const Projects: React.FC = () => {
                 <div className="mt-auto pt-4">
                   <button 
                     onClick={() => setSelectedProject(project)}
-                    className="flex items-center text-sm font-semibold text-jet hover:text-saffron transition-colors group"
+                    className="inline-flex items-center text-sm font-semibold text-jet hover:text-saffron transition-colors group -ml-2 p-2 rounded-md"
                     aria-label={`Learn more about ${project.title}`}
                   >
                     Learn More <ArrowUpRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />

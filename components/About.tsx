@@ -4,7 +4,7 @@ import GlassCard from './ui/GlassCard';
 
 const About: React.FC = () => {
   return (
-    <section id="about" className="py-16 md:py-24">
+    <section id="about" className="py-16 md:py-24 scroll-mt-24">
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}

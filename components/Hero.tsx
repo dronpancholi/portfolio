@@ -85,7 +85,7 @@ const Hero: React.FC = () => {
   return (
     <motion.section 
       id="home" 
-      className="min-h-[80vh] flex flex-col items-center justify-center text-center py-20 md:py-32"
+      className="min-h-[75vh] md:min-h-[80vh] flex flex-col items-center justify-center text-center py-24 sm:py-28 md:py-32 scroll-mt-24"
       style={{ y, opacity }}
     >
       <motion.div 
@@ -121,7 +121,7 @@ const Hero: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="max-w-2xl text-lg md:text-xl text-jet font-light mx-auto"
+            className="max-w-2xl text-base sm:text-lg md:text-xl text-jet font-light mx-auto"
             // FIX: Corrected typo from 'preserve-d' to 'preserve-3d' for the transformStyle property.
             style={{ transform: 'translateZ(25px)', transformStyle: 'preserve-3d' }}
           >

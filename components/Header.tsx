@@ -63,7 +63,7 @@ const Header: React.FC = () => {
             <div className="md:hidden z-50">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="text-jet p-1"
+                className="text-jet p-2"
                 aria-label="Toggle Menu"
               >
                 {isMenuOpen ? <X size={24} /> : <Menu size={24} />}

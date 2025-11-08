@@ -15,7 +15,7 @@ type SocialProfile = (typeof SOCIAL_LINKS.profiles)[number];
 
 const Contact: React.FC = () => {
   return (
-    <section id="contact" className="py-16 md:py-24 text-center">
+    <section id="contact" className="py-16 md:py-24 text-center scroll-mt-24">
       <motion.h2 
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -56,15 +56,15 @@ const Contact: React.FC = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.5 }}
         transition={{ duration: 0.5, delay: 0.3 }}
-        className="flex items-center justify-center space-x-6"
+        className="flex items-center justify-center space-x-4"
       >
-        {/* FIX: Using .map directly on a readonly array is the correct way to render a list in React and avoids potential TypeScript errors with spread syntax in JSX. */}
-        {SOCIAL_LINKS.profiles.map((profile, i) => {
+        {/* FIX: Create a mutable copy of the readonly array before mapping. This resolves a TypeScript type inference issue with readonly arrays from 'as const' in JSX. */}
+        {[...SOCIAL_LINKS.profiles].map((profile, i) => {
           const Icon = icons[profile.name];
           return (
             // Using the index as the key is safe for this static, unchanging list.
-            <a key={i} href={profile.url} target="_blank" rel="noopener noreferrer" className="text-jet hover:text-saffron transition-colors duration-200">
-              <Icon className="w-7 h-7" />
+            <a key={i} href={profile.url} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full text-jet hover:text-saffron hover:bg-silver transition-colors duration-200">
+              <Icon className="w-8 h-8" />
               <span className="sr-only">{profile.name}</span>
             </a>
           );
