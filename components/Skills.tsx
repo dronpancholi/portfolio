@@ -84,8 +84,8 @@ const Skills: React.FC = () => {
                       <h3 className="text-xl font-bold text-eerie-black">{category.title}</h3>
                     </div>
                     <ul className="flex flex-wrap gap-2">
-                      {/* FIX: The `as const` assertion on SKILLS_DATA in `constants.ts` can cause type inference issues in some environments. Casting to a mutable `string[]` before mapping resolves the error. */}
-                      {(category.skills as string[]).map((skill) => (
+                      {/* FIX: `category.skills` is a readonly array due to `as const` in constants.ts. Spreading it into a new array `[...category.skills]` creates a mutable copy that can be safely mapped over, resolving the type error. */}
+                      {[...category.skills].map((skill) => (
                         <li
                           key={skill}
                           className="bg-silver/60 text-jet text-sm font-medium px-3 py-1 rounded-full"

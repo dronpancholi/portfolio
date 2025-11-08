@@ -15,10 +15,7 @@ const contentContainerVariants: Variants = {
       delayChildren: 0.16,
     },
   },
-  exit: {
-      opacity: 0,
-      transition: { duration: 0.1 }
-  }
+  // The exit property is removed to prevent it from interfering with the parent's layout animation.
 };
 
 const contentItemVariants: Variants = {
@@ -28,6 +25,11 @@ const contentItemVariants: Variants = {
     y: 0,
     transition: { duration: 0.3, ease: 'easeOut' }
   },
+  // An exit animation is added to gracefully fade out modal-only content.
+  exit: {
+    opacity: 0,
+    transition: { duration: 0.15 }
+  }
 };
 
 
