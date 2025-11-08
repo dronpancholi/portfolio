@@ -36,6 +36,8 @@ const App: React.FC = () => {
         const htmlEl = el as HTMLElement;
         htmlEl.style.setProperty("--mx", `${x}px`);
         htmlEl.style.setProperty("--my", `${y}px`);
+        htmlEl.style.setProperty("--ripple-x", `${x}px`);
+        htmlEl.style.setProperty("--ripple-y", `${y}px`);
 
         // Smooth 3D tilt angles
         const rx = (y - rect.height / 2) / 26;
@@ -44,11 +46,19 @@ const App: React.FC = () => {
         htmlEl.style.setProperty("--ry", `${ry}deg`);
       });
     };
+    
+    const handleScroll = () => {
+      const refractionIntensity = window.scrollY * 0.06; // adjust strength here
+      document.documentElement.style.setProperty("--scroll-shift", `${refractionIntensity}px`);
+    };
 
     document.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("scroll", handleScroll);
+
 
     return () => {
       document.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 

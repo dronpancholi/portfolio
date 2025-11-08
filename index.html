@@ -49,6 +49,9 @@
           0 8px 26px rgba(0,0,0,0.16),
           inset 0 0.5px 1px rgba(255,255,255,0.65),
           inset 0 -0.5px 1px rgba(0,0,0,0.12);
+        --scroll-shift: 0px; /* dynamic refraction offset */
+        --ripple-x: 50%;
+        --ripple-y: 50%;
       }
 
       /* Frost depth layer */
@@ -71,15 +74,16 @@
         content: "";
         position: absolute;
         inset: 0;
+        pointer-events: none;
         background: radial-gradient(
-          circle at var(--mx, 50%) var(--my, 50%),
-          rgba(255,255,255,0.55),
-          rgba(255,255,255,0.12) 28%,
-          transparent 70%
+            circle at calc(var(--mx, 50%) + var(--scroll-shift)) 
+                       calc(var(--my, 50%) + var(--scroll-shift)),
+            rgba(255, 255, 255, 0.55),
+            rgba(255, 255, 255, 0.12) 28%,
+            transparent 70%
         );
         opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.35s ease;
+        transition: opacity 0.35s ease, transform 0.45s ease;
       }
 
       .liquid-glass:hover::after {
@@ -90,6 +94,31 @@
       .liquid-glass:hover {
         transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(6px);
       }
+      
+      .liquid-glass::before,
+      .liquid-glass::after,
+      .liquid-glass > .ripple-overlay {
+        will-change: transform, opacity;
+      }
+
+      /* Liquid Ripple + Tension Layer */
+      .liquid-glass > .ripple-overlay {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: radial-gradient(
+          circle at var(--ripple-x) var(--ripple-y),
+          rgba(255, 255, 255, 0.12),
+          rgba(255, 255, 255, 0.03) 35%,
+          transparent 72%
+        );
+        mix-blend-mode: screen;
+        opacity: 0.28;
+        transition:
+          opacity 0.4s ease,
+          transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+      }
+
 
       /* ================ HEADER VERSION (STRONGER REFRACTION) ================ */
       header.liquid-glass {
@@ -97,6 +126,7 @@
         backdrop-filter: blur(34px) saturate(190%) brightness(1.10);
         -webkit-backdrop-filter: blur(34px) saturate(190%) brightness(1.10);
         border-radius: 0 0 24px 24px;
+        --scroll-shift: calc(var(--scroll-shift) * 1.4); /* header bends more */
       }
     </style>
   <script type="importmap">
