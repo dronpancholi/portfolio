@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import GlassCard from './ui/GlassCard';
@@ -141,6 +140,41 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
   );
 };
 
+
+const projectCardVariants: Variants = {
+  offscreen: {
+    opacity: 0,
+    y: 50,
+  },
+  onscreen: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.1,
+      duration: 0.5,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  }),
+  hover: {
+    y: -8,
+    scale: 1.03,
+    transition: { type: 'spring', stiffness: 300, damping: 15 },
+  },
+};
+
+const learnMoreVariants: Variants = {
+  onscreen: {
+    opacity: 0,
+    y: 10,
+    transition: { duration: 0.2, ease: 'easeOut' },
+  },
+  hover: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.3, ease: 'easeOut' },
+  },
+};
+
 const Projects: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
@@ -159,12 +193,13 @@ const Projects: React.FC = () => {
         {PROJECTS_DATA.map((project, index) => (
           <motion.div
             key={index}
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            custom={index}
+            variants={projectCardVariants}
+            initial="offscreen"
+            whileInView="onscreen"
+            whileHover="hover"
             viewport={{ once: true, amount: 0.3 }}
-            whileHover={{ y: -8, scale: 1.03 }}
             whileTap={{ y: -2, scale: 0.99 }}
-            transition={{ duration: 0.5, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
           >
             <GlassCard className="h-full group hover:!shadow-[0_8px_30px_rgba(36,36,35,0.2),_0_0_20px_rgba(245,203,92,0.4)]">
               <div className="p-8 flex flex-col h-full">
@@ -180,7 +215,10 @@ const Projects: React.FC = () => {
                   <p className="text-jet font-light mb-4">{project.description}</p>
                 </div>
                 
-                <div className="mt-auto pt-4">
+                <motion.div 
+                  variants={learnMoreVariants}
+                  className="mt-auto pt-4"
+                >
                   <button 
                     onClick={() => setSelectedProject(project)}
                     className="flex items-center text-sm font-semibold text-jet hover:text-saffron transition-colors group"
@@ -188,7 +226,7 @@ const Projects: React.FC = () => {
                   >
                     Learn More <ArrowUpRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                   </button>
-                </div>
+                </motion.div>
               </div>
             </GlassCard>
           </motion.div>

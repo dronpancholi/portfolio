@@ -58,10 +58,8 @@ const Contact: React.FC = () => {
         transition={{ duration: 0.5, delay: 0.3 }}
         className="flex items-center justify-center space-x-6"
       >
-        {// FIX: By spreading `SOCIAL_LINKS.profiles`, we create a new array that TypeScript
-         // can easily infer types from, resolving potential issues when mapping directly
-         // over an array defined with `as const`.
-        [...SOCIAL_LINKS.profiles].map((profile, i) => {
+        {/* FIX: Spreading `SOCIAL_LINKS.profiles` into a new array resolves a TypeScript inference issue. When mapping directly over an array defined with `as const`, TypeScript can sometimes struggle with the resulting union type. Creating a new array simplifies the type for the `map` function. */}
+        {[...SOCIAL_LINKS.profiles].map((profile, i) => {
           const Icon = icons[profile.name];
           return (
             // Using the index as the key is safe for this static, unchanging list.
