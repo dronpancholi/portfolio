@@ -84,8 +84,8 @@ const Skills: React.FC = () => {
                       <h3 className="text-xl font-bold text-eerie-black">{category.title}</h3>
                     </div>
                     <ul className="flex flex-wrap gap-2">
-                      {/* Fix: Create a mutable copy of the readonly 'skills' array before mapping to prevent TypeScript type errors. */}
-                      {[...category.skills].map((skill) => (
+                      {/* FIX: Removed the unnecessary spread operator `...` which was causing a TypeScript error. Mapping directly over the readonly `skills` array is safe and correct. */}
+                      {category.skills.map((skill) => (
                         <li
                           key={skill}
                           className="bg-silver/60 text-jet text-sm font-medium px-3 py-1 rounded-full"

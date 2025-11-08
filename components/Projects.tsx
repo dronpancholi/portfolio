@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, Variants, useReducedMotion } from 'framer-motion';
 import GlassCard from './ui/GlassCard';
@@ -15,7 +16,6 @@ const contentContainerVariants: Variants = {
       delayChildren: 0.16,
     },
   },
-  // The exit property is removed to prevent it from interfering with the parent's layout animation.
 };
 
 const contentItemVariants: Variants = {
@@ -25,7 +25,6 @@ const contentItemVariants: Variants = {
     y: 0,
     transition: { duration: 0.3, ease: 'easeOut' }
   },
-  // An exit animation is added to gracefully fade out modal-only content.
   exit: {
     opacity: 0,
     transition: { duration: 0.15 }
@@ -48,7 +47,7 @@ const ProjectModal = ({ project, onClose, transitionConfig }: { project: Project
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 pointer-events-auto"
       aria-modal="true"
       role="dialog"
       aria-labelledby={`modal-title-${project.title}`}
@@ -58,15 +57,14 @@ const ProjectModal = ({ project, onClose, transitionConfig }: { project: Project
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
+        transition={{ duration: 0.28 }}
         onClick={onClose}
-        className="absolute inset-0 bg-eerie-black/60"
+        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
       />
       
       <GlassCard
         layoutId={`project-card-${project.title}`}
         transition={transitionConfig}
-        isStatic={true}
         className="max-w-3xl w-full z-10"
         style={{ backfaceVisibility: 'hidden' }}
       >
@@ -82,7 +80,7 @@ const ProjectModal = ({ project, onClose, transitionConfig }: { project: Project
             <X size={24} />
           </motion.button>
           
-          <motion.div variants={contentContainerVariants} initial="hidden" animate="visible" exit="exit">
+          <motion.div variants={contentContainerVariants} initial="hidden" animate="visible">
             <div className="flex justify-between items-start mb-4">
               <motion.h3 layoutId={`project-title-${project.title}`} id={`modal-title-${project.title}`} className="text-2xl md:text-3xl font-bold text-eerie-black pr-12">{project.title}</motion.h3>
               <motion.div variants={contentItemVariants}>
@@ -174,7 +172,7 @@ const Projects: React.FC = () => {
     originRef.current?.focus();
   }
   
-  const springTransition = { type: 'spring', stiffness: 350, damping: 30 };
+  const springTransition = { type: 'spring', stiffness: 320, damping: 34, mass: 0.7 };
   const reducedTransition = { duration: 0.3, ease: 'easeOut' };
   const transitionConfig = shouldReduceMotion ? reducedTransition : springTransition;
 
@@ -248,7 +246,7 @@ const Projects: React.FC = () => {
         ))}
       </div>
 
-      <AnimatePresence>
+      <AnimatePresence mode="popLayout">
         {selectedProject && (
           <ProjectModal project={selectedProject} onClose={handleClose} transitionConfig={transitionConfig} />
         )}

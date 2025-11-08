@@ -58,8 +58,8 @@ const Contact: React.FC = () => {
         transition={{ duration: 0.5, delay: 0.3 }}
         className="flex items-center justify-center space-x-4"
       >
-        {/* Fix: Create a mutable copy of the readonly 'profiles' array before mapping to avoid TypeScript type errors. */}
-        {[...SOCIAL_LINKS.profiles].map((profile, i) => {
+        {/* FIX: Removed the unnecessary spread operator `...` which was causing a TypeScript error. Mapping directly over the readonly `profiles` array is safe and correct. */}
+        {SOCIAL_LINKS.profiles.map((profile, i) => {
           const Icon = icons[profile.name];
           return (
             // Using the index as the key is safe for this static, unchanging list.
