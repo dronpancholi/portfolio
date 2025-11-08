@@ -14,19 +14,21 @@ const backdropVariants: Variants = {
   visible: { opacity: 1, transition: { duration: 0.3 } },
 };
 
+// REFINED: Removed vertical motion (y-axis) for a cleaner zoom-in/fade-out effect.
 const modalVariants: Variants = {
-  hidden: { scale: 0.95, opacity: 0, y: 40 },
+  // The initial state before the modal enters. It's slightly smaller and fully transparent.
+  hidden: { scale: 0.95, opacity: 0 },
+  // The visible state. The modal scales up to its normal size and becomes fully opaque.
   visible: { 
     scale: 1, 
     opacity: 1, 
-    y: 0,
     // FIX: Add `as const` to ensure the array is typed as a tuple, which is required by framer-motion's `ease` property.
     transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] as const }
   },
+  // The exit state. The modal shrinks slightly and fades out.
   exit: { 
     scale: 0.95, 
     opacity: 0, 
-    y: 40,
     // FIX: Add `as const` to ensure the array is typed as a tuple, which is required by framer-motion's `ease` property.
     transition: { duration: 0.3, ease: [0.36, 0, 0.66, -0.56] as const } // easeInBack
   }
@@ -99,7 +101,7 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
                 </span>
               </motion.div>
               
-              <motion.p variants={contentItemVariants} className="text-jet font-light text-base md:text-lg leading-relaxed mb-6">{project.longDescription}</motion.p>
+              <motion.p variants={contentItemVariants} className="text-jet font-light text-base md:text-lg leading-relaxed mb-6">{project.longDescription}</p>
 
               <motion.div variants={contentItemVariants} className="mb-6">
                 <h4 className="text-lg font-semibold text-eerie-black mb-3">Key Features</h4>
