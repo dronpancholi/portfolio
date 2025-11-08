@@ -11,41 +11,23 @@ type Project = (typeof PROJECTS_DATA)[number];
 // Animation variants for the modal and its content
 const backdropVariants: Variants = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.3 } },
-};
-
-// REFINED: Removed vertical motion (y-axis) for a cleaner zoom-in/fade-out effect.
-const modalVariants: Variants = {
-  // The initial state before the modal enters. It's slightly smaller and fully transparent.
-  hidden: { scale: 0.95, opacity: 0 },
-  // The visible state. The modal scales up to its normal size and becomes fully opaque.
-  visible: { 
-    scale: 1, 
-    opacity: 1, 
-    // FIX: Add `as const` to ensure the array is typed as a tuple, which is required by framer-motion's `ease` property.
-    transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] as const }
-  },
-  // The exit state. The modal shrinks slightly and fades out.
-  exit: { 
-    scale: 0.95, 
-    opacity: 0, 
-    // FIX: Add `as const` to ensure the array is typed as a tuple, which is required by framer-motion's `ease` property.
-    transition: { duration: 0.3, ease: [0.36, 0, 0.66, -0.56] as const } // easeInBack
-  }
+  visible: { opacity: 1, transition: { duration: 0.25, ease: 'easeOut' } },
+  exit: { opacity: 0, transition: { duration: 0.25, ease: 'easeOut' } },
 };
 
 const contentContainerVariants: Variants = {
-  hidden: {},
+  hidden: { opacity: 0 },
   visible: {
+    opacity: 1,
     transition: {
       staggerChildren: 0.07,
-      delayChildren: 0.1,
+      delayChildren: 0.2, // Delay to let layout animation start
     },
   },
 };
 
 const contentItemVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 12 },
   visible: { 
     opacity: 1, 
     y: 0,
@@ -74,20 +56,18 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
       variants={backdropVariants}
       initial="hidden"
       animate="visible"
-      exit="hidden"
+      exit="exit"
       onClick={onClose}
-      className="fixed inset-0 bg-eerie-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+      className="fixed inset-0 bg-eerie-black/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
       aria-modal="true"
       role="dialog"
     >
       <motion.div
         layoutId={`project-card-${project.title}`}
-        variants={modalVariants}
-        initial="hidden"
-        animate="visible"
-        exit="exit"
         onClick={(e) => e.stopPropagation()}
         className="relative max-w-3xl w-full"
+        // The transition for the shared layout animation is defined here for a smooth, custom feel.
+        transition={{ duration: 0.6, ease: [0.22, 0.61, 0.36, 1] }}
       >
         <GlassCard>
           <div className="p-8 md:p-12 relative">
@@ -95,13 +75,13 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
               <motion.div variants={contentItemVariants} className="flex justify-between items-start mb-4">
                 <h3 className="text-2xl md:text-3xl font-bold text-eerie-black pr-4">{project.title}</h3>
                 <span className={`text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap self-start ${
-                  project.status === 'Coming Soon' ? 'bg-saffron/20 text-saffron' : 'bg-silver/60 text-jet'
+                  project.status === 'Coming Soon' ? 'bg-saffron/20 text-saffron animate-pulse' : 'bg-silver/60 text-jet'
                 }`}>
                   {project.status}
                 </span>
               </motion.div>
               
-              <motion.p variants={contentItemVariants} className="text-jet font-light text-base md:text-lg leading-relaxed mb-6">{project.longDescription}</p>
+              <motion.p variants={contentItemVariants} className="text-jet font-light text-base md:text-lg leading-relaxed mb-6">{project.longDescription}</motion.p>
 
               <motion.div variants={contentItemVariants} className="mb-6">
                 <h4 className="text-lg font-semibold text-eerie-black mb-3">Key Features</h4>
@@ -228,7 +208,7 @@ const Projects: React.FC = () => {
                   <div className="flex justify-between items-start mb-4">
                     <h3 className="text-xl font-bold text-eerie-black">{project.title}</h3>
                     <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
-                      project.status === 'Coming Soon' ? 'bg-saffron/20 text-saffron' : 'bg-silver/60 text-jet'
+                      project.status === 'Coming Soon' ? 'bg-saffron/20 text-saffron animate-pulse' : 'bg-silver/60 text-jet'
                     }`}>
                       {project.status}
                     </span>

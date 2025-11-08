@@ -84,7 +84,7 @@ const Skills: React.FC = () => {
                       <h3 className="text-xl font-bold text-eerie-black">{category.title}</h3>
                     </div>
                     <ul className="flex flex-wrap gap-2">
-                      {/* FIX: The `as const` assertion on SKILLS_DATA in `constants.ts` makes `category.skills` a readonly tuple. Spreading it was causing a type error, so it was removed. Mapping directly on the readonly tuple is supported. */}
+                      {/* FIX: The `as const` assertion on SKILLS_DATA in `constants.ts` makes `category.skills` a readonly tuple. It can be mapped over directly without spreading. */}
                       {category.skills.map((skill) => (
                         <li
                           key={skill}
