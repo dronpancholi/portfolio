@@ -7,7 +7,7 @@ const Footer: React.FC = () => {
   return (
     <footer className="py-8 text-center">
       <div className="container mx-auto px-6">
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-platinum">
           Designed & Built by Dron Pancholi — {currentYear}
         </p>
       </div>
@@ -16,4 +16,3 @@ const Footer: React.FC = () => {
 };
 
 export default Footer;
-   

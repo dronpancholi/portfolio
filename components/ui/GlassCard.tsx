@@ -16,13 +16,15 @@ const GlassCard: React.FC<GlassCardProps> = ({ children, className = '' }) => {
   const mouseXSpring = useSpring(mouseX, springConfig);
   const mouseYSpring = useSpring(mouseY, springConfig);
 
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['6deg', '-6deg']);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-6deg', '6deg']);
-  
-  const glareX = useTransform(mouseXSpring, [-0.5, 0.5], ['100%', '0%']);
-  const glareY = useTransform(mouseYSpring, [-0.5, 0.5], ['100%', '0%']);
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['4deg', '-4deg']);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-4deg', '4deg']);
 
-  // Spring for subtle content magnification on hover to simulate refraction
+  const glareX = useTransform(mouseXSpring, [-0.5, 0.5], ['120%', '-20%']);
+  const glareY = useTransform(mouseYSpring, [-0.5, 0.5], ['120%', '-20%']);
+  
+  const noiseX = useTransform(mouseXSpring, [-0.5, 0.5], [-20, 20]);
+  const noiseY = useTransform(mouseYSpring, [-0.5, 0.5], [-20, 20]);
+
   const contentScale = useSpring(1, { stiffness: 200, damping: 25 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -32,7 +34,7 @@ const GlassCard: React.FC<GlassCardProps> = ({ children, className = '' }) => {
     const y = (e.clientY - top - height / 2) / (height / 2);
     mouseX.set(x);
     mouseY.set(y);
-    contentScale.set(1.02);
+    contentScale.set(1.03);
   };
 
   const handleMouseLeave = () => {
@@ -48,35 +50,49 @@ const GlassCard: React.FC<GlassCardProps> = ({ children, className = '' }) => {
       onMouseLeave={handleMouseLeave}
       style={{
         transformStyle: 'preserve-3d',
-        perspective: '800px', // Add perspective for a better 3D effect
+        perspective: '1000px',
         rotateX,
         rotateY,
       }}
-      className={`relative liquid-glass rounded-3xl shadow-xl shadow-black/5 ${className}`}
+      className={`relative bg-jet/10 backdrop-blur-xl rounded-3xl border border-platinum/10 shadow-2xl shadow-eerie-black/30 overflow-hidden ${className}`}
     >
-      {/* Dynamic light hotspot / glare effect */}
-       <motion.div
-        className="absolute top-0 left-0 w-full h-full rounded-3xl pointer-events-none overflow-hidden"
-        style={{
-          background: useMotionTemplate`radial-gradient(
-            circle 400px at ${glareX} ${glareY}, 
-            rgba(255, 255, 255, 0.15), 
-            transparent
-          )`,
-          mixBlendMode: 'plus-lighter', // A great blend mode for light effects
-          opacity: useTransform(mouseYSpring, [-0.5, 0.5], [0.4, 1]), // Fade in/out based on position
-        }}
-       />
-      {/* Content with 3D lift and refractive scaling */}
-      <motion.div 
-        style={{ 
-          transform: 'translateZ(20px)',
-          scale: contentScale
-        }}
-        className="transition-transform duration-200 ease-out"
-      >
-        {children}
-      </motion.div>
+        {/* Fluid Glare Effect */}
+        <motion.div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+                background: useMotionTemplate`radial-gradient(
+                    450px circle at ${glareX} ${glareY}, 
+                    rgba(232, 237, 223, 0.08), 
+                    transparent
+                )`,
+                opacity: useTransform(mouseYSpring, [-0.5, 0.5], [0.5, 1]),
+            }}
+        />
+
+        {/* Noisy texture for a frosted glass look, with parallax */}
+        <motion.div
+            className="absolute inset-0 pointer-events-none opacity-[0.03] mix-blend-soft-light"
+            style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+                backgroundPositionX: noiseX,
+                backgroundPositionY: noiseY,
+            }}
+        />
+
+        {/* Content with 3D lift and refractive scaling */}
+        <motion.div 
+            style={{ 
+                transform: 'translateZ(40px)',
+                scale: contentScale,
+            }}
+            className="transition-transform duration-200 ease-out"
+        >
+            {children}
+        </motion.div>
+
+         {/* Inner shadow for depth */}
+         <div className="absolute inset-0 rounded-3xl pointer-events-none shadow-[inset_0_0_20px_rgba(36,36,35,0.5)]" />
+
     </motion.div>
   );
 };

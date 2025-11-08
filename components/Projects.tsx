@@ -13,7 +13,7 @@ const Projects: React.FC = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.5 }}
         transition={{ duration: 0.5 }}
-        className="text-3xl md:text-4xl font-bold text-gray-900 mb-12 text-center tracking-tight"
+        className="text-3xl md:text-4xl font-bold text-alabaster mb-12 text-center tracking-tight"
       >
         Current & Upcoming Projects
       </motion.h2>
@@ -30,17 +30,17 @@ const Projects: React.FC = () => {
               <div className="p-8 flex flex-col h-full">
                 <div className="flex-grow">
                   <div className="flex justify-between items-start mb-4">
-                    <h3 className="text-xl font-bold text-gray-900">{project.title}</h3>
+                    <h3 className="text-xl font-bold text-alabaster">{project.title}</h3>
                     <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
-                      project.status === 'Coming Soon' ? 'bg-yellow-200 text-yellow-800' : 'bg-blue-200 text-blue-800'
+                      project.status === 'Coming Soon' ? 'bg-saffron/20 text-saffron' : 'bg-platinum/20 text-platinum'
                     }`}>
                       {project.status}
                     </span>
                   </div>
-                  <p className="text-gray-600">{project.description}</p>
+                  <p className="text-platinum">{project.description}</p>
                 </div>
                 {project.link && (
-                  <a href={project.link} target="_blank" rel="noopener noreferrer" className="mt-6 flex items-center text-sm font-semibold text-yellow-700 hover:text-yellow-800 transition-colors">
+                  <a href={project.link} target="_blank" rel="noopener noreferrer" className="mt-6 flex items-center text-sm font-semibold text-platinum hover:text-saffron transition-colors">
                     View Project <ArrowUpRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                   </a>
                 )}
@@ -54,4 +54,3 @@ const Projects: React.FC = () => {
 };
 
 export default Projects;
-   

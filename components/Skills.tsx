@@ -21,7 +21,7 @@ const Skills: React.FC = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.5 }}
         transition={{ duration: 0.5 }}
-        className="text-3xl md:text-4xl font-bold text-gray-900 mb-12 text-center tracking-tight"
+        className="text-3xl md:text-4xl font-bold text-alabaster mb-12 text-center tracking-tight"
       >
         My Technical Stack
       </motion.h2>
@@ -39,14 +39,14 @@ const Skills: React.FC = () => {
               <GlassCard className="h-full">
                 <div className="p-8">
                   <div className="flex items-center mb-4">
-                    {Icon && <Icon className="w-8 h-8 mr-4 text-yellow-600" />}
-                    <h3 className="text-xl font-bold text-gray-900">{category.title}</h3>
+                    {Icon && <Icon className="w-8 h-8 mr-4 text-saffron" />}
+                    <h3 className="text-xl font-bold text-alabaster">{category.title}</h3>
                   </div>
                   <ul className="flex flex-wrap gap-2">
                     {category.skills.map((skill) => (
                       <li
                         key={skill}
-                        className="bg-gray-200/50 text-gray-700 text-sm font-medium px-3 py-1 rounded-full"
+                        className="bg-jet/80 text-platinum text-sm font-medium px-3 py-1 rounded-full"
                       >
                         {skill}
                       </li>
@@ -63,4 +63,3 @@ const Skills: React.FC = () => {
 };
 
 export default Skills;
-   

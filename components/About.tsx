@@ -14,8 +14,8 @@ const About: React.FC = () => {
       >
         <GlassCard>
           <div className="p-8 md:p-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 tracking-tight">About Me</h2>
-            <div className="space-y-4 text-gray-700 text-lg leading-relaxed">
+            <h2 className="text-3xl md:text-4xl font-bold text-alabaster mb-6 tracking-tight">About Me</h2>
+            <div className="space-y-4 text-platinum text-lg leading-relaxed">
               <p>
                 I am a forward-thinking engineer driven by a profound fascination with artificial intelligence and its potential to reshape our world. My current academic path in Computer Engineering serves as a robust foundation for my primary ambition: to specialize in deep learning, applied machine learning, and the creation of AI-augmented systems.
               </p>
@@ -31,4 +31,3 @@ const About: React.FC = () => {
 };
 
 export default About;
-   

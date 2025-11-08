@@ -6,6 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dron Pancholi | AI Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'platinum': '#cfdbd5',
+              'alabaster': '#e8eddf',
+              'saffron': '#f5cb5c',
+              'eerie-black': '#242423',
+              'jet': '#333533',
+            },
+          },
+        },
+      }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
@@ -14,12 +29,11 @@
         font-family: 'Inter', sans-serif;
       }
       .liquid-glass {
-        /* Enhanced liquid glass effect */
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-        backdrop-filter: blur(40px);
-        -webkit-backdrop-filter: blur(40px);
-        border: 1.5px solid rgba(255, 255, 255, 0.18);
-        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+        background: rgba(51, 53, 51, 0.5); /* jet translucent base */
+        -webkit-backdrop-filter: blur(16px) saturate(180%);
+        backdrop-filter: blur(16px) saturate(180%);
+        border: 1px solid rgba(207, 219, 213, 0.1); /* platinum subtle border */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); 
       }
     </style>
   <script type="importmap">
