@@ -1,15 +1,15 @@
+
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import GlassCard from './ui/GlassCard';
 import { SKILLS_DATA } from '../constants';
-import { Briefcase, Code, Database, BrainCircuit, Bot } from 'lucide-react';
+import { Briefcase, Code, Database, BrainCircuit } from 'lucide-react';
 
 const icons: { [key: string]: React.ElementType } = {
   frontend: Code,
   backend: Database,
-  fullstack: Briefcase,
+  briefcase: Briefcase,
   ai: BrainCircuit,
-  tools: Bot,
 };
 
 const Skills: React.FC = () => {
@@ -59,7 +59,7 @@ const Skills: React.FC = () => {
         }}
       >
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 gap-8"
           style={{
             rotateX,
             rotateY,
@@ -83,6 +83,9 @@ const Skills: React.FC = () => {
                       {Icon && <Icon className="w-8 h-8 mr-4 text-[var(--accent)]" />}
                       <h3 className="text-xl font-bold text-[var(--text-main)]">{category.title}</h3>
                     </div>
+                    <p className="text-[var(--text-secondary)] font-light mb-6 text-base leading-relaxed">
+                      {category.description}
+                    </p>
                     <ul className="flex flex-wrap gap-2">
                       {category.skills.map((skill) => (
                         <li

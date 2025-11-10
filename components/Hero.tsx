@@ -124,7 +124,7 @@ const Hero: React.FC = () => {
             className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tighter text-[var(--text-main)] mb-4"
             style={{ transform: 'translateZ(50px)', transformStyle: 'preserve-3d' }}
           >
-            I build with <span className="text-[var(--accent)]">Artificial Intelligence.</span>
+            Systems, designed with depth.<br className="hidden md:block" /> Interfaces, designed with clarity.
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -133,7 +133,7 @@ const Hero: React.FC = () => {
             className="max-w-2xl text-base sm:text-lg md:text-xl text-[var(--text-secondary)] font-light mx-auto"
             style={{ transform: 'translateZ(25px)', transformStyle: 'preserve-3d' }}
           >
-            Pursuing a Diploma in Computer Engineering and advancing into AI & ML specialization to architect the next generation of intelligent systems.
+            I architect and build intelligent software systems that are as reliable and performant as they are intuitive to use.
           </motion.p>
         </motion.div>
       </motion.div>

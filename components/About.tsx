@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import GlassCard from './ui/GlassCard';
@@ -16,10 +17,10 @@ const About: React.FC = () => {
             <h2 className="text-3xl md:text-4xl font-bold text-[var(--text-main)] mb-6 tracking-tight">About Me</h2>
             <div className="space-y-4 text-[var(--text-secondary)] text-lg leading-relaxed font-light">
               <p>
-                I am a forward-thinking engineer driven by a profound fascination with artificial intelligence and its potential to reshape our world. My current academic path in Computer Engineering serves as a robust foundation for my primary ambition: to specialize in deep learning, applied machine learning, and the creation of AI-augmented systems.
+                I design and build software systems engineered to learn, adapt, and scale. My work treats software as a craft, balancing rigorous engineering with a deep focus on user experience.
               </p>
               <p>
-                My focus extends beyond theoretical knowledge; I am dedicated to practical application and innovation. I believe in a future where intelligent systems seamlessly integrate into every facet of technology, and I am committed to being at the forefront of that revolution, building solutions that are not only powerful but also intuitive and impactful.
+                I specialize in translating complex problems into clear, structured solutions. The result is systems that are powerful in function and intuitive in form, creating technology that feels effortless to use.
               </p>
             </div>
           </div>
