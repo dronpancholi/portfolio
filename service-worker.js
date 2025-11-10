@@ -3,6 +3,7 @@ const CACHE_NAME = 'dron-pancholi-portfolio-v4';
 const urlsToCache = [
   '/',
   '/index.html',
+  '/image/headshot.jpg',
 ];
 
 self.addEventListener('install', event => {
