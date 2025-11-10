@@ -2,8 +2,8 @@
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useTransform, useScroll, useSpring } from 'framer-motion';
 
-// Add your own profile picture named 'dron-pancholi-profile.jpg' to the public directory.
-const profileImageUrl = '/dron-pancholi-profile.jpg';
+// Add your headshot named 'headshot.jpg' to the public/images directory.
+const profileImageUrl = '/images/headshot.jpg';
 
 const PortraitImage = ({ isFiltered = false }: { isFiltered?: boolean }) => {
   return (
