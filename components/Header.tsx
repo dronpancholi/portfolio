@@ -1,159 +1,69 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
-import { NAV_LINKS } from '../constants';
-import { Menu, X } from 'lucide-react';
+import React, { useEffect, useRef } from "react";
 
-const Header: React.FC = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+export default function Header() {
+  const headerRef = useRef<HTMLDivElement>(null);
+  const nameRef = useRef<HTMLParagraphElement>(null);
 
-  const { scrollY } = useScroll();
-
-  // Smooth the scrollY value for a more fluid animation
-  const smoothedScrollY = useSpring(scrollY, {
-    stiffness: 200,
-    damping: 50,
-    mass: 0.5,
-  });
-
-  // Define the scroll range for the animation (e.g., from 0px to 120px)
-  const scrollRange = [0, 120];
-
-  // Interpolate container values based on the smoothed scroll position
-  const headerPaddingY = useTransform(smoothedScrollY, scrollRange, [12, 8]); // from py-3 to py-2
-  const headerPaddingX = useTransform(smoothedScrollY, scrollRange, [28, 24]); // from px-7 to px-6
-  const headerBlur = useTransform(smoothedScrollY, scrollRange, [30, 20]);
-  const headerSaturate = useTransform(smoothedScrollY, scrollRange, [190, 165]);
-  const headerBrightness = useTransform(smoothedScrollY, scrollRange, [1.1, 1.05]);
-
-  // Interpolate text values for proportional scaling
-  const brandFontSize = useTransform(smoothedScrollY, scrollRange, [18, 15]); // From 1.125rem (lg) to ~0.94rem
-  const brandFontWeight = useTransform(smoothedScrollY, scrollRange, [600, 500]); // From semibold to medium
-  const brandLetterSpacing = useTransform(smoothedScrollY, scrollRange, ['-0.025em', '-0.015em']); // from tracking-tight to a bit less tight
-
-  // Combine multiple motion values into a single CSS property string
-  const backdropFilter = useTransform(
-    [headerBlur, headerSaturate, headerBrightness],
-    ([blur, saturate, brightness]) => `blur(${blur}px) saturate(${saturate}%) brightness(${brightness})`
-  );
-
-  // Mobile menu logic
   useEffect(() => {
-    if (isMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
-    return () => {
-      document.body.style.overflow = 'auto';
+    let animationFrameId: number;
+
+    const animate = () => {
+      const scrollY = window.scrollY;
+      // Clamp progress between 0 and 1
+      const progress = Math.max(0, Math.min(scrollY / 140, 1));
+
+      const header = headerRef.current;
+      const name = nameRef.current;
+
+      // Only animate if elements are mounted
+      if (header && name) {
+        // Interpolated shrinking
+        const width = 300 - progress * 120; // 300 → 180
+        const paddingY = 16 - progress * 8; // 16px → 8px
+        const paddingX = 28 - progress * 12; // 28px → 16px
+        const blur = 28 - progress * 12; // blur 28 → 16
+        const fontSize = 20 - progress * 6; // 20px → 14px
+
+        header.style.width = `${width}px`;
+        header.style.padding = `${paddingY}px ${paddingX}px`;
+        const filterValue = `blur(${blur}px) saturate(180%)`;
+        header.style.backdropFilter = filterValue;
+        // FIX: Used index access to set the vendor-prefixed `webkitBackdropFilter` property. This bypasses TypeScript's strict type checking for `CSSStyleDeclaration`, which does not include this non-standard property.
+        header.style['webkitBackdropFilter'] = filterValue;
+        name.style.fontSize = `${fontSize}px`;
+      }
+
+      animationFrameId = requestAnimationFrame(animate);
     };
-  }, [isMenuOpen]);
 
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    const targetId = href.substring(1);
-    const targetElement = document.getElementById(targetId);
+    // Start the animation loop
+    animationFrameId = requestAnimationFrame(animate);
 
-    if (targetElement) {
-      targetElement.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    if (isMenuOpen) {
-      setIsMenuOpen(false);
-    }
-  };
-
+    // Cleanup function to cancel the animation frame when the component unmounts
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []); // Empty dependency array ensures this runs only once on mount
 
   return (
-    <>
-      <motion.header
-        initial={{ y: -100, x: '-50%' }}
-        animate={{ y: 0, x: '-50%' }}
-        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="liquid-glass fixed top-6 left-1/2 z-50 rounded-full bg-pearl/12"
-        style={{
-          backdropFilter: backdropFilter,
-          WebkitBackdropFilter: backdropFilter, // For Safari compatibility
-        }}
+    <div
+      ref={headerRef}
+      className="liquid-glass-header fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center justify-center rounded-full select-none"
+      // Set initial styles to prevent FOUC and ensure smooth start
+      style={{
+        width: '300px',
+        padding: '16px 28px',
+        backdropFilter: 'blur(28px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(28px) saturate(180%)',
+      }}
+    >
+      <p
+        ref={nameRef}
+        className="font-semibold tracking-tight text-eerie-black"
+        style={{ fontSize: '20px' }}
       >
-        <motion.div
-          className="flex items-center justify-between relative"
-          style={{
-            paddingTop: headerPaddingY,
-            paddingBottom: headerPaddingY,
-            paddingLeft: headerPaddingX,
-            paddingRight: headerPaddingX,
-          }}
-        >
-          <motion.a
-            href="#home"
-            onClick={(e) => handleNavClick(e, '#home')}
-            className="text-eerie-black z-10 shrink-0"
-            style={{
-              fontSize: brandFontSize,
-              fontWeight: brandFontWeight,
-              letterSpacing: brandLetterSpacing,
-            }}
-          >
-            Dron Pancholi
-          </motion.a>
-          <ul className="hidden md:flex items-center space-x-1 z-10">
-            {NAV_LINKS.map((link) => (
-              <li key={link.href}>
-                <a
-                  href={link.href}
-                  onClick={(e) => handleNavClick(e, link.href)}
-                  className="px-4 py-2 text-sm text-jet hover:text-eerie-black rounded-lg transition-colors duration-200 relative"
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-          <div className="md:hidden z-10">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-jet p-2"
-              aria-label="Toggle Menu"
-            >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </motion.div>
-      </motion.header>
-
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-mist z-40 md:hidden"
-          >
-            <motion.ul
-                initial={{ y: '-10%' }}
-                animate={{ y: '0%' }}
-                exit={{ y: '-10%' }}
-                transition={{ duration: 0.3, ease: 'easeOut' }}
-                className="flex flex-col items-center justify-center h-full space-y-6 pt-28"
-            >
-              {NAV_LINKS.map((link) => (
-                <li key={link.href}>
-                  <a
-                    href={link.href}
-                    className="text-2xl font-medium text-jet hover:text-saffron transition-colors duration-200"
-                    onClick={(e) => handleNavClick(e, link.href)}
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </motion.ul>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+        Dron Pancholi
+      </p>
+    </div>
   );
-};
-
-export default Header;
+}
