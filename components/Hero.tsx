@@ -2,7 +2,7 @@
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useTransform, useScroll, useSpring } from 'framer-motion';
 
-const imageUrl = 'headshot.jpg';
+const imageUrl = '/headshot.jpg';
 
 const PortraitImage = ({ isFiltered = false }: { isFiltered?: boolean }) => {
   return (
