@@ -1,15 +1,15 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+// FIX: Explicitly import the `Variants` type from framer-motion to resolve type inference issues.
+import { motion, AnimatePresence, Variants } from "framer-motion";
 
-const variants = {
+// FIX: Added the `Variants` type to the `variants` object. This ensures TypeScript correctly validates the `type` property in the transition object against the allowed `AnimationGeneratorType` values (e.g., "spring"), preventing a type error where it was being inferred as a generic `string`.
+const variants: Variants = {
   top: {
     paddingLeft: 28,
     paddingRight: 28,
     paddingTop: 14,
     paddingBottom: 14,
     scale: 1,
-    borderRadius: 9999,
-    gap: 16,
     transition: { type: "spring", stiffness: 260, damping: 24 }
   },
   expanded: {
@@ -18,8 +18,6 @@ const variants = {
     paddingTop: 12,
     paddingBottom: 12,
     scale: 0.96,
-    borderRadius: 9999,
-    gap: 14,
     transition: { type: "spring", stiffness: 280, damping: 22 }
   },
   collapsed: {
@@ -28,11 +26,9 @@ const variants = {
     paddingTop: 8,
     paddingBottom: 8,
     scale: 0.88,
-    borderRadius: 9999,
-    gap: 0,
     transition: { type: "spring", stiffness: 300, damping: 20 }
   }
-} as const;
+};
 
 
 export default function Header() {
@@ -89,9 +85,10 @@ export default function Header() {
         variants={variants}
         transition={{ type: "spring", stiffness: 240, damping: 22 }}
         className={`
-          flex items-center justify-center overflow-hidden cursor-pointer select-none rounded-full
+          flex items-center overflow-hidden cursor-pointer select-none rounded-full
           bg-white/25 backdrop-blur-xl border border-white/40 shadow-[0_8px_30px_rgba(0,0,0,0.08)]
-          transition-all
+          transition-all duration-500 ease-[cubic-bezier(.22,.61,.36,1)]
+          ${state === "collapsed" ? "justify-center gap-0" : "justify-center gap-6"}
         `}
       >
         <motion.p
