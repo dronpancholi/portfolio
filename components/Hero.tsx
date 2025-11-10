@@ -1,3 +1,4 @@
+
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useTransform, useScroll, useSpring } from 'framer-motion';
 
@@ -124,7 +125,7 @@ const Hero: React.FC = () => {
             // FIX: Corrected typo from 'preserve-d' to 'preserve-3d'.
             style={{ transform: 'translateZ(50px)', transformStyle: 'preserve-3d' }}
           >
-            I build with Artificial Intelligence.
+            I build with <span className="text-saffron">Artificial Intelligence.</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}

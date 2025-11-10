@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { NAV_LINKS } from '../constants';
 import { Menu, X } from 'lucide-react';
 
 const Header: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001,
-  });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,14 +29,14 @@ const Header: React.FC = () => {
   return (
     <>
       <motion.header
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
+        initial={{ y: -100, x: '-50%' }}
+        animate={{ y: 0, x: '-50%' }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className={`liquid-glass fixed top-0 left-0 right-0 z-50`}
+        className={`liquid-glass fixed top-4 left-1/2 -translate-x-1/2 z-50 rounded-full bg-pearl/12 backdrop-blur-[34px] saturate-[190%] brightness-[1.10]`}
       >
         <div
-          className={`container mx-auto max-w-5xl flex items-center justify-between relative transition-all duration-300 ${
-            scrolled ? 'p-2 px-6' : 'p-3 px-6'
+          className={`flex items-center justify-between relative transition-all duration-300 ${
+            scrolled ? 'py-2 px-6' : 'py-3 px-6'
           }`}
         >
           <a href="#home" className="text-lg font-semibold tracking-tight text-eerie-black z-10">
@@ -71,14 +64,6 @@ const Header: React.FC = () => {
             </button>
           </div>
         </div>
-        <motion.div
-          className="absolute bottom-0 left-0 right-0 h-1.5 bg-saffron"
-          style={{
-            scaleX,
-            transformOrigin: '0%',
-            boxShadow: '0 0 10px #f5cb5c, 0 0 5px #f5cb5c',
-          }}
-        />
       </motion.header>
 
       <AnimatePresence>
