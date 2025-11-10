@@ -55,9 +55,8 @@ export default function Header(){
             scale: 0.97
           },
           collapsed: {
-            width: "max(135px, 32vw)", // **Much smaller pill**
-            borderRadius: 9999,
-            padding: "6px 12px",       // **Tight, elegant padding**
+            width: "max(110px, 24vw)",   // smaller minimum + responsive
+            padding: "5px 10px",         // tighter, but still breathable
             scale: 0.90
           }
         }}
@@ -68,7 +67,7 @@ export default function Header(){
       >
         <motion.p
           layout
-          animate={{ fontSize: state==="collapsed" ? 13 : 18 }}
+          animate={{ fontSize: state==="collapsed" ? 12.5 : 18 }}
           transition={{ type:"spring", stiffness:260, damping:20 }}
           className="font-semibold tracking-tight text-neutral-900 whitespace-nowrap"
         >
