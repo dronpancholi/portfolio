@@ -18,11 +18,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <style>
       :root {
-        --bg-base: #fcfaf8; /* Warmed up from #f9fafb */
+        --glass-bg: rgba(255,255,255,0.28);
+        --glass-border: rgba(255,255,255,0.45);
+        --glass-shadow: 0 12px 40px rgba(0,0,0,0.10);
+        --glass-blur: 28px;
+        --glass-blur-min: 16px;
+        --glass-reflect: radial-gradient(120% 60% at 10% 10%, rgba(255,255,255,0.35), rgba(255,255,255,0.12) 60%, transparent 70%);
+        --glass-caustic: radial-gradient(60% 50% at 70% 30%, rgba(255,255,255,0.18), transparent 60%);
+        --bg-base: #f9fafb;
         --text-main: #1f2937;
         --text-secondary: #374151;
         --accent: #f59e0b; /* Saffron-like accent */
-        --glass-warm-tint-rgb: 255, 246, 232; /* Saffron undertone for glass */
       }
       
       html, body { 
@@ -32,39 +38,38 @@
         font-optical-sizing: auto;
       }
       
-      /* Tuned glass for motion */
       .glass {
         position: relative;
-        background: rgba(255, 255, 255, 0.26);
-        border: 1px solid rgba(255, 255, 255, 0.45);
-        backdrop-filter: blur(var(--glass-blur, 24px)) saturate(180%);
-        -webkit-backdrop-filter: blur(var(--glass-blur, 24px)) saturate(180%);
-        box-shadow: 0 10px 32px rgba(0,0,0,0.10);
-        will-change: transform, opacity;
-        overflow: clip; /* cheaper than overflow:hidden */
+        background: var(--glass-bg);
+        backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+        -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+        border: 1px solid var(--glass-border);
+        border-radius: 9999px; /* pill shape */
+        box-shadow: var(--glass-shadow);
+        overflow: clip; /* use clip instead of hidden for better performance */
       }
-
-      .glass::before,
-      .glass::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
+      
+      .glass--panel { 
+        border-radius: 24px; 
+      }
+      
+      .glass::before, .glass::after {
+        content:"";
+        position:absolute; 
+        inset:0; 
+        pointer-events:none;
+        will-change: background;
       }
 
       .glass::before {
-        /* pointer shimmer: mild and fast to render */
-        background: radial-gradient(220px 160px at 30% 15%, rgba(255,255,255,0.28), rgba(255,255,255,0.10) 60%, transparent 70%);
+        background: radial-gradient(280px 200px at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.35), rgba(255,255,255,0.1) 60%, transparent 75%);
         mix-blend-mode: screen;
-        opacity: var(--glass-intensity, 1);
         transition: opacity .25s ease;
       }
-
-      .glass::after {
-        /* subtle caustic */
-        background: radial-gradient(60% 50% at 70% 30%, rgba(255,255,255,0.12), transparent 60%);
-        mix-blend-mode: overlay;
-        opacity: .9;
+      
+      .glass::after { 
+        background: var(--glass-caustic); 
+        mix-blend-mode: overlay; 
       }
       
       .min-glow { 
@@ -95,13 +100,5 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
-    <script>
-    document.addEventListener("pointermove", (e) => {
-      const x = (e.clientX / window.innerWidth) * 100;
-      const y = (e.clientY / window.innerHeight) * 100;
-      document.documentElement.style.setProperty("--x", x + "%");
-      document.documentElement.style.setProperty("--y", y + "%");
-    });
-    </script>
   </body>
 </html>

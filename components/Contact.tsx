@@ -79,7 +79,7 @@ const Contact: React.FC = () => {
         className="max-w-2xl mx-auto"
       >
         <GlassCard className="text-left">
-          <div className="min-h-[460px] flex items-center justify-center">
+          <div className="p-8 md:p-10 min-h-[460px] flex items-center justify-center">
             <AnimatePresence mode="wait">
               {status === 'success' && (
                 <motion.div key="success" variants={formVariants} initial="hidden" animate="visible" exit="exit" className="text-center">

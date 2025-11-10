@@ -78,20 +78,22 @@ const Skills: React.FC = () => {
                 style={{ transform: 'translateZ(40px)', transformStyle: 'preserve-3d' }}
               >
                 <GlassCard className="h-full">
-                  <div className="flex items-center mb-4">
-                    {Icon && <Icon className="w-8 h-8 mr-4 text-[var(--accent)]" />}
-                    <h3 className="text-xl font-bold text-[var(--text-main)]">{category.title}</h3>
+                  <div className="p-8">
+                    <div className="flex items-center mb-4">
+                      {Icon && <Icon className="w-8 h-8 mr-4 text-[var(--accent)]" />}
+                      <h3 className="text-xl font-bold text-[var(--text-main)]">{category.title}</h3>
+                    </div>
+                    <ul className="flex flex-wrap gap-2">
+                      {category.skills.map((skill) => (
+                        <li
+                          key={skill}
+                          className="bg-black/5 text-[var(--text-secondary)] text-sm font-medium px-3 py-1 rounded-full"
+                        >
+                          {skill}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <ul className="flex flex-wrap gap-2">
-                    {category.skills.map((skill) => (
-                      <li
-                        key={skill}
-                        className="bg-black/5 text-[var(--text-secondary)] text-sm font-medium px-3 py-1 rounded-full"
-                      >
-                        {skill}
-                      </li>
-                    ))}
-                  </ul>
                 </GlassCard>
               </motion.div>
             );
