@@ -40,34 +40,35 @@ export default function Header(){
       <motion.header
         ref={pillRef}
         onClick={onPillClick}
-        className="glass pointer-events-auto flex items-center justify-center gap-4 sm:gap-6 mx-auto cursor-pointer"
+        className="glass pointer-events-auto flex items-center justify-center gap-3 sm:gap-5 mx-auto cursor-pointer"
         variants={{
           top: {
-            width: "min(92vw, 920px)",
+            width: "min(88vw, 860px)",
             borderRadius: 9999,
-            padding: "12px 18px",
+            padding: "12px 22px",
             scale: 1
           },
           expanded: {
-            width: "min(92vw, 760px)",
+            width: "min(88vw, 720px)",
             borderRadius: 9999,
-            padding: "10px 16px",
-            scale: 0.97
+            padding: "10px 18px",
+            scale: 0.975
           },
           collapsed: {
-            width: "max(110px, 24vw)",   // smaller minimum + responsive
-            padding: "5px 10px",         // tighter, but still breathable
+            width: "max(105px, 22vw)",
+            borderRadius: 9999,
+            padding: "5px 10px",
             scale: 0.90
           }
         }}
         initial={false}
         animate={state}
-        transition={{ type:"spring", stiffness:200, damping:24, mass:1.05 }}
+        transition={{ type:"spring", stiffness:180, damping:22, mass:1 }}
         aria-label="Primary navigation"
       >
         <motion.p
           layout
-          animate={{ fontSize: state==="collapsed" ? 12.5 : 18 }}
+          animate={{ fontSize: state==="collapsed" ? 12 : 17.5 }}
           transition={{ type:"spring", stiffness:260, damping:20 }}
           className="font-semibold tracking-tight text-neutral-900 whitespace-nowrap"
         >
@@ -85,10 +86,10 @@ export default function Header(){
               exit={{ opacity:0, x: 6 }}
               transition={{ duration:0.28, ease:[0.22,1,0.36,1] }}
             >
-              <a href="#about" className="px-3 sm:px-4 py-1.5 hover:text-black transition-colors">About</a>
-              <a href="#projects" className="px-3 sm:px-4 py-1.5 hover:text-black transition-colors">Projects</a>
-              <a href="#skills" className="px-3 sm:px-4 py-1.5 hover:text-black transition-colors">Skills</a>
-              <a href="#contact" className="px-3 sm:px-4 py-1.5 hover:text-black transition-colors">Contact</a>
+              <a href="#about" className="px-2.5 sm:px-3.5 py-1.5 hover:text-black transition-colors">About</a>
+              <a href="#projects" className="px-2.5 sm:px-3.5 py-1.5 hover:text-black transition-colors">Projects</a>
+              <a href="#skills" className="px-2.5 sm:px-3.5 py-1.5 hover:text-black transition-colors">Skills</a>
+              <a href="#contact" className="px-2.5 sm:px-3.5 py-1.5 hover:text-black transition-colors">Contact</a>
             </motion.nav>
           )}
         </AnimatePresence>
