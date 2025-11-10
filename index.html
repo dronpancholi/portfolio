@@ -40,36 +40,57 @@
       
       .glass {
         position: relative;
-        background: var(--glass-bg);
-        backdrop-filter: blur(var(--glass-blur)) saturate(180%);
-        -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
-        border: 1px solid var(--glass-border);
-        border-radius: 9999px; /* pill shape */
-        box-shadow: var(--glass-shadow);
-        overflow: clip; /* use clip instead of hidden for better performance */
-      }
-      
-      .glass--panel { 
-        border-radius: 24px; 
-      }
-      
-      .glass::before, .glass::after {
-        content:"";
-        position:absolute; 
-        inset:0; 
-        pointer-events:none;
-        will-change: background;
+        background: rgba(255,255,255,0.18);
+        border: 1px solid rgba(255,255,255,0.35);
+        backdrop-filter: blur(22px) saturate(185%);
+        -webkit-backdrop-filter: blur(22px) saturate(185%);
+        border-radius: inherit;
+        box-shadow:
+          0 8px 24px rgba(0,0,0,0.08),
+          inset 0 0 0.5px rgba(255,255,255,0.6);
+        overflow: clip;
+        transform: translateZ(0);
+        will-change: backdrop-filter, background, transform;
       }
 
+      /* Glass subtle lensing highlight that follows cursor */
       .glass::before {
-        background: radial-gradient(280px 200px at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.35), rgba(255,255,255,0.1) 60%, transparent 75%);
+        content: "";
+        position: absolute;
+        inset: -40%;
+        background: radial-gradient(
+          circle at var(--x,50%) var(--y,50%),
+          rgba(255,255,255,0.32),
+          rgba(255,255,255,0.08) 35%,
+          transparent 60%
+        );
         mix-blend-mode: screen;
-        transition: opacity .25s ease;
+        transition: background 0.18s ease-out;
+        pointer-events: none;
       }
-      
-      .glass::after { 
-        background: var(--glass-caustic); 
-        mix-blend-mode: overlay; 
+
+      /* Subtle caustics */
+      .glass::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          120% 80% at 75% 35%,
+          rgba(255,255,255,0.18),
+          transparent 65%
+        );
+        mix-blend-mode: overlay;
+        pointer-events: none;
+      }
+
+      .glass--hero-pill {
+        background: rgba(255,255,255,0.22) !important;
+        backdrop-filter: blur(30px) saturate(200%) !important;
+        -webkit-backdrop-filter: blur(30px) saturate(200%) !important;
+        border: 1.5px solid rgba(255,255,255,0.55) !important;
+        box-shadow:
+          0 12px 40px rgba(0,0,0,0.12),
+          inset 0 0 0.9px rgba(255,255,255,0.85);
       }
       
       .min-glow { 
@@ -100,5 +121,13 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
+    <script>
+    document.addEventListener("pointermove", (e) => {
+      const x = (e.clientX / window.innerWidth) * 100;
+      const y = (e.clientY / window.innerHeight) * 100;
+      document.documentElement.style.setProperty("--x", x + "%");
+      document.documentElement.style.setProperty("--y", y + "%");
+    });
+    </script>
   </body>
 </html>

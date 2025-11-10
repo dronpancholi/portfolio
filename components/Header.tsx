@@ -55,7 +55,7 @@ export default function Header(){
         ref={pillRef}
         onClick={onPillClick}
         layout
-        className="glass pointer-events-auto flex items-center justify-center gap-4 rounded-full cursor-pointer select-none whitespace-nowrap"
+        className="glass glass--hero-pill pointer-events-auto flex items-center justify-center gap-4 rounded-full cursor-pointer select-none whitespace-nowrap"
         // FIX: Removed `WebkitBackdropFilter` from variants to resolve type errors,
         // as it's not a valid property in framer-motion's `Variant` type.
         variants={{
