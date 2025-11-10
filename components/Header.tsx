@@ -25,13 +25,8 @@ export default function Header() {
       if (!expanded || isAtTop) return;
       if (pillRef.current && !pillRef.current.contains(e.target as Node)) setExpanded(false);
     };
-    const onKey = (e: KeyboardEvent) => expanded && !isAtTop && e.key === "Escape" && setExpanded(false);
     document.addEventListener("mousedown", onDocClick);
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("mousedown", onDocClick);
-      document.removeEventListener("keydown", onKey);
-    };
+    return () => document.removeEventListener("mousedown", onDocClick);
   }, [expanded, isAtTop]);
 
   const onPillClick = useCallback(() => { if (!isAtTop) setExpanded(v => !v); }, [isAtTop]);
@@ -47,50 +42,56 @@ export default function Header() {
         aria-label="Primary navigation"
         className="glass pointer-events-auto rounded-full flex items-center cursor-pointer select-none"
         style={{
-          width: "fit-content",       // <— KEY FIX (no bridging)
-          maxWidth: "92vw",           // <— prevents overflow on phone
+          width: "fit-content",
+          maxWidth: "92vw"
         }}
         initial={false}
         animate={{
-          paddingLeft: collapsed ? 12 : 22,
-          paddingRight: collapsed ? 12 : 22,
+          paddingLeft: collapsed ? 12 : 20,
+          paddingRight: collapsed ? 12 : 20,
           paddingTop: collapsed ? 6 : 12,
           paddingBottom: collapsed ? 6 : 12,
-          scale: collapsed ? 0.90 : isAtTop ? 1 : 0.965,
+          scale: collapsed ? 0.90 : isAtTop ? 1 : 0.965
         }}
         transition={SPRING}
       >
-
-        {/* NAME */}
-        <motion.p
-          layout="position"
-          animate={{ fontSize: collapsed ? "0.78rem" : "1.05rem" }}
-          transition={SPRING}
-          className="font-semibold tracking-tight text-neutral-900 whitespace-nowrap"
+        
+        {/* FLEX WRAPPER that fixes spacing + layout */}
+        <motion.div
+          layout
+          className="flex items-center gap-4 overflow-hidden"
+          style={{ maxWidth: "100%" }}
         >
-          Dron Pancholi
-        </motion.p>
 
-        {/* NAV - ABSOLUTE CENTERED, DOES NOT CHANGE WIDTH */}
-        <AnimatePresence initial={false}>
-          {showNav && (
-            <motion.nav
-              key="nav"
-              onClick={(e)=>e.stopPropagation()}
-              className="absolute left-1/2 -translate-x-1/2 flex items-center gap-4 font-medium text-neutral-800 whitespace-nowrap"
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 6 }}
-              transition={NAV_IN_OUT}
-            >
-              <a href="#about" className="hover:text-black transition-colors">About</a>
-              <a href="#projects" className="hover:text-black transition-colors">Projects</a>
-              <a href="#skills" className="hover:text-black transition-colors">Skills</a>
-              <a href="#contact" className="hover:text-black transition-colors">Contact</a>
-            </motion.nav>
-          )}
-        </AnimatePresence>
+          <motion.p
+            layout
+            animate={{ fontSize: collapsed ? "0.78rem" : "1.05rem" }}
+            transition={SPRING}
+            className="font-semibold tracking-tight text-neutral-900 whitespace-nowrap"
+          >
+            Dron Pancholi
+          </motion.p>
 
+          <AnimatePresence initial={false}>
+            {showNav && (
+              <motion.nav
+                key="nav"
+                onClick={(e) => e.stopPropagation()}
+                className="flex items-center font-medium text-neutral-800 whitespace-nowrap"
+                initial={{ opacity: 0, clipPath: "inset(0 50% 0 50% round 9999px)" }}
+                animate={{ opacity: 1, clipPath: "inset(0 0% 0 0% round 9999px)" }}
+                exit={{ opacity: 0, clipPath: "inset(0 50% 0 50% round 9999px)" }}
+                transition={NAV_IN_OUT}
+              >
+                <a href="#about" className="px-2 sm:px-3 py-1 hover:text-black transition-colors">About</a>
+                <a href="#projects" className="px-2 sm:px-3 py-1 hover:text-black transition-colors">Projects</a>
+                <a href="#skills" className="px-2 sm:px-3 py-1 hover:text-black transition-colors">Skills</a>
+                <a href="#contact" className="px-2 sm:px-3 py-1 hover:text-black transition-colors">Contact</a>
+              </motion.nav>
+            )}
+          </AnimatePresence>
+
+        </motion.div>
       </motion.header>
     </div>
   );
