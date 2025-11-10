@@ -38,6 +38,7 @@
         font-optical-sizing: auto;
       }
       
+      /* Apple-style transparent floating shadow system */
       .glass {
         position: relative;
         background: rgba(255,255,255,0.18);
@@ -45,9 +46,13 @@
         backdrop-filter: blur(22px) saturate(185%);
         -webkit-backdrop-filter: blur(22px) saturate(185%);
         border-radius: inherit;
+
+        /* Apple floating panel shadow */
         box-shadow:
-          0 8px 24px rgba(0,0,0,0.08),
-          inset 0 0 0.5px rgba(255,255,255,0.6);
+          0 12px 28px rgba(0, 0, 0, 0.06),
+          0 4px 10px rgba(0, 0, 0, 0.04),
+          inset 0 0 0.35px rgba(255,255,255,0.75);
+
         overflow: clip;
         transform: translateZ(0);
         will-change: backdrop-filter, background, transform;
@@ -83,14 +88,18 @@
         pointer-events: none;
       }
 
+      /* Make the pill even gentler and more refined than standard glass */
       .glass--hero-pill {
         background: rgba(255,255,255,0.22) !important;
         backdrop-filter: blur(30px) saturate(200%) !important;
         -webkit-backdrop-filter: blur(30px) saturate(200%) !important;
-        border: 1.5px solid rgba(255,255,255,0.55) !important;
+        border: 1.5px solid rgba(255,255,255,0.50) !important;
+
+        /* Apple VisionOS panel floating shadow */
         box-shadow:
-          0 12px 40px rgba(0,0,0,0.12),
-          inset 0 0 0.9px rgba(255,255,255,0.85);
+          0 24px 48px rgba(0,0,0,0.07),
+          0 4px 14px rgba(0,0,0,0.05),
+          inset 0 0 1px rgba(255,255,255,0.85);
       }
       
       .min-glow { 

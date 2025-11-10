@@ -56,6 +56,7 @@ export default function Header(){
         onClick={onPillClick}
         layout
         className="glass glass--hero-pill pointer-events-auto flex items-center justify-center gap-4 rounded-full cursor-pointer select-none whitespace-nowrap"
+        style={{ transition: "box-shadow 0.45s ease, backdrop-filter 0.45s ease" }}
         // FIX: Removed `WebkitBackdropFilter` from variants to resolve type errors,
         // as it's not a valid property in framer-motion's `Variant` type.
         variants={{
