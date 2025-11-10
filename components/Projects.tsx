@@ -1,7 +1,7 @@
 
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, Variants, useReducedMotion } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import GlassCard from './ui/GlassCard';
 import { PROJECTS_DATA } from '../constants';
 import { ArrowUpRight, X, ExternalLink, Github } from 'lucide-react';
@@ -33,7 +33,7 @@ const contentItemVariants: Variants = {
 };
 
 
-const ProjectModal = ({ project, onClose, transitionConfig }: { project: Project; onClose: () => void; transitionConfig: any }) => {
+const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => void; }) => {
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -55,17 +55,24 @@ const ProjectModal = ({ project, onClose, transitionConfig }: { project: Project
       aria-describedby={`modal-desc-${project.title}`}
     >
       <motion.div
+        className="fixed inset-0 bg-black/40 backdrop-blur-xl"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
         onClick={onClose}
-        className="fixed inset-0 bg-black/40 backdrop-blur-xl"
       />
       
       <GlassCard
         layoutId={`project-card-${project.title}`}
-        transition={transitionConfig}
+        transition={{
+          layout: {
+            type: "spring",
+            stiffness: 160,
+            damping: 22,
+            mass: 1.0
+          }
+        }}
         className="max-w-3xl w-full z-10"
         style={{ backfaceVisibility: 'hidden', borderRadius: 28 }}
       >
@@ -155,7 +162,6 @@ const projectCardVariants: Variants = {
 const Projects: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const originRef = useRef<HTMLButtonElement | HTMLDivElement | null>(null);
-  const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
     if (selectedProject) {
@@ -172,11 +178,6 @@ const Projects: React.FC = () => {
     setSelectedProject(null);
     originRef.current?.focus();
   }
-  
-  const springTransition = { layout: { type: "spring", stiffness: 160, damping: 22, mass: 1.0 } };
-  const reducedTransition = { layout: { duration: 0.3, ease: 'easeOut' } };
-  const transitionConfig = shouldReduceMotion ? reducedTransition : springTransition;
-
 
   return (
     <section id="projects" className="py-16 md:py-24 scroll-mt-24">
@@ -249,7 +250,7 @@ const Projects: React.FC = () => {
 
       <AnimatePresence mode="popLayout">
         {selectedProject && (
-          <ProjectModal project={selectedProject} onClose={handleClose} transitionConfig={transitionConfig} />
+          <ProjectModal project={selectedProject} onClose={handleClose} />
         )}
       </AnimatePresence>
     </section>
