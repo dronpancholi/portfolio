@@ -68,6 +68,19 @@ export default function Header() {
       document.removeEventListener("keydown", onKey);
     };
   }, [isAtTop, isExpanded]);
+  
+  // Mouse-Light Tracking Logic
+  useEffect(() => {
+    const handleMove = (e: MouseEvent) => {
+      const el = pillRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      el.style.setProperty("--x", `${e.clientX - rect.left}px`);
+      el.style.setProperty("--y", `${e.clientY - rect.top}px`);
+    };
+    window.addEventListener("mousemove", handleMove);
+    return () => window.removeEventListener("mousemove", handleMove);
+  }, []);
 
   // Click toggles expand only when not at top; at top it's already full
   const onPillClick = useCallback(() => {
@@ -90,10 +103,16 @@ export default function Header() {
           mass: 1.2
         }}
         className={`
+          liquid-glass-pulse
           flex items-center overflow-hidden cursor-pointer select-none rounded-full
-          bg-white/25 backdrop-blur-xl border border-white/40 shadow-[0_8px_30px_rgba(0,0,0,0.08)]
           transition-all duration-500 ease-[cubic-bezier(.22,.61,.36,1)]
-          max-w-[90vw]
+          bg-white/[0.18]
+          backdrop-blur-[22px]
+          [background:radial-gradient(120%_180%_at_50%_0%,rgba(255,255,255,0.28),rgba(255,255,255,0.05)65%,rgba(255,255,255,0.03))]
+          border border-white/[0.35]
+          shadow-[0_12px_40px_-10px_rgba(0,0,0,0.22),0_4px_6px_rgba(255,255,255,0.45)_inset]
+          max-w-[92vw]
+          px-4 py-2 md:px-0 md:py-0
           ${state === "collapsed" ? "justify-center gap-0" : "justify-center gap-6"}
         `}
       >
