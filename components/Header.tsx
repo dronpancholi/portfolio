@@ -44,104 +44,52 @@ export default function Header() {
     if (!isAtTop) setIsExpanded((v) => !v);
   }, [isAtTop]);
 
-  // Three visual states for the pill
-  const state: "top" | "expanded" | "collapsed" =
-    isAtTop ? "top" : isExpanded ? "expanded" : "collapsed";
-
-  // Dimensions & motion per state
-  const variants = {
-    top: {
-      width: 480,
-      paddingLeft: 28,
-      paddingRight: 28,
-      paddingTop: 14,
-      paddingBottom: 14,
-      borderRadius: 9999,
-      boxShadow: "0 10px 40px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.5)",
-      backgroundColor: "rgba(255,255,255,0.35)",
-      transition: { type: "spring", stiffness: 320, damping: 28 }
-    },
-    expanded: {
-      width: 460,
-      paddingLeft: 24,
-      paddingRight: 24,
-      paddingTop: 12,
-      paddingBottom: 12,
-      borderRadius: 9999,
-      boxShadow: "0 10px 36px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.45)",
-      backgroundColor: "rgba(255,255,255,0.32)",
-      transition: { type: "spring", stiffness: 340, damping: 26 }
-    },
-    collapsed: {
-      width: 160,
-      paddingLeft: 16,
-      paddingRight: 16,
-      paddingTop: 8,
-      paddingBottom: 8,
-      borderRadius: 9999,
-      boxShadow: "0 8px 24px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.40)",
-      backgroundColor: "rgba(255,255,255,0.28)",
-      transition: { type: "spring", stiffness: 360, damping: 24 }
-    }
-  } as const;
-
-  // Name scales slightly; nav fades & clips so content never spills out
-  const showNav = state === "top" || state === "expanded";
+  const state = isAtTop ? "top" : isExpanded ? "expanded" : "collapsed";
 
   return (
     <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50">
       <motion.header
         ref={pillRef}
-        aria-label="Site header"
-        role="banner"
-        initial={false}
-        animate={state}
-        variants={variants}
         onClick={onPillClick}
-        style={{
-          // Liquid glass: blur + saturation; keep it even during motion
-          backdropFilter: state === "collapsed" ? "blur(16px) saturate(180%)" : "blur(28px) saturate(180%)",
-          WebkitBackdropFilter: state === "collapsed" ? "blur(16px) saturate(180%)" : "blur(28px) saturate(180%)",
-          border: "1px solid rgba(255,255,255,0.45)"
+        animate={state}
+        transition={{ type: "spring", stiffness: 260, damping: 22 }}
+        variants={{
+          top: { width: 880, padding: "14px 28px" },
+          expanded: { width: 720, padding: "12px 24px" },
+          collapsed: { width: 200, padding: "8px 16px" },
         }}
-        className="flex items-center gap-6 select-none cursor-pointer overflow-hidden"
+        style={{
+          backdropFilter: "blur(28px) saturate(180%)",
+          WebkitBackdropFilter: "blur(28px) saturate(180%)",
+          border: "1px solid rgba(255,255,255,0.45)",
+        }}
+        className={`
+          bg-white/25 rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.08)]
+          flex items-center transition-all select-none cursor-pointer overflow-hidden
+          ${state === "collapsed" ? "justify-center gap-0" : "justify-center gap-8"}
+        `}
       >
-        {/* subtle moving highlight for glass realism */}
-        <span
-          aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-full"
-          style={{
-            background:
-              "radial-gradient(1200px 160px at 20% -40%, rgba(255,255,255,0.35), rgba(255,255,255,0) 60%)",
-            mixBlendMode: "screen"
-          }}
-        />
-
-        {/* Name (always visible) */}
         <motion.p
-          aria-label="Brand name"
-          className="relative z-10 font-semibold tracking-tight text-neutral-900 whitespace-nowrap"
           initial={false}
           animate={{
-            fontSize: state === "collapsed" ? 14 : 16,
-            letterSpacing: state === "collapsed" ? 0.1 : 0
+            fontSize: state === "collapsed" ? 14 : 18,
           }}
-          transition={{ type: "spring", stiffness: 320, damping: 24 }}
+          className="font-semibold tracking-tight text-neutral-900 whitespace-nowrap"
         >
           Dron Pancholi
         </motion.p>
 
-        {/* Nav (visible at top & when expanded) */}
         <AnimatePresence initial={false}>
-          {showNav && (
+          {(state === "top" || state === "expanded") && (
             <motion.nav
               key="nav"
               onClick={(e) => e.stopPropagation()}
-              className="relative z-10 flex items-center gap-8 text-neutral-800 font-medium"
-              initial={{ opacity: 0, x: 8 }}
+              className="flex items-center gap-10 text-neutral-800 font-medium whitespace-nowrap"
+              style={{ overflow: "hidden" }}
+              initial={{ opacity: 0, x: 4 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 8 }}
-              transition={{ duration: 0.22, ease: "easeOut" }}
+              exit={{ opacity: 0, x: 4 }}
+              transition={{ duration: 0.25 }}
             >
               <a href="#about" className="hover:text-black transition-colors">About</a>
               <a href="#projects" className="hover:text-black transition-colors">Projects</a>
@@ -150,15 +98,6 @@ export default function Header() {
             </motion.nav>
           )}
         </AnimatePresence>
-
-        {/* subtle inner edge (keeps the glass edge crisp) */}
-        <span
-          aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-full"
-          style={{
-            boxShadow: "inset 0 0 0 0.5px rgba(255,255,255,0.55)"
-          }}
-        />
       </motion.header>
     </div>
   );
