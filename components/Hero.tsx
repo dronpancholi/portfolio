@@ -4,7 +4,7 @@ import { motion, useMotionValue, useTransform, useScroll, useSpring } from 'fram
 
 const PortraitImage: React.FC<{ isFiltered?: boolean }> = ({ isFiltered = false }) => (
   <img
-    src="/image/headshot.jpg"
+    src="https://images.unsplash.com/photo-1580894742597-87989d39e769?q=80&w=512&h=512&fit=crop&crop=faces&auto=format"
     alt="Dron Pancholi"
     className={`absolute inset-0 w-full h-full object-cover ${isFiltered ? 'filter grayscale contrast-125' : ''}`}
   />
