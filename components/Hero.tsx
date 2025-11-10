@@ -43,7 +43,7 @@ const InteractivePortrait: React.FC = () => {
       ref={ref}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden cursor-pointer shadow-2xl shadow-eerie-black/10"
+      className="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden cursor-pointer shadow-2xl shadow-black/10"
       style={{ transformStyle: 'preserve-3d' }}
       whileHover={{ scale: 1.05 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
@@ -121,18 +121,16 @@ const Hero: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tighter text-eerie-black mb-4"
-            // FIX: Corrected typo from 'preserve-d' to 'preserve-3d'.
+            className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tighter text-[var(--text-main)] mb-4"
             style={{ transform: 'translateZ(50px)', transformStyle: 'preserve-3d' }}
           >
-            I build with <span className="text-saffron">Artificial Intelligence.</span>
+            I build with <span className="text-[var(--accent)]">Artificial Intelligence.</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="max-w-2xl text-base sm:text-lg md:text-xl text-jet font-light mx-auto"
-            // FIX: Corrected typo from 'preserve-d' to 'preserve-3d'.
+            className="max-w-2xl text-base sm:text-lg md:text-xl text-[var(--text-secondary)] font-light mx-auto"
             style={{ transform: 'translateZ(25px)', transformStyle: 'preserve-3d' }}
           >
             Pursuing a Diploma in Computer Engineering and advancing into AI & ML specialization to architect the next generation of intelligent systems.

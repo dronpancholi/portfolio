@@ -7,7 +7,7 @@ const Footer: React.FC = () => {
   return (
     <footer className="py-8 text-center">
       <div className="container mx-auto px-6">
-        <p className="text-sm text-jet">
+        <p className="text-sm text-[var(--text-secondary)]">
           Designed & Built by Dron Pancholi — {currentYear}
         </p>
       </div>

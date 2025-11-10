@@ -1,169 +1,80 @@
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
-// FIX: Explicitly import the `Variants` type from framer-motion to resolve type inference issues.
-import { motion, AnimatePresence, Variants } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
-// FIX: Added the `Variants` type to the `variants` object. This ensures TypeScript correctly validates the `type` property in the transition object against the allowed `AnimationGeneratorType` values (e.g., "spring"), preventing a type error where it was being inferred as a generic `string`.
-const variants: Variants = {
-  top: {
-    paddingLeft: 28,
-    paddingRight: 28,
-    paddingTop: 14,
-    paddingBottom: 14,
-    scale: 1,
-    transition: { type: "spring", stiffness: 100, damping: 20, mass: 1.2 }
-  },
-  expanded: {
-    paddingLeft: 22,
-    paddingRight: 22,
-    paddingTop: 12,
-    paddingBottom: 12,
-    scale: 0.96,
-    transition: { type: "spring", stiffness: 100, damping: 20, mass: 1.2 }
-  },
-  collapsed: {
-    paddingLeft: 14,
-    paddingRight: 14,
-    paddingTop: 8,
-    paddingBottom: 8,
-    scale: 0.88,
-    transition: { type: "spring", stiffness: 100, damping: 20, mass: 1.2 }
-  }
-};
-
-
-export default function Header() {
+export default function Header(){
   const pillRef = useRef<HTMLDivElement>(null);
   const [isAtTop, setIsAtTop] = useState(true);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
-  // Scroll: at top -> full; scrolled -> shrunk (unless expanded by click)
   useEffect(() => {
     const onScroll = () => {
       const atTop = window.scrollY < 8;
       setIsAtTop(atTop);
-      // Auto-collapse when leaving top (unless user explicitly expanded)
-      if (!atTop && isExpanded) return; // keep manual expand while scrolled
-      if (!atTop) setIsExpanded(false);
+      if (!atTop && expanded) return; // preserve manual expand while scrolled
+      if (!atTop) setExpanded(false); // auto-collapse when leaving top
     };
     onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive:true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [isExpanded]);
+  }, [expanded]);
 
-  // Outside click & Esc to collapse (only when not at top)
+  // Outside click to collapse when expanded away from top
   useEffect(() => {
-    const onDocClick = (e: MouseEvent) => {
-      if (isAtTop) return; // full header at top; no need to collapse
-      if (isExpanded && pillRef.current && !pillRef.current.contains(e.target as Node)) {
-        setIsExpanded(false);
-      }
+    const onClick = (e:MouseEvent) => {
+      if (!expanded || isAtTop) return;
+      if (pillRef.current && !pillRef.current.contains(e.target as Node)) setExpanded(false);
     };
-    const onKey = (e: KeyboardEvent) => {
-      if (!isAtTop && isExpanded && e.key === "Escape") setIsExpanded(false);
-    };
-    document.addEventListener("mousedown", onDocClick);
+    const onKey = (e:KeyboardEvent) => { if (expanded && !isAtTop && e.key==="Escape") setExpanded(false); };
+    document.addEventListener("mousedown", onClick);
     document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("mousedown", onDocClick);
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [isAtTop, isExpanded]);
-  
-  // Mouse-Light Tracking Logic
-  useEffect(() => {
-    const handleMove = (e: MouseEvent) => {
-      const el = pillRef.current;
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-      el.style.setProperty("--x", `${e.clientX - rect.left}px`);
-      el.style.setProperty("--y", `${e.clientY - rect.top}px`);
-    };
-    window.addEventListener("mousemove", handleMove);
-    return () => window.removeEventListener("mousemove", handleMove);
-  }, []);
+    return () => { document.removeEventListener("mousedown", onClick); document.removeEventListener("keydown", onKey); };
+  }, [expanded, isAtTop]);
 
-  // Parallax liquid glass upgrade
-  const [parallax, setParallax] = useState(0);
+  const onPillClick = useCallback(() => { if (!isAtTop) setExpanded(v=>!v); }, [isAtTop]);
 
-  useEffect(() => {
-    let lastScroll = window.scrollY;
-    const handleScroll = () => {
-      const current = window.scrollY;
-      const delta = current - lastScroll;
-      lastScroll = current;
-
-      // Clamp subtle effect strength
-      const next = Math.max(Math.min(parallax + delta * 0.015, 1.8), -1.8);
-
-      setParallax(next);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [parallax]);
-
-
-  // Click toggles expand only when not at top; at top it's already full
-  const onPillClick = useCallback(() => {
-    if (!isAtTop) setIsExpanded((v) => !v);
-  }, [isAtTop]);
-
-  const state = isAtTop ? "top" : isExpanded ? "expanded" : "collapsed";
+  const state = isAtTop ? "top" : expanded ? "expanded" : "collapsed";
 
   return (
-    <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full px-4 flex justify-center">
+    <div className="fixed top-3 sm:top-4 left-1/2 -translate-x-1/2 z-50 px-3 sm:px-0 w-full flex justify-center pointer-events-none">
       <motion.header
         ref={pillRef}
         onClick={onPillClick}
+        className="glass pointer-events-auto flex items-center justify-center gap-4 sm:gap-6 mx-auto cursor-pointer"
+        variants={{
+          top:       { width: "min(92vw, 920px)", borderRadius: 9999, padding: "12px 18px", scale: 1   , filter: "none" },
+          expanded:  { width: "min(92vw, 820px)", borderRadius: 9999, padding: "10px 16px", scale: 0.98, filter: "none" },
+          collapsed: { width: "max(56vw, 220px)" , borderRadius: 9999, padding: "8px 14px" , scale: 0.92, filter: "none" }
+        }}
+        initial={false}
         animate={state}
-        variants={variants}
-        transition={{
-          type: "spring",
-          stiffness: 100,
-          damping: 20,
-          mass: 1.2
-        }}
-        style={{
-          transform: `translateZ(0) scale(${1 + parallax * 0.015})`,
-          backdropFilter: `blur(${Math.max(0, 22 + parallax * 1.5)}px)`,
-        }}
-        className={`
-          liquid-glass-pulse
-          flex items-center overflow-hidden cursor-pointer select-none rounded-full
-          transition-all duration-500 ease-[cubic-bezier(.22,.61,.36,1)]
-          bg-white/[0.18]
-          [background:radial-gradient(120%_180%_at_50%_0%,rgba(255,255,255,0.28),rgba(255,255,255,0.05)65%,rgba(255,255,255,0.03))]
-          border border-white/[0.35]
-          shadow-[0_12px_40px_-10px_rgba(0,0,0,0.22),0_4px_6px_rgba(255,255,255,0.45)_inset]
-          max-w-[92vw]
-          px-4 py-2 md:px-0 md:py-0
-          ${state === "collapsed" ? "justify-center gap-0" : "justify-center gap-6"}
-        `}
+        transition={{ type:"spring", stiffness:200, damping:24, mass:1.05 }}
+        aria-label="Primary navigation"
       >
         <motion.p
-          animate={{ fontSize: state === "collapsed" ? 14 : 18 }}
-          transition={{ type: "spring", stiffness: 100, damping: 20, mass: 1.1 }}
-          className="font-semibold text-neutral-900 whitespace-nowrap text-sm md:text-base"
+          layout
+          animate={{ fontSize: state==="collapsed" ? 14 : 18 }}
+          transition={{ type:"spring", stiffness:260, damping:20 }}
+          className="font-semibold tracking-tight text-neutral-900 whitespace-nowrap"
         >
           Dron Pancholi
         </motion.p>
 
         <AnimatePresence initial={false}>
-          {(state === "top" || state === "expanded") && (
+          {(state==="top" || state==="expanded") && (
             <motion.nav
               key="nav"
-              onClick={(e) => e.stopPropagation()}
-              className="flex items-center font-medium text-neutral-800 whitespace-nowrap overflow-x-auto scrollbar-none gap-4 md:gap-6 pl-1 pr-1 md:pl-0 md:pr-0"
-              initial={{ opacity: 0, x: 4 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 6, transition: { duration: 0.26, delay: 0.06 } }}
-              transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+              onClick={(e)=>e.stopPropagation()}
+              className="flex items-center font-medium text-neutral-800 whitespace-nowrap overflow-hidden"
+              initial={{ opacity:0, x: 6 }}
+              animate={{ opacity:1, x: 0 }}
+              exit={{ opacity:0, x: 6 }}
+              transition={{ duration:0.28, ease:[0.22,1,0.36,1] }}
             >
-              <a href="#about" className="hover:text-black transition-colors">About</a>
-              <a href="#projects" className="hover:text-black transition-colors">Projects</a>
-              <a href="#skills" className="hover:text-black transition-colors">Skills</a>
-              <a href="#contact" className="hover:text-black transition-colors">Contact</a>
+              <a href="#about" className="px-3 sm:px-4 py-1.5 hover:text-black transition-colors">About</a>
+              <a href="#projects" className="px-3 sm:px-4 py-1.5 hover:text-black transition-colors">Projects</a>
+              <a href="#skills" className="px-3 sm:px-4 py-1.5 hover:text-black transition-colors">Skills</a>
+              <a href="#contact" className="px-3 sm:px-4 py-1.5 hover:text-black transition-colors">Contact</a>
             </motion.nav>
           )}
         </AnimatePresence>

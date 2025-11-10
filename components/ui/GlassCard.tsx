@@ -1,21 +1,18 @@
-import React from 'react';
-import { motion, MotionProps } from 'framer-motion';
+import React from "react";
+import { motion, MotionProps } from "framer-motion";
 
 interface GlassCardProps extends MotionProps {
   children: React.ReactNode;
   className?: string;
-  isStatic?: boolean; // Kept for compatibility, though tilt is now global.
 }
 
-const GlassCard: React.FC<GlassCardProps> = ({ children, className = '', isStatic = false, ...props }) => {
+const GlassCard: React.FC<GlassCardProps> = ({ children, className = "", ...props }) => {
   return (
     <motion.div
-      className={`liquid-glass ${className}`}
+      className={`glass glass--panel min-glow ${className}`}
       {...props}
     >
       {children}
-      {/* This element is used to create the liquid ripple effect via CSS. */}
-      <div className="ripple-overlay" aria-hidden="true"></div>
     </motion.div>
   );
 };

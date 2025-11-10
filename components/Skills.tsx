@@ -45,7 +45,7 @@ const Skills: React.FC = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.5 }}
         transition={{ duration: 0.5 }}
-        className="text-3xl md:text-4xl font-bold text-eerie-black mb-12 text-center tracking-tight"
+        className="text-3xl md:text-4xl font-bold text-[var(--text-main)] mb-12 text-center tracking-tight"
       >
         My Technical Stack
       </motion.h2>
@@ -80,15 +80,14 @@ const Skills: React.FC = () => {
                 <GlassCard className="h-full">
                   <div className="p-8">
                     <div className="flex items-center mb-4">
-                      {Icon && <Icon className="w-8 h-8 mr-4 text-saffron" />}
-                      <h3 className="text-xl font-bold text-eerie-black">{category.title}</h3>
+                      {Icon && <Icon className="w-8 h-8 mr-4 text-[var(--accent)]" />}
+                      <h3 className="text-xl font-bold text-[var(--text-main)]">{category.title}</h3>
                     </div>
                     <ul className="flex flex-wrap gap-2">
-                      {/* FIX: Removed the unnecessary spread operator `...` which was causing a TypeScript error. Mapping directly over the readonly `skills` array is safe and correct. */}
                       {category.skills.map((skill) => (
                         <li
                           key={skill}
-                          className="bg-silver/60 text-jet text-sm font-medium px-3 py-1 rounded-full"
+                          className="bg-black/5 text-[var(--text-secondary)] text-sm font-medium px-3 py-1 rounded-full"
                         >
                           {skill}
                         </li>

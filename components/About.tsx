@@ -13,8 +13,8 @@ const About: React.FC = () => {
       >
         <GlassCard>
           <div className="p-10 md:p-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-eerie-black mb-6 tracking-tight">About Me</h2>
-            <div className="space-y-4 text-jet text-lg leading-relaxed font-light">
+            <h2 className="text-3xl md:text-4xl font-bold text-[var(--text-main)] mb-6 tracking-tight">About Me</h2>
+            <div className="space-y-4 text-[var(--text-secondary)] text-lg leading-relaxed font-light">
               <p>
                 I am a forward-thinking engineer driven by a profound fascination with artificial intelligence and its potential to reshape our world. My current academic path in Computer Engineering serves as a robust foundation for my primary ambition: to specialize in deep learning, applied machine learning, and the creation of AI-augmented systems.
               </p>
