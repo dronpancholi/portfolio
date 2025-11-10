@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import GlassCard from './ui/GlassCard';
 import { PROJECTS_DATA } from '../constants';
@@ -32,47 +33,15 @@ const contentItemVariants: Variants = {
 
 
 const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => void; }) => {
-  const modalRef = useRef<HTMLDivElement>(null);
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
-
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose();
+      if (event.key === 'Escape') {
+        onClose();
+      }
     };
-    
-    // Focus trap
-    const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key !== 'Tab') return;
-
-        const focusableElements = modalRef.current?.querySelectorAll<HTMLElement>(
-          'a[href], button:not([disabled]), textarea, input, select'
-        );
-        
-        if (!focusableElements || focusableElements.length === 0) return;
-
-        const firstElement = focusableElements[0];
-        const lastElement = focusableElements[focusableElements.length - 1];
-
-        if (e.shiftKey) {
-            if (document.activeElement === firstElement) {
-                lastElement.focus();
-                e.preventDefault();
-            }
-        } else {
-            if (document.activeElement === lastElement) {
-                firstElement.focus();
-                e.preventDefault();
-            }
-        }
-    };
-    
-    closeButtonRef.current?.focus();
     window.addEventListener('keydown', handleEsc);
-    document.addEventListener('keydown', handleKeyDown);
-
     return () => {
       window.removeEventListener('keydown', handleEsc);
-      document.removeEventListener('keydown', handleKeyDown);
     };
   }, [onClose]);
 
@@ -95,14 +64,13 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
       />
       
       <GlassCard
-        ref={modalRef}
         layoutId={`project-card-${project.title}`}
+        transition={{ type:"spring", stiffness:360, damping:32, mass:1 }}
         className="relative w-full max-w-3xl z-10"
         style={{ backfaceVisibility: 'hidden' }}
       >
         <div className="p-8 md:p-12 relative max-h-[90vh] overflow-y-auto scrollbar-none">
           <motion.button
-            ref={closeButtonRef}
             onClick={onClose}
             className="absolute top-4 right-4 z-20 text-[var(--text-secondary)] p-2 rounded-full hover:bg-black/10 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
             aria-label="Close modal"
@@ -186,7 +154,7 @@ const projectCardVariants: Variants = {
 
 const Projects: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const originRef = useRef<HTMLDivElement | null>(null);
+  const originRef = useRef<HTMLButtonElement | HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (selectedProject) {
@@ -199,10 +167,10 @@ const Projects: React.FC = () => {
     };
   }, [selectedProject]);
 
-  const handleClose = useCallback(() => {
+  const handleClose = () => {
     setSelectedProject(null);
     originRef.current?.focus();
-  }, []);
+  }
 
   return (
     <section id="projects" className="py-16 md:py-24 scroll-mt-24">
@@ -219,7 +187,6 @@ const Projects: React.FC = () => {
         {PROJECTS_DATA.map((project, index) => (
           <motion.div
             key={project.title}
-            ref={selectedProject?.title === project.title ? originRef : null}
             custom={index}
             variants={projectCardVariants}
             initial="offscreen"
