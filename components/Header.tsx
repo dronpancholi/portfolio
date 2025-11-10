@@ -1,6 +1,40 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+const variants = {
+  top: {
+    paddingLeft: 28,
+    paddingRight: 28,
+    paddingTop: 14,
+    paddingBottom: 14,
+    scale: 1,
+    borderRadius: 9999,
+    gap: 16,
+    transition: { type: "spring", stiffness: 260, damping: 24 }
+  },
+  expanded: {
+    paddingLeft: 22,
+    paddingRight: 22,
+    paddingTop: 12,
+    paddingBottom: 12,
+    scale: 0.96,
+    borderRadius: 9999,
+    gap: 14,
+    transition: { type: "spring", stiffness: 280, damping: 22 }
+  },
+  collapsed: {
+    paddingLeft: 14,
+    paddingRight: 14,
+    paddingTop: 8,
+    paddingBottom: 8,
+    scale: 0.88,
+    borderRadius: 9999,
+    gap: 0,
+    transition: { type: "spring", stiffness: 300, damping: 20 }
+  }
+} as const;
+
+
 export default function Header() {
   const pillRef = useRef<HTMLDivElement>(null);
   const [isAtTop, setIsAtTop] = useState(true);
@@ -52,29 +86,18 @@ export default function Header() {
         ref={pillRef}
         onClick={onPillClick}
         animate={state}
-        transition={{ type: "spring", stiffness: 260, damping: 22 }}
-        variants={{
-          top: { width: 880, padding: "14px 28px" },
-          expanded: { width: 720, padding: "12px 24px" },
-          collapsed: { width: 200, padding: "8px 16px" },
-        }}
-        style={{
-          backdropFilter: "blur(28px) saturate(180%)",
-          WebkitBackdropFilter: "blur(28px) saturate(180%)",
-          border: "1px solid rgba(255,255,255,0.45)",
-        }}
+        variants={variants}
+        transition={{ type: "spring", stiffness: 240, damping: 22 }}
         className={`
-          bg-white/25 rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.08)]
-          flex items-center transition-all select-none cursor-pointer overflow-hidden
-          ${state === "collapsed" ? "justify-center gap-0" : "justify-center gap-8"}
+          flex items-center justify-center overflow-hidden cursor-pointer select-none rounded-full
+          bg-white/25 backdrop-blur-xl border border-white/40 shadow-[0_8px_30px_rgba(0,0,0,0.08)]
+          transition-all
         `}
       >
         <motion.p
-          initial={false}
-          animate={{
-            fontSize: state === "collapsed" ? 14 : 18,
-          }}
-          className="font-semibold tracking-tight text-neutral-900 whitespace-nowrap"
+          animate={{ fontSize: state === "collapsed" ? 14 : 18 }}
+          transition={{ type: "spring", stiffness: 260, damping: 20 }}
+          className="font-semibold text-neutral-900 whitespace-nowrap"
         >
           Dron Pancholi
         </motion.p>
@@ -84,16 +107,16 @@ export default function Header() {
             <motion.nav
               key="nav"
               onClick={(e) => e.stopPropagation()}
-              className="flex items-center gap-10 text-neutral-800 font-medium whitespace-nowrap"
+              className="flex items-center font-medium text-neutral-800 whitespace-nowrap"
               style={{ overflow: "hidden" }}
               initial={{ opacity: 0, x: 4 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 4 }}
-              transition={{ duration: 0.25 }}
+              transition={{ duration: 0.2 }}
             >
-              <a href="#about" className="hover:text-black transition-colors">About</a>
-              <a href="#projects" className="hover:text-black transition-colors">Projects</a>
-              <a href="#skills" className="hover:text-black transition-colors">Skills</a>
+              <a href="#about" className="hover:text-black transition-colors mr-6">About</a>
+              <a href="#projects" className="hover:text-black transition-colors mr-6">Projects</a>
+              <a href="#skills" className="hover:text-black transition-colors mr-6">Skills</a>
               <a href="#contact" className="hover:text-black transition-colors">Contact</a>
             </motion.nav>
           )}
