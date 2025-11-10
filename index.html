@@ -132,6 +132,15 @@
           width 0.35s cubic-bezier(.22,.61,.36,1),
           padding 0.35s cubic-bezier(.22,.61,.36,1);
       }
+      
+      /* Hide scrollbars for specific elements */
+      .scrollbar-none::-webkit-scrollbar {
+        display: none;
+      }
+      .scrollbar-none {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+      }
     </style>
   <script type="importmap">
 {

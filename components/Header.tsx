@@ -77,7 +77,7 @@ export default function Header() {
   const state = isAtTop ? "top" : isExpanded ? "expanded" : "collapsed";
 
   return (
-    <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50">
+    <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full px-4 flex justify-center">
       <motion.header
         ref={pillRef}
         onClick={onPillClick}
@@ -93,13 +93,14 @@ export default function Header() {
           flex items-center overflow-hidden cursor-pointer select-none rounded-full
           bg-white/25 backdrop-blur-xl border border-white/40 shadow-[0_8px_30px_rgba(0,0,0,0.08)]
           transition-all duration-500 ease-[cubic-bezier(.22,.61,.36,1)]
+          max-w-[90vw]
           ${state === "collapsed" ? "justify-center gap-0" : "justify-center gap-6"}
         `}
       >
         <motion.p
           animate={{ fontSize: state === "collapsed" ? 14 : 18 }}
           transition={{ type: "spring", stiffness: 100, damping: 20, mass: 1.1 }}
-          className="font-semibold text-neutral-900 whitespace-nowrap"
+          className="font-semibold text-neutral-900 whitespace-nowrap text-sm md:text-base"
         >
           Dron Pancholi
         </motion.p>
@@ -109,16 +110,15 @@ export default function Header() {
             <motion.nav
               key="nav"
               onClick={(e) => e.stopPropagation()}
-              className="flex items-center font-medium text-neutral-800 whitespace-nowrap"
-              style={{ overflow: "hidden" }}
+              className="flex items-center font-medium text-neutral-800 whitespace-nowrap overflow-x-auto scrollbar-none gap-4 md:gap-6 pl-1 pr-1 md:pl-0 md:pr-0"
               initial={{ opacity: 0, x: 4 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 6, transition: { duration: 0.26, delay: 0.06 } }}
               transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
             >
-              <a href="#about" className="hover:text-black transition-colors mr-6">About</a>
-              <a href="#projects" className="hover:text-black transition-colors mr-6">Projects</a>
-              <a href="#skills" className="hover:text-black transition-colors mr-6">Skills</a>
+              <a href="#about" className="hover:text-black transition-colors">About</a>
+              <a href="#projects" className="hover:text-black transition-colors">Projects</a>
+              <a href="#skills" className="hover:text-black transition-colors">Skills</a>
               <a href="#contact" className="hover:text-black transition-colors">Contact</a>
             </motion.nav>
           )}
