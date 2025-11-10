@@ -3,7 +3,7 @@ import React, { useRef } from 'react';
 import { motion, useMotionValue, useTransform, useScroll, useSpring } from 'framer-motion';
 
 // Add your headshot named 'headshot.jpg' to the public directory.
-const profileImageUrl = '/headshot.jpg';
+const profileImageUrl = 'public/headshot.jpg';
 
 const PortraitImage = ({ isFiltered = false }: { isFiltered?: boolean }) => {
   return (
