@@ -1,8 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Header() {
   const headerRef = useRef<HTMLDivElement>(null);
   const nameRef = useRef<HTMLParagraphElement>(null);
+  const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
     const header = headerRef.current;
@@ -18,10 +19,14 @@ export default function Header() {
     name.style.fontSize = `20px`;
 
     let animationFrameId: number;
-    const animate = () => {
-      const y = window.scrollY;
-      const progress = Math.min(Math.max(y / 140, 0), 1); // clamp 0→1
+    const update = () => {
+      const scrollY = window.scrollY;
+      const progress = Math.min(Math.max(scrollY / 140, 0), 1); // clamp 0→1
 
+      // Switch between "full state" and "identity-only state"
+      setCollapsed(progress > 0.45);
+
+      // Smooth interpolation
       const width = 320 - progress * 120;   // 320 → 200
       const padY = 16 - progress * 8;       // 16 → 8
       const padX = 28 - progress * 12;      // 28 → 16
@@ -35,29 +40,31 @@ export default function Header() {
       header.style['webkitBackdropFilter'] = filterValue;
       name.style.fontSize = `${font}px`;
 
-      animationFrameId = requestAnimationFrame(animate);
+      animationFrameId = requestAnimationFrame(update);
     };
 
-    animationFrameId = requestAnimationFrame(animate);
-    
+    animationFrameId = requestAnimationFrame(update);
+
     return () => {
       cancelAnimationFrame(animationFrameId);
-    }
+    };
   }, []);
 
   return (
     <header
       ref={headerRef}
-      className="liquid-glass-header fixed top-6 left-1/2 -translate-x-1/2 z-50 rounded-full flex items-center gap-6 justify-center whitespace-nowrap select-none"
+      className="liquid-glass-header fixed top-6 left-1/2 -translate-x-1/2 z-50 rounded-full flex items-center justify-center gap-5 select-none transition-all"
     >
-      <p
-        ref={nameRef}
-        className="font-semibold tracking-tight text-neutral-900 pointer-events-none"
-      >
+      <p ref={nameRef} className="font-semibold tracking-tight text-neutral-900 pointer-events-none">
         Dron Pancholi
       </p>
 
-      <nav className="flex items-center gap-4 font-medium text-neutral-800">
+      {/* Nav links fade away when collapsed */}
+      <nav
+        className={`flex items-center gap-4 text-neutral-800 font-medium transition-opacity duration-300 ${
+          collapsed ? "opacity-0 pointer-events-none" : "opacity-100"
+        }`}
+      >
         <a href="#about" className="hover:text-black transition-colors">About</a>
         <a href="#projects" className="hover:text-black transition-colors">Projects</a>
         <a href="#skills" className="hover:text-black transition-colors">Skills</a>
