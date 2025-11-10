@@ -10,15 +10,15 @@ const variants: Variants = {
     paddingTop: 14,
     paddingBottom: 14,
     scale: 1,
-    transition: { type: "spring", stiffness: 125, damping: 22, mass: 1.1 }
+    transition: { type: "spring", stiffness: 100, damping: 20, mass: 1.2 }
   },
   expanded: {
     paddingLeft: 22,
     paddingRight: 22,
     paddingTop: 12,
     paddingBottom: 12,
-    scale: 0.965,
-    transition: { type: "spring", stiffness: 125, damping: 22, mass: 1.1 }
+    scale: 0.96,
+    transition: { type: "spring", stiffness: 100, damping: 20, mass: 1.2 }
   },
   collapsed: {
     paddingLeft: 14,
@@ -26,7 +26,7 @@ const variants: Variants = {
     paddingTop: 8,
     paddingBottom: 8,
     scale: 0.88,
-    transition: { type: "spring", stiffness: 125, damping: 22, mass: 1.1 }
+    transition: { type: "spring", stiffness: 100, damping: 20, mass: 1.2 }
   }
 };
 
@@ -85,9 +85,9 @@ export default function Header() {
         variants={variants}
         transition={{
           type: "spring",
-          stiffness: 125,
-          damping: 22,
-          mass: 1.1
+          stiffness: 100,
+          damping: 20,
+          mass: 1.2
         }}
         className={`
           flex items-center overflow-hidden cursor-pointer select-none rounded-full
@@ -98,7 +98,7 @@ export default function Header() {
       >
         <motion.p
           animate={{ fontSize: state === "collapsed" ? 14 : 18 }}
-          transition={{ type: "spring", stiffness: 260, damping: 20 }}
+          transition={{ type: "spring", stiffness: 100, damping: 20, mass: 1.1 }}
           className="font-semibold text-neutral-900 whitespace-nowrap"
         >
           Dron Pancholi
@@ -113,8 +113,8 @@ export default function Header() {
               style={{ overflow: "hidden" }}
               initial={{ opacity: 0, x: 4 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 4, transition: { duration: 0.22, delay: 0.04 } }}
-              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+              exit={{ opacity: 0, x: 6, transition: { duration: 0.26, delay: 0.06 } }}
+              transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
             >
               <a href="#about" className="hover:text-black transition-colors mr-6">About</a>
               <a href="#projects" className="hover:text-black transition-colors mr-6">Projects</a>
