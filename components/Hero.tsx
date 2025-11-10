@@ -2,50 +2,19 @@
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useTransform, useScroll, useSpring } from 'framer-motion';
 
-const PortraitImage: React.FC<{ isFiltered?: boolean }> = ({ isFiltered = false }) => (
-  <img
-    src="https://i.ibb.co/RFn5HJY/headshot.jpg"
-    alt="Dron Pancholi"
-    className={`absolute inset-0 w-full h-full object-cover ${isFiltered ? 'filter grayscale contrast-125' : ''}`}
-  />
-);
-
 const InteractivePortrait: React.FC = () => {
-  const ref = useRef<HTMLDivElement>(null);
-  const mouseX = useMotionValue(0.5);
-  const springMouseX = useSpring(mouseX, { stiffness: 300, damping: 20 });
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (ref.current) {
-      const { left, width } = ref.current.getBoundingClientRect();
-      const newX = (e.clientX - left) / width;
-      springMouseX.set(newX);
-    }
-  };
-  
-  const handleMouseLeave = () => {
-      springMouseX.set(0.5);
-  };
-
-  const clipPathValue = useTransform(springMouseX, [0, 1], ["inset(0 100% 0 0)", "inset(0 0 0 0)"]);
-
   return (
     <motion.div
-      ref={ref}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
       className="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden cursor-pointer shadow-2xl shadow-black/10"
       style={{ transformStyle: 'preserve-3d' }}
       whileHover={{ scale: 1.05 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
     >
-      <PortraitImage />
-      <motion.div
-        className="absolute inset-0 w-full h-full"
-        style={{ clipPath: clipPathValue }}
-      >
-        <PortraitImage isFiltered={true} />
-      </motion.div>
+      <img
+        src="https://i.ibb.co/RFn5HJY/headshot.jpg"
+        alt="Dron Pancholi"
+        className="w-full h-full object-cover"
+      />
     </motion.div>
   );
 };
