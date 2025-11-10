@@ -178,9 +178,8 @@ const projectCardVariants: Variants = {
     },
   }),
   hover: {
-    y: -8,
-    scale: 1.03,
-    transition: { type: 'spring', stiffness: 300, damping: 15 },
+    scale: 1.02,
+    transition: { type: 'spring', stiffness: 260, damping: 20 },
   },
 };
 
@@ -245,7 +244,7 @@ const Projects: React.FC = () => {
           >
             <GlassCard 
               layoutId={`project-card-${project.title}`}
-              className="h-full group"
+              className="h-full group liquid-hover"
             >
               <div className="p-8 flex flex-col h-full">
                 <div className="flex-grow">
