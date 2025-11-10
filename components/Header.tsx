@@ -40,24 +40,19 @@ export default function Header(){
       <motion.header
         ref={pillRef}
         onClick={onPillClick}
-        className="glass pointer-events-auto flex items-center justify-center gap-3 sm:gap-5 mx-auto cursor-pointer"
+        layout
+        className="glass pointer-events-auto flex items-center justify-center gap-4 sm:gap-5 rounded-full mx-auto cursor-pointer whitespace-nowrap"
         variants={{
           top: {
-            width: "min(88vw, 860px)",
-            borderRadius: 9999,
-            padding: "12px 22px",
+            padding: "12px 20px",
             scale: 1
           },
           expanded: {
-            width: "min(88vw, 720px)",
-            borderRadius: 9999,
             padding: "10px 18px",
-            scale: 0.975
+            scale: 0.97
           },
           collapsed: {
-            width: "max(105px, 22vw)",
-            borderRadius: 9999,
-            padding: "5px 10px",
+            padding: "6px 12px",
             scale: 0.90
           }
         }}
@@ -68,7 +63,7 @@ export default function Header(){
       >
         <motion.p
           layout
-          animate={{ fontSize: state==="collapsed" ? 12 : 17.5 }}
+          animate={{ fontSize: state==="collapsed" ? "0.78rem" : "1.05rem" }}
           transition={{ type:"spring", stiffness:260, damping:20 }}
           className="font-semibold tracking-tight text-neutral-900 whitespace-nowrap"
         >
@@ -86,10 +81,10 @@ export default function Header(){
               exit={{ opacity:0, x: 6 }}
               transition={{ duration:0.28, ease:[0.22,1,0.36,1] }}
             >
-              <a href="#about" className="px-2.5 sm:px-3.5 py-1.5 hover:text-black transition-colors">About</a>
-              <a href="#projects" className="px-2.5 sm:px-3.5 py-1.5 hover:text-black transition-colors">Projects</a>
-              <a href="#skills" className="px-2.5 sm:px-3.5 py-1.5 hover:text-black transition-colors">Skills</a>
-              <a href="#contact" className="px-2.5 sm:px-3.5 py-1.5 hover:text-black transition-colors">Contact</a>
+              <a href="#about" className="px-2 sm:px-3 py-1 hover:text-black transition-colors">About</a>
+              <a href="#projects" className="px-2 sm:px-3 py-1 hover:text-black transition-colors">Projects</a>
+              <a href="#skills" className="px-2 sm:px-3 py-1 hover:text-black transition-colors">Skills</a>
+              <a href="#contact" className="px-2 sm:px-3 py-1 hover:text-black transition-colors">Contact</a>
             </motion.nav>
           )}
         </AnimatePresence>
