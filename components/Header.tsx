@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState, useCallback } from "react";
 // FIX: Explicitly import the `Variants` type from framer-motion to resolve type inference issues.
 import { motion, AnimatePresence, Variants } from "framer-motion";
@@ -82,6 +83,27 @@ export default function Header() {
     return () => window.removeEventListener("mousemove", handleMove);
   }, []);
 
+  // Parallax liquid glass upgrade
+  const [parallax, setParallax] = useState(0);
+
+  useEffect(() => {
+    let lastScroll = window.scrollY;
+    const handleScroll = () => {
+      const current = window.scrollY;
+      const delta = current - lastScroll;
+      lastScroll = current;
+
+      // Clamp subtle effect strength
+      const next = Math.max(Math.min(parallax + delta * 0.015, 1.8), -1.8);
+
+      setParallax(next);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [parallax]);
+
+
   // Click toggles expand only when not at top; at top it's already full
   const onPillClick = useCallback(() => {
     if (!isAtTop) setIsExpanded((v) => !v);
@@ -102,12 +124,15 @@ export default function Header() {
           damping: 20,
           mass: 1.2
         }}
+        style={{
+          transform: `translateZ(0) scale(${1 + parallax * 0.015})`,
+          backdropFilter: `blur(${Math.max(0, 22 + parallax * 1.5)}px)`,
+        }}
         className={`
           liquid-glass-pulse
           flex items-center overflow-hidden cursor-pointer select-none rounded-full
           transition-all duration-500 ease-[cubic-bezier(.22,.61,.36,1)]
           bg-white/[0.18]
-          backdrop-blur-[22px]
           [background:radial-gradient(120%_180%_at_50%_0%,rgba(255,255,255,0.28),rgba(255,255,255,0.05)65%,rgba(255,255,255,0.03))]
           border border-white/[0.35]
           shadow-[0_12px_40px_-10px_rgba(0,0,0,0.22),0_4px_6px_rgba(255,255,255,0.45)_inset]
