@@ -26,6 +26,21 @@ const Header: React.FC = () => {
     };
   }, [isMenuOpen]);
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    const targetId = href.substring(1);
+    const targetElement = document.getElementById(targetId);
+
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    if (isMenuOpen) {
+      setIsMenuOpen(false);
+    }
+  };
+
+
   return (
     <>
       <motion.header
@@ -39,7 +54,7 @@ const Header: React.FC = () => {
             scrolled ? 'py-2 px-6' : 'py-3 px-6'
           }`}
         >
-          <a href="#home" className="text-lg font-semibold tracking-tight text-eerie-black z-10">
+          <a href="#home" onClick={(e) => handleNavClick(e, '#home')} className="text-lg font-semibold tracking-tight text-eerie-black z-10">
             Dron Pancholi
           </a>
           <ul className="hidden md:flex items-center space-x-1 z-10">
@@ -47,6 +62,7 @@ const Header: React.FC = () => {
               <li key={link.href}>
                 <a
                   href={link.href}
+                  onClick={(e) => handleNavClick(e, link.href)}
                   className="px-4 py-2 text-sm text-jet hover:text-eerie-black rounded-lg transition-colors duration-200 relative"
                 >
                   {link.label}
@@ -87,7 +103,7 @@ const Header: React.FC = () => {
                   <a
                     href={link.href}
                     className="text-2xl font-medium text-jet hover:text-saffron transition-colors duration-200"
-                    onClick={() => setIsMenuOpen(false)}
+                    onClick={(e) => handleNavClick(e, link.href)}
                   >
                     {link.label}
                   </a>
