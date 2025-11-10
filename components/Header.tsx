@@ -18,12 +18,17 @@ const Header: React.FC = () => {
   // Define the scroll range for the animation (e.g., from 0px to 120px)
   const scrollRange = [0, 120];
 
-  // Interpolate values based on the smoothed scroll position
+  // Interpolate container values based on the smoothed scroll position
   const headerPaddingY = useTransform(smoothedScrollY, scrollRange, [12, 8]); // from py-3 to py-2
-  const headerPaddingX = useTransform(smoothedScrollY, scrollRange, [28, 24]); // from a bit more than px-6 to px-6
+  const headerPaddingX = useTransform(smoothedScrollY, scrollRange, [28, 24]); // from px-7 to px-6
   const headerBlur = useTransform(smoothedScrollY, scrollRange, [30, 20]);
   const headerSaturate = useTransform(smoothedScrollY, scrollRange, [190, 165]);
   const headerBrightness = useTransform(smoothedScrollY, scrollRange, [1.1, 1.05]);
+
+  // Interpolate text values for proportional scaling
+  const brandFontSize = useTransform(smoothedScrollY, scrollRange, [18, 15]); // From 1.125rem (lg) to ~0.94rem
+  const brandFontWeight = useTransform(smoothedScrollY, scrollRange, [600, 500]); // From semibold to medium
+  const brandLetterSpacing = useTransform(smoothedScrollY, scrollRange, ['-0.025em', '-0.015em']); // from tracking-tight to a bit less tight
 
   // Combine multiple motion values into a single CSS property string
   const backdropFilter = useTransform(
@@ -79,9 +84,18 @@ const Header: React.FC = () => {
             paddingRight: headerPaddingX,
           }}
         >
-          <a href="#home" onClick={(e) => handleNavClick(e, '#home')} className="text-lg font-semibold tracking-tight text-eerie-black z-10 shrink-0">
+          <motion.a
+            href="#home"
+            onClick={(e) => handleNavClick(e, '#home')}
+            className="text-eerie-black z-10 shrink-0"
+            style={{
+              fontSize: brandFontSize,
+              fontWeight: brandFontWeight,
+              letterSpacing: brandLetterSpacing,
+            }}
+          >
             Dron Pancholi
-          </a>
+          </motion.a>
           <ul className="hidden md:flex items-center space-x-1 z-10">
             {NAV_LINKS.map((link) => (
               <li key={link.href}>
