@@ -136,6 +136,7 @@ export default function Header() {
           {showNav && (
             <motion.nav
               key="nav"
+              onClick={(e) => e.stopPropagation()}
               className="relative z-10 flex items-center gap-8 text-neutral-800 font-medium"
               initial={{ opacity: 0, x: 8 }}
               animate={{ opacity: 1, x: 0 }}
