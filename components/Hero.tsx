@@ -2,14 +2,13 @@
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useTransform, useScroll, useSpring } from 'framer-motion';
 
-// Add your headshot named 'headshot.jpg' to the public directory.
-const profileImageUrl = 'public/headshot.jpg';
+const placeholderSvg = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cdefs%3E%3Cstyle%3E.bg%7Bfill:%23E8EBEF;%7D.text%7Bfill:%23333533;font-family:Inter,sans-serif;font-size:80px;font-weight:bold;text-anchor:middle;dominant-baseline:central;%7D%3C/style%3E%3C/defs%3E%3Crect class='bg' width='256' height='256'/%3E%3Ctext x='50%25' y='50%25' class='text'%3EDP%3C/text%3E%3C/svg%3E`;
 
 const PortraitImage = ({ isFiltered = false }: { isFiltered?: boolean }) => {
   return (
     <img
-      src={profileImageUrl}
-      alt={isFiltered ? "AI-stylized portrait of Dron Pancholi" : "Portrait of Dron Pancholi"}
+      src={placeholderSvg}
+      alt={isFiltered ? "Dron Pancholi - AI Version" : "Dron Pancholi"}
       className={`absolute inset-0 w-full h-full object-cover ${isFiltered ? 'filter hue-rotate-[200deg] saturate-150 brightness-110' : ''}`}
       width={256}
       height={256}
@@ -48,8 +47,6 @@ const InteractivePortrait: React.FC = () => {
       style={{ transformStyle: 'preserve-3d' }}
       whileHover={{ scale: 1.05 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-      role="img"
-      aria-label="An interactive portrait of Dron Pancholi that reveals a stylized version on hover."
     >
       <PortraitImage />
       <motion.div
@@ -127,7 +124,7 @@ const Hero: React.FC = () => {
             className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tighter text-[var(--text-main)] mb-4"
             style={{ transform: 'translateZ(50px)', transformStyle: 'preserve-3d' }}
           >
-            Intelligence. <span className="text-[var(--accent)]">Precision.</span> Quiet Power.
+            I build with <span className="text-[var(--accent)]">Artificial Intelligence.</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -136,7 +133,7 @@ const Hero: React.FC = () => {
             className="max-w-2xl text-base sm:text-lg md:text-xl text-[var(--text-secondary)] font-light mx-auto"
             style={{ transform: 'translateZ(25px)', transformStyle: 'preserve-3d' }}
           >
-            I architect and build intelligent software systems that are as reliable and performant as they are intuitive to use.
+            Pursuing a Diploma in Computer Engineering and advancing into AI & ML specialization to architect the next generation of intelligent systems.
           </motion.p>
         </motion.div>
       </motion.div>

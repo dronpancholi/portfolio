@@ -40,7 +40,7 @@ const Contact: React.FC = () => {
         transition={{ duration: 0.5, delay: 0.1 }}
         className="text-lg text-[var(--text-secondary)] mb-12 max-w-xl mx-auto"
       >
-        I am open to discussing new projects and opportunities. For inquiries, please reach out via email.
+        I'm actively exploring new opportunities and collaborations. The best way to reach me is by email.
       </motion.p>
       
       <motion.div

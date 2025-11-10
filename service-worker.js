@@ -1,11 +1,8 @@
 
-const CACHE_NAME = 'dron-pancholi-portfolio-v5';
+const CACHE_NAME = 'dron-pancholi-portfolio-v4';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/headshot.jpg',
-  'https://cdn.tailwindcss.com',
-  'https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap',
 ];
 
 self.addEventListener('install', event => {
@@ -22,25 +19,36 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
-  // Use a cache-first strategy for all requests.
-  // This is suitable for a portfolio site where assets don't change often between deployments.
-  event.respondWith(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.match(event.request).then(response => {
-        // Fetch from network if not in cache, then cache the new response.
-        const fetchPromise = fetch(event.request).then(networkResponse => {
-          if (networkResponse && networkResponse.status === 200) {
-            // Only cache GET requests.
-            if (event.request.method === 'GET') {
+  // For image assets, use a cache-first strategy.
+  if (event.request.destination === 'image') {
+    event.respondWith(
+      caches.open(CACHE_NAME).then(cache => {
+        return cache.match(event.request).then(response => {
+          // Fetch from network, cache it, and return the response.
+          const fetchPromise = fetch(event.request).then(networkResponse => {
+            if (networkResponse && networkResponse.status === 200) {
               cache.put(event.request, networkResponse.clone());
             }
-          }
-          return networkResponse;
+            return networkResponse;
+          });
+          // Return from cache if available, otherwise fetch from network.
+          return response || fetchPromise;
         });
-        // Return from cache if available, otherwise fetch from network.
-        return response || fetchPromise;
-      });
-    })
+      })
+    );
+    return;
+  }
+
+  // For all other requests, use a cache-first strategy for pre-cached assets.
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => {
+        if (response) {
+          return response;
+        }
+        return fetch(event.request);
+      }
+    )
   );
 });
 
