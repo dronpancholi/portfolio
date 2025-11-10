@@ -2,8 +2,8 @@
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useTransform, useScroll, useSpring } from 'framer-motion';
 
-// Add your headshot named 'headshot.jpg' to the public/images directory.
-const profileImageUrl = '/images/headshot.jpg';
+// Add your headshot named 'headshot.jpg' to the public directory.
+const profileImageUrl = '/headshot.jpg';
 
 const PortraitImage = ({ isFiltered = false }: { isFiltered?: boolean }) => {
   return (
@@ -48,6 +48,8 @@ const InteractivePortrait: React.FC = () => {
       style={{ transformStyle: 'preserve-3d' }}
       whileHover={{ scale: 1.05 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+      role="img"
+      aria-label="An interactive portrait of Dron Pancholi that reveals a stylized version on hover."
     >
       <PortraitImage />
       <motion.div
