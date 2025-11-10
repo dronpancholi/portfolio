@@ -69,7 +69,7 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
         className="relative w-full max-w-3xl z-10"
         style={{ backfaceVisibility: 'hidden' }}
       >
-        <div className="p-8 md:p-12 relative max-h-[90vh] overflow-y-auto scrollbar-none">
+        <div className="relative max-h-[90vh] overflow-y-auto scrollbar-none">
           <motion.button
             onClick={onClose}
             className="absolute top-4 right-4 z-20 text-[var(--text-secondary)] p-2 rounded-full hover:bg-black/10 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
@@ -214,7 +214,7 @@ const Projects: React.FC = () => {
               layoutId={`project-card-${project.title}`}
               className="h-full group"
             >
-              <div className="p-8 flex flex-col h-full">
+              <div className="flex flex-col h-full">
                 <div className="flex-grow">
                   <div className="flex justify-between items-start mb-4">
                     <motion.h3 layoutId={`project-title-${project.title}`} className="text-xl font-bold text-[var(--text-main)]">{project.title}</motion.h3>
