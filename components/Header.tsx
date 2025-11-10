@@ -42,9 +42,24 @@ export default function Header(){
         onClick={onPillClick}
         className="glass pointer-events-auto flex items-center justify-center gap-4 sm:gap-6 mx-auto cursor-pointer"
         variants={{
-          top:       { width: "min(92vw, 920px)", borderRadius: 9999, padding: "12px 18px", scale: 1   , filter: "none" },
-          expanded:  { width: "min(92vw, 820px)", borderRadius: 9999, padding: "10px 16px", scale: 0.98, filter: "none" },
-          collapsed: { width: "max(56vw, 220px)" , borderRadius: 9999, padding: "8px 14px" , scale: 0.92, filter: "none" }
+          top: {
+            width: "min(92vw, 920px)",
+            borderRadius: 9999,
+            padding: "12px 18px",
+            scale: 1
+          },
+          expanded: {
+            width: "min(92vw, 760px)",
+            borderRadius: 9999,
+            padding: "10px 16px",
+            scale: 0.97
+          },
+          collapsed: {
+            width: "max(135px, 32vw)", // **Much smaller pill**
+            borderRadius: 9999,
+            padding: "6px 12px",       // **Tight, elegant padding**
+            scale: 0.90
+          }
         }}
         initial={false}
         animate={state}
@@ -53,7 +68,7 @@ export default function Header(){
       >
         <motion.p
           layout
-          animate={{ fontSize: state==="collapsed" ? 14 : 18 }}
+          animate={{ fontSize: state==="collapsed" ? 13 : 18 }}
           transition={{ type:"spring", stiffness:260, damping:20 }}
           className="font-semibold tracking-tight text-neutral-900 whitespace-nowrap"
         >
