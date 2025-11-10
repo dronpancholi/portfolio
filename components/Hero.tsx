@@ -124,7 +124,7 @@ const Hero: React.FC = () => {
             className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tighter text-[var(--text-main)] mb-4"
             style={{ transform: 'translateZ(50px)', transformStyle: 'preserve-3d' }}
           >
-            Systems, designed with depth.<br className="hidden md:block" /> Interfaces, designed with clarity.
+            Intelligence. <span className="text-[var(--accent)]">Precision.</span> Quiet Power.
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
