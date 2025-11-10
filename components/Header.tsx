@@ -1,20 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
 import { NAV_LINKS } from '../constants';
 import { Menu, X } from 'lucide-react';
 
 const Header: React.FC = () => {
-  const [scrolled, setScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const { scrollY } = useScroll();
 
+  // Smooth the scrollY value for a more fluid animation
+  const smoothedScrollY = useSpring(scrollY, {
+    stiffness: 200,
+    damping: 50,
+    mass: 0.5,
+  });
+
+  // Define the scroll range for the animation (e.g., from 0px to 120px)
+  const scrollRange = [0, 120];
+
+  // Interpolate values based on the smoothed scroll position
+  const headerPaddingY = useTransform(smoothedScrollY, scrollRange, [12, 8]); // from py-3 to py-2
+  const headerPaddingX = useTransform(smoothedScrollY, scrollRange, [28, 24]); // from a bit more than px-6 to px-6
+  const headerBlur = useTransform(smoothedScrollY, scrollRange, [30, 20]);
+  const headerSaturate = useTransform(smoothedScrollY, scrollRange, [190, 165]);
+  const headerBrightness = useTransform(smoothedScrollY, scrollRange, [1.1, 1.05]);
+
+  // Combine multiple motion values into a single CSS property string
+  const backdropFilter = useTransform(
+    [headerBlur, headerSaturate, headerBrightness],
+    ([blur, saturate, brightness]) => `blur(${blur}px) saturate(${saturate}%) brightness(${brightness})`
+  );
+
+  // Mobile menu logic
   useEffect(() => {
     if (isMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -47,14 +64,22 @@ const Header: React.FC = () => {
         initial={{ y: -100, x: '-50%' }}
         animate={{ y: 0, x: '-50%' }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className={`liquid-glass fixed top-4 left-1/2 -translate-x-1/2 z-50 rounded-full bg-pearl/12 backdrop-blur-[34px] saturate-[190%] brightness-[1.10]`}
+        className="liquid-glass fixed top-6 left-1/2 z-50 rounded-full bg-pearl/12"
+        style={{
+          backdropFilter: backdropFilter,
+          WebkitBackdropFilter: backdropFilter, // For Safari compatibility
+        }}
       >
-        <div
-          className={`flex items-center justify-between relative transition-all duration-300 ${
-            scrolled ? 'py-2 px-6' : 'py-3 px-6'
-          }`}
+        <motion.div
+          className="flex items-center justify-between relative"
+          style={{
+            paddingTop: headerPaddingY,
+            paddingBottom: headerPaddingY,
+            paddingLeft: headerPaddingX,
+            paddingRight: headerPaddingX,
+          }}
         >
-          <a href="#home" onClick={(e) => handleNavClick(e, '#home')} className="text-lg font-semibold tracking-tight text-eerie-black z-10">
+          <a href="#home" onClick={(e) => handleNavClick(e, '#home')} className="text-lg font-semibold tracking-tight text-eerie-black z-10 shrink-0">
             Dron Pancholi
           </a>
           <ul className="hidden md:flex items-center space-x-1 z-10">
@@ -79,7 +104,7 @@ const Header: React.FC = () => {
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
-        </div>
+        </motion.div>
       </motion.header>
 
       <AnimatePresence>
