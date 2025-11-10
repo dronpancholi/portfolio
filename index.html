@@ -84,34 +84,6 @@
         -ms-overflow-style: none;  /* IE and Edge */
         scrollbar-width: none;  /* Firefox */
       }
-
-      /* Liquid Ripple Mask */
-      .liquid-hover {
-        position: relative;
-      }
-
-      .liquid-hover::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        background: radial-gradient(
-          circle at var(--mx, 50%) var(--my, 50%),
-          rgba(255,255,255,0.35) 0%,
-          rgba(255,255,255,0.15) 25%,
-          rgba(255,255,255,0.08) 45%,
-          transparent 70%
-        );
-        mix-blend-mode: screen;
-        opacity: 0;
-        transition: opacity 0.28s ease;
-        border-radius: 24px; /* Match parent card's border-radius */
-      }
-
-      .liquid-hover:hover::after {
-        opacity: 1;
-        transition: opacity 0.45s ease-out;
-      }
     </style>
   <script type="importmap">
 {
