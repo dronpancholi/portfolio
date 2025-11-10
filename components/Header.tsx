@@ -23,7 +23,7 @@ export default function Header() {
         rounded-full flex items-center backdrop-blur-xl 
         border border-white/30 shadow-[0_8px_30px_rgba(0,0,0,0.08)]
         transition-all duration-500 ease-[cubic-bezier(.22,.61,.36,1)]
-        ${collapsed ? "px-6 py-2" : "px-8 py-3"}
+        ${collapsed ? "px-6 py-2 gap-0" : "px-8 py-3 gap-5"}
         bg-white/20
       `}
     >
@@ -44,7 +44,7 @@ export default function Header() {
         className={`
           overflow-hidden flex items-center gap-5 font-medium text-neutral-800
           transition-all duration-500
-          ${collapsed ? "opacity-0 max-w-0 ml-0" : "opacity-100 max-w-[400px] ml-5"}
+          ${collapsed ? "opacity-0 max-w-0" : "opacity-100 max-w-[400px]"}
         `}
       >
         <a href="#about" className="hover:text-black transition-colors whitespace-nowrap">About</a>
