@@ -75,16 +75,21 @@ export default function Header(){
             <motion.nav
               key="nav"
               onClick={(e)=>e.stopPropagation()}
-              className="flex items-center font-medium text-neutral-800 whitespace-nowrap overflow-hidden"
+              className="
+                flex items-center font-medium text-neutral-800 
+                overflow-hidden
+                sm:flex-nowrap flex-wrap
+                sm:gap-0 gap-1
+              "
               initial={{ opacity:0, x: 6 }}
               animate={{ opacity:1, x: 0 }}
               exit={{ opacity:0, x: 6 }}
-              transition={{ duration:0.28, ease:[0.22,1,0.36,1] }}
+              transition={{ duration:0.25, ease:[0.22,1,0.36,1] }}
             >
-              <a href="#about" className="px-2 sm:px-3 py-1 hover:text-black transition-colors">About</a>
-              <a href="#projects" className="px-2 sm:px-3 py-1 hover:text-black transition-colors">Projects</a>
-              <a href="#skills" className="px-2 sm:px-3 py-1 hover:text-black transition-colors">Skills</a>
-              <a href="#contact" className="px-2 sm:px-3 py-1 hover:text-black transition-colors">Contact</a>
+              <a href="#about"    className="px-2 py-1 sm:px-3 hover:text-black transition-colors">About</a>
+              <a href="#projects" className="px-2 py-1 sm:px-3 hover:text-black transition-colors">Projects</a>
+              <a href="#skills"   className="px-2 py-1 sm:px-3 hover:text-black transition-colors">Skills</a>
+              <a href="#contact"  className="px-2 py-1 sm:px-3 hover:text-black transition-colors">Contact</a>
             </motion.nav>
           )}
         </AnimatePresence>
