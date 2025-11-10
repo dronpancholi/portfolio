@@ -2,12 +2,12 @@
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useTransform, useScroll, useSpring } from 'framer-motion';
 
-const placeholderSvg = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cdefs%3E%3Cstyle%3E.bg%7Bfill:%23E8EBEF;%7D.text%7Bfill:%23333533;font-family:Inter,sans-serif;font-size:80px;font-weight:bold;text-anchor:middle;dominant-baseline:central;%7D%3C/style%3E%3C/defs%3E%3Crect class='bg' width='256' height='256'/%3E%3Ctext x='50%25' y='50%25' class='text'%3EDP%3C/text%3E%3C/svg%3E`;
+const imageUrl = 'https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?q=80&w=256&h=256&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
 
 const PortraitImage = ({ isFiltered = false }: { isFiltered?: boolean }) => {
   return (
     <img
-      src={placeholderSvg}
+      src={imageUrl}
       alt={isFiltered ? "Dron Pancholi - AI Version" : "Dron Pancholi"}
       className={`absolute inset-0 w-full h-full object-cover ${isFiltered ? 'filter hue-rotate-[200deg] saturate-150 brightness-110' : ''}`}
       width={256}
