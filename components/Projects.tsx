@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, Variants, useReducedMotion } from 'framer-motion';
 import GlassCard from './ui/GlassCard';
@@ -57,16 +58,16 @@ const ProjectModal = ({ project, onClose, transitionConfig }: { project: Project
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.28 }}
+        transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
         onClick={onClose}
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+        className="fixed inset-0 bg-black/40 backdrop-blur-xl"
       />
       
       <GlassCard
         layoutId={`project-card-${project.title}`}
         transition={transitionConfig}
         className="max-w-3xl w-full z-10"
-        style={{ backfaceVisibility: 'hidden' }}
+        style={{ backfaceVisibility: 'hidden', borderRadius: 28 }}
       >
         <div className="p-8 md:p-12 relative max-h-[90vh] overflow-y-auto">
           <motion.button
@@ -172,8 +173,8 @@ const Projects: React.FC = () => {
     originRef.current?.focus();
   }
   
-  const springTransition = { type: 'spring', stiffness: 320, damping: 34, mass: 0.7 };
-  const reducedTransition = { duration: 0.3, ease: 'easeOut' };
+  const springTransition = { layout: { type: "spring", stiffness: 160, damping: 22, mass: 1.0 } };
+  const reducedTransition = { layout: { duration: 0.3, ease: 'easeOut' } };
   const transitionConfig = shouldReduceMotion ? reducedTransition : springTransition;
 
 
