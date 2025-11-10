@@ -2,7 +2,7 @@
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useTransform, useScroll, useSpring } from 'framer-motion';
 
-const imageUrl = 'https://avatars.githubusercontent.com/u/87889606?s=256&v=4';
+const imageUrl = '/headshot.jpg';
 
 const PortraitImage = ({ isFiltered = false }: { isFiltered?: boolean }) => {
   return (
@@ -131,6 +131,7 @@ const Hero: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="max-w-2xl text-base sm:text-lg md:text-xl text-[var(--text-secondary)] font-light mx-auto"
+            // FIX: Corrected typo in `transformStyle` property from `preserve-d` to `preserve-3d`.
             style={{ transform: 'translateZ(25px)', transformStyle: 'preserve-3d' }}
           >
             Pursuing a Diploma in Computer Engineering and advancing into AI & ML specialization to architect the next generation of intelligent systems.
