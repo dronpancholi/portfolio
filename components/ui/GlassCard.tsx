@@ -1,4 +1,5 @@
-import React, { useRef, useState } from "react";
+
+import React from "react";
 import { motion, MotionProps } from "framer-motion";
 
 interface GlassCardProps extends MotionProps {
@@ -7,25 +8,10 @@ interface GlassCardProps extends MotionProps {
 }
 
 const GlassCard: React.FC<GlassCardProps> = ({ children, className = "", ...props }) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const [mx, setMx] = useState("50%");
-  const [my, setMy] = useState("50%");
-
-  const handlePointerMove = (e: React.PointerEvent) => {
-    const el = ref.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    setMx(`${x}%`);
-    setMy(`${y}%`);
-  };
-
   return (
     <motion.div
-      ref={ref}
-      onPointerMove={handlePointerMove}
       className={`
+        group
         rounded-3xl 
         relative 
         overflow-clip 
@@ -35,23 +21,16 @@ const GlassCard: React.FC<GlassCardProps> = ({ children, className = "", ...prop
         backdrop-blur-2xl 
         ${className}
       `}
-      style={
-        {
-          ["--mx" as any]: mx,
-          ["--my" as any]: my
-        } as React.CSSProperties
-      }
       {...props}
     >
-      {/* LIQUID HIGHLIGHT */}
+      {/* LIQUID HIGHLIGHT - Now a pure CSS hover effect */}
       <span
         aria-hidden
-        className="absolute inset-0 pointer-events-none rounded-3xl"
+        className="absolute inset-0 pointer-events-none rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
         style={{
           background:
-            "radial-gradient(340px 220px at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.38), rgba(255,255,255,0.12) 50%, transparent 75%)",
+            "radial-gradient(440px 320px at 30% 20%, rgba(255,255,255,0.38), rgba(255,255,255,0.12) 50%, transparent 80%)",
           mixBlendMode: "screen",
-          transition: "opacity 0.25s ease"
         }}
       />
       {/* CAUSTIC REFRACTION */}
