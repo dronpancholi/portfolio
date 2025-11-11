@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useId, useState } from "react";
+import React, { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   Mail,
@@ -87,8 +87,6 @@ function CodeTicker({
 const Contact: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const reduceMotion = useReducedMotion();
-  const filterId = useId();
-  const liquidId = `liquidGlass-${filterId}`;
 
   const handleCopy = () => {
     if (copied) return;
@@ -176,73 +174,65 @@ const Contact: React.FC = () => {
         transition={{ duration: 0.7 }}
         className="relative mt-24 flex justify-center"
       >
-        {/* SUBSTRATE BAND (only background pixels, improves blur without altering pill) */}
+        {/* Neutrally-lit blur base (no gradient, no color tint) */}
         <div
           aria-hidden
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(92vw,1000px)] h-[110px] rounded-[999px] z-[1] pointer-events-none"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
+                     w-[min(92vw,1000px)] h-[110px] rounded-full pointer-events-none z-0"
           style={{
-            // soft animated gradient so blur always has something to sample
-            background:
-              "linear-gradient(90deg, rgba(255,128,255,0.18), rgba(64,160,255,0.18), rgba(64,255,200,0.18), rgba(255,210,80,0.18))",
-            filter: "blur(16px) saturate(130%)",
+            background: "rgba(255,255,255,0.08)",
+            filter: "blur(22px) saturate(140%)",
           }}
         />
 
-        {/* Three independent tickers (z-0), vertically centered so pill sits among them */}
-        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none z-0 space-y-[6px]">
-          {/* Row 1: pink → violet → sky */}
+        {/* Three code tickers preserved exactly */}
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none z-[1] space-y-[6px]">
           <div className="flex justify-center">
             <CodeTicker
               reduced={!!reduceMotion}
               duration={24}
               height={22}
-              className="text-[13px] sm:text-sm font-medium bg-gradient-to-r from-pink-300 via-fuchsia-300 via-violet-300 via-indigo-300 to-sky-300 bg-clip-text text-transparent opacity-[0.9]"
+              className="text-[13px] sm:text-sm font-medium text-white/30"
             >
               {`const dron = { name: "Dron Pancholi", city: "Surendranagar", empire: "New Lands", tier: "Black Core" }; `}
             </CodeTicker>
           </div>
 
-          {/* Row 2: emerald → cyan → lime (slower) */}
           <div className="flex justify-center">
             <CodeTicker
               reduced={!!reduceMotion}
               duration={30}
               height={22}
               delay={1.5}
-              className="text-[13px] sm:text-sm font-medium bg-gradient-to-r from-emerald-300 via-teal-300 via-cyan-300 to-lime-300 bg-clip-text text-transparent opacity-[0.85]"
+              className="text-[13px] sm:text-sm font-medium text-white/26"
             >
               {`const socials = ["LinkedIn","GitHub","Instagram","Discord"]; const vision = "Build Empires"; const motto = "Faith • Trust • Transparency"; `}
             </CodeTicker>
           </div>
 
-          {/* Row 3: amber → orange → rose → fuchsia (slowest) */}
           <div className="flex justify-center">
             <CodeTicker
               reduced={!!reduceMotion}
               duration={36}
               height={22}
               delay={3}
-              className="text-[13px] sm:text-sm font-medium bg-gradient-to-r from-amber-300 via-orange-300 via-rose-300 to-fuchsia-300 bg-clip-text text-transparent opacity-[0.85]"
+              className="text-[13px] sm:text-sm font-medium text-white/22"
             >
               {`function contact(){ return { email: "${SOCIAL_LINKS.email}", responseTime: "fast" } } `}
             </CodeTicker>
           </div>
         </div>
 
-        {/* Liquid glass pill (unchanged core look; only z-index/positioning tuned) */}
+        {/* CLEAN LIQUID GLASS PILL (no wave distortion) */}
         <div
-          className={[
-            "relative z-10 flex items-center gap-7",
-            "px-7 sm:px-8 py-3",
-            "rounded-full overflow-hidden",
-            "backdrop-blur-3xl bg-white/10 border border-white/25",
-            "shadow-[0_0_30px_rgba(255,255,255,0.30)]",
-            "transition-all duration-700 hover:bg-white/14 hover:shadow-[0_0_40px_rgba(255,255,255,0.45)]",
-            // Inner highlights, clipped to the pill. We removed any extra “soft layer”.
-            "before:absolute before:inset-0 before:rounded-full before:shadow-[inset_3px_3px_6px_rgba(255,255,255,0.55),inset_-3px_-3px_6px_rgba(0,0,0,0.25)]",
-          ].join(" ")}
-          // Extra liquid wobble from your snippet 1. Safe and SSR-proof via unique id.
-          style={{ filter: `url(#${liquidId})` }}
+          className="relative z-10 flex items-center gap-7
+                     px-7 sm:px-8 py-3 rounded-full overflow-hidden
+                     backdrop-blur-[22px] bg-white/9 border border-white/20
+                     shadow-[0_0_28px_rgba(255,255,255,0.28)]
+                     transition-all duration-600 hover:bg-white/14 hover:shadow-[0_0_38px_rgba(255,255,255,0.45)]
+                     before:absolute before:inset-0 before:rounded-full 
+                     before:shadow-[inset_2px_4px_8px_rgba(255,255,255,0.55),inset_-2px_-3px_6px_rgba(0,0,0,0.35)]
+        "
         >
           {SOCIAL_LINKS.profiles.map((profile) => {
             const Icon = ICON_MAP[profile.name] || Github;
@@ -265,32 +255,6 @@ const Contact: React.FC = () => {
             );
           })}
         </div>
-
-        {/* Unique SVG filter for the pill’s distortion */}
-        <svg className="hidden">
-          <defs>
-            <filter id={liquidId} x="0" y="0" width="100%" height="100%">
-              <feTurbulence
-                type="fractalNoise"
-                baseFrequency="0.008 0.02"
-                numOctaves="1"
-                seed="7"
-                result="noise"
-              />
-              <feGaussianBlur in="noise" stdDeviation="1.2" result="soft" />
-              <feDisplacementMap
-                in="SourceGraphic"
-                in2="soft"
-                scale="18"
-                xChannelSelector="R"
-                yChannelSelector="G"
-                result="displaced"
-              />
-              <feGaussianBlur in="displaced" stdDeviation="0.5" result="final" />
-              <feComposite in="final" in2="final" operator="over" />
-            </filter>
-          </defs>
-        </svg>
       </motion.div>
     </section>
   );
