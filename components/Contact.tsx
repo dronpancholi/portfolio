@@ -16,7 +16,8 @@ import GlassCard from "./ui/GlassCard";
 
 type SocialProfileName = typeof SOCIAL_LINKS.profiles[number]["name"];
 // FIX: Changed React.ElementType to React.ComponentType for more specific typing of icon components.
-const ICON_MAP: Partial<Record<SocialProfileName, React.ComponentType>> = {
+// FIX: Explicitly type the component props to include `className`. `React.ComponentType` defaults to `React.ComponentType<{}>` (a component with no props), which caused the type error when passing `className` to the icon.
+const ICON_MAP: Partial<Record<SocialProfileName, React.ComponentType<{ className: string }>>> = {
   LinkedIn: Linkedin,
   GitHub: Github,
   Instagram: Instagram,
@@ -263,41 +264,49 @@ const Contact: React.FC = () => {
           </div>
         </div>
 
-        {/* LIQUID GLASS PILL (refraction + blend, fixed opacity) */}
+        {/* LIQUID GLASS PILL — TRUE REFRACTION */}
         <div
           className="relative z-[2] flex items-center gap-7 px-8 py-3 rounded-full overflow-hidden isolate"
-          // base translucency kept exactly here
           style={{
-            background: "rgba(255,255,255,0.10)",
-            border: "1px solid rgba(255,255,255,0.24)",
-            boxShadow:
-              "0 0 6px rgba(0,0,0,0.06),0 3px 12px rgba(0,0,0,0.20),inset 2px 2px 4px rgba(255,255,255,0.55),inset -2px -2px 4px rgba(0,0,0,0.38)",
+            background: "rgba(255,255,255,0.08)",
+            backdropFilter: "blur(32px) saturate(180%)",
+            WebkitBackdropFilter: "blur(32px) saturate(180%)",
           }}
         >
-          {/* A: true backdrop blur/saturation */}
-          <div
-            aria-hidden
-            className="absolute inset-0 rounded-full"
-            style={{ backdropFilter: "blur(26px) saturate(160%)", WebkitBackdropFilter: "blur(26px) saturate(160%)" }}
-          />
-          {/* B: subtle “refraction” wobble over the blurred backdrop */}
-          <div
-            aria-hidden
-            className="absolute inset-0 rounded-full mix-blend-overlay opacity-[0.55]"
-            style={{ filter: "url(#liquid-displace)" }}
-          />
-          {/* C: thin top shine (no gradient colour wash over content) */}
+          {/* 1) Displacement refraction layer */}
           <div
             aria-hidden
             className="absolute inset-0 rounded-full pointer-events-none"
             style={{
-              background: "linear-gradient(to bottom, rgba(255,255,255,0.33), rgba(255,255,255,0.04))",
-              mixBlendMode: "screen",
-              opacity: 0.65,
+              mixBlendMode: "overlay",
+              filter: "url(#real-liquid-refraction)",
+              opacity: 0.9,
             }}
           />
 
-          {/* Quick links — bright yellow tone */}
+          {/* 2) Caustic edge bloom */}
+          <div
+            aria-hidden
+            className="absolute inset-0 rounded-full pointer-events-none"
+            style={{
+              boxShadow:
+                "inset 0 0 18px rgba(255,255,255,0.55), inset 0 0 42px rgba(255,255,255,0.35), 0 0 50px rgba(255,255,255,0.22)",
+            }}
+          />
+
+          {/* 3) Micro-specular highlight */}
+          <div
+            aria-hidden
+            className="absolute inset-0 rounded-full pointer-events-none"
+            style={{
+              background:
+                "radial-gradient(circle at 30% 20%, rgba(255,255,255,0.6), transparent 55%)",
+              opacity: 0.6,
+              mixBlendMode: "screen",
+            }}
+          />
+
+          {/* Social Icons — Now liq-glass-glow-yellow */}
           {SOCIAL_LINKS.profiles.map((profile) => {
             const Icon = ICON_MAP[profile.name] || Github;
             return (
@@ -309,9 +318,9 @@ const Contact: React.FC = () => {
                 aria-label={profile.name}
               >
                 <motion.div
-                  whileHover={{ scale: 1.28 }}
-                  transition={{ type: "spring", stiffness: 260, damping: 14 }}
-                  className="text-[#FFEFAF] hover:text-[#FFF59D] drop-shadow-[0_0_6px_rgba(255,245,180,0.55)] transition-all"
+                  whileHover={{ scale: 1.32 }}
+                  transition={{ type: "spring", stiffness: 240, damping: 15 }}
+                  className="text-[#FFF8C5] hover:text-[#FFEB74] drop-shadow-[0_0_9px_rgba(255,245,140,0.75)] transition-all"
                 >
                   <Icon className="w-7 h-7" />
                 </motion.div>
@@ -320,13 +329,35 @@ const Contact: React.FC = () => {
           })}
         </div>
 
-        {/* Distortion filter used by the pill’s overlay (perceptual refraction) */}
+        {/* New SVG filter for true refraction */}
         <svg className="hidden">
           <defs>
-            <filter id="liquid-displace" x="0" y="0" width="100%" height="100%" colorInterpolationFilters="sRGB">
-              <feTurbulence type="fractalNoise" baseFrequency="0.012 0.024" numOctaves="1" seed="9" result="noise" />
-              <feGaussianBlur in="noise" stdDeviation="1.2" result="soft" />
-              <feDisplacementMap in="SourceGraphic" in2="soft" scale="18" xChannelSelector="R" yChannelSelector="G" />
+            <filter
+              id="real-liquid-refraction"
+              x="-20%" y="-20%" width="140%" height="140%"
+              colorInterpolationFilters="sRGB"
+            >
+              {/* Create moving liquid noise */}
+              <feTurbulence
+                type="turbulence"
+                baseFrequency="0.008 0.012"
+                numOctaves="3"
+                seed="14"
+                result="noise"
+              />
+              {/* Smooth to get glass-like curvature */}
+              <feGaussianBlur in="noise" stdDeviation="6" result="blurredNoise" />
+              {/* Stronger displacement = stronger glass refraction */}
+              <feDisplacementMap
+                in="SourceGraphic"
+                in2="blurredNoise"
+                scale="38"
+                xChannelSelector="R"
+                yChannelSelector="G"
+                result="distorted"
+              />
+              {/* Final output */}
+              <feBlend in="distorted" in2="SourceGraphic" mode="overlay" />
             </filter>
           </defs>
         </svg>
