@@ -32,6 +32,7 @@ function CodeTicker({
   height = 22,
   delay = 0,
   reduced = false,
+  style,
 }: {
   children: React.ReactNode;
   duration: number;
@@ -39,6 +40,7 @@ function CodeTicker({
   height?: number;
   delay?: number;
   reduced?: boolean;
+  style?: React.CSSProperties;
 }) {
   const common = {
     className:
@@ -54,7 +56,7 @@ function CodeTicker({
       {/* Two copies for a perfect loop */}
       <motion.div
         {...common}
-        style={{ left: 0 }}
+        style={{ left: 0, ...style }}
         animate={reduced ? undefined : { x: ["0%", "-100%"] }}
         transition={
           reduced
@@ -68,7 +70,7 @@ function CodeTicker({
       </motion.div>
       <motion.div
         {...common}
-        style={{ left: "100%" }}
+        style={{ left: "100%", ...style }}
         animate={reduced ? undefined : { x: ["0%", "-100%"] }}
         transition={
           reduced
@@ -174,66 +176,78 @@ const Contact: React.FC = () => {
         transition={{ duration: 0.7 }}
         className="relative mt-24 flex justify-center"
       >
-        {/* Neutrally-lit blur base (no gradient, no color tint) */}
+        {/* AURORA BACKDROP (feeds the blur, but NOT visible directly) */}
         <div
           aria-hidden
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
-                     w-[min(92vw,1000px)] h-[110px] rounded-full pointer-events-none z-0"
+                     w-[min(92vw,1000px)] h-[120px] rounded-full pointer-events-none z-0"
           style={{
-            background: "rgba(255,255,255,0.08)",
-            filter: "blur(22px) saturate(140%)",
+            background:
+              "radial-gradient(circle at 30% 40%, rgba(255,90,255,0.38), transparent 60%), \
+               radial-gradient(circle at 70% 60%, rgba(80,200,255,0.35), transparent 60%), \
+               radial-gradient(circle at 45% 80%, rgba(255,230,120,0.35), transparent 65%)",
+            filter: "blur(32px) saturate(160%)",
           }}
         />
 
-        {/* Three code tickers preserved exactly */}
-        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none z-[1] space-y-[6px]">
-          <div className="flex justify-center">
-            <CodeTicker
-              reduced={!!reduceMotion}
-              duration={24}
-              height={22}
-              className="text-[13px] sm:text-sm font-medium text-white/30"
-            >
-              {`const dron = { name: "Dron Pancholi", city: "Surendranagar", empire: "New Lands", tier: "Black Core" }; `}
-            </CodeTicker>
-          </div>
+        {/* AURORA GRADIENT MASK THAT MOVES ACROSS ALL CODE LINES */}
+        <style>
+          {`
+          @keyframes auroraShift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+          }
+          `}
+        </style>
 
-          <div className="flex justify-center">
-            <CodeTicker
-              reduced={!!reduceMotion}
-              duration={30}
-              height={22}
-              delay={1.5}
-              className="text-[13px] sm:text-sm font-medium text-white/26"
-            >
-              {`const socials = ["LinkedIn","GitHub","Instagram","Discord"]; const vision = "Build Empires"; const motto = "Faith • Trust • Transparency"; `}
-            </CodeTicker>
-          </div>
-
-          <div className="flex justify-center">
-            <CodeTicker
-              reduced={!!reduceMotion}
-              duration={36}
-              height={22}
-              delay={3}
-              className="text-[13px] sm:text-sm font-medium text-white/22"
-            >
-              {`function contact(){ return { email: "${SOCIAL_LINKS.email}", responseTime: "fast" } } `}
-            </CodeTicker>
-          </div>
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none z-[1] space-y-[5px] select-none">
+          {[24, 30, 36].map((speed, i) => (
+            <div key={i} className="flex justify-center">
+              <CodeTicker
+                reduced={!!reduceMotion}
+                duration={speed}
+                height={22}
+                delay={i * 1.2}
+                className="text-[13px] sm:text-sm font-medium 
+                  bg-gradient-to-r from-pink-300 via-purple-300 via-blue-300 via-cyan-300 to-lime-300
+                  bg-clip-text text-transparent
+                  animate-[auroraShift_12s_linear_infinite]"
+                style={{ backgroundSize: '200% auto' }}
+              >
+                {i === 0 &&
+                  `const dron = { name: "Dron Pancholi", city: "Surendranagar", empire: "New Lands", tier: "Black Core" }; `}
+                {i === 1 &&
+                  `const socials = ["LinkedIn","GitHub","Instagram","Discord"]; const vision = "Build Empires"; const motto = "Faith • Trust • Transparency"; `}
+                {i === 2 &&
+                  `function contact(){ return { email: "${SOCIAL_LINKS.email}", responseTime: "fast" } } `}
+              </CodeTicker>
+            </div>
+          ))}
         </div>
 
-        {/* CLEAN LIQUID GLASS PILL (no wave distortion) */}
+        {/* IMPROVED LIQUID GLASS PILL */}
         <div
           className="relative z-10 flex items-center gap-7
                      px-7 sm:px-8 py-3 rounded-full overflow-hidden
-                     backdrop-blur-[22px] bg-white/9 border border-white/20
-                     shadow-[0_0_28px_rgba(255,255,255,0.28)]
-                     transition-all duration-600 hover:bg-white/14 hover:shadow-[0_0_38px_rgba(255,255,255,0.45)]
-                     before:absolute before:inset-0 before:rounded-full 
-                     before:shadow-[inset_2px_4px_8px_rgba(255,255,255,0.55),inset_-2px_-3px_6px_rgba(0,0,0,0.35)]
+                     backdrop-blur-[26px] bg-white/10 border border-white/25
+                     shadow-[0_0_40px_rgba(255,255,255,0.33)]
+                     transition-all duration-600 hover:bg-white/16 hover:shadow-[0_0_52px_rgba(255,255,255,0.55)]
         "
         >
+          {/* Inner depth / thickness */}
+          <div className="pointer-events-none absolute inset-0 rounded-full 
+                          shadow-[inset_1px_2px_4px_rgba(255,255,255,0.55),inset_-2px_-4px_8px_rgba(0,0,0,0.45)]" />
+
+          {/* Surface sheen (liquid highlight sweep) */}
+          <div className="pointer-events-none absolute inset-0 rounded-full overflow-hidden">
+            <div
+              className="absolute top-0 left-0 w-full h-full opacity-[0.45] 
+                         bg-gradient-to-b from-white/45 to-transparent"
+              style={{ mixBlendMode: "screen" }}
+            />
+          </div>
+
+          {/* ICONS */}
           {SOCIAL_LINKS.profiles.map((profile) => {
             const Icon = ICON_MAP[profile.name] || Github;
             return (
@@ -245,8 +259,8 @@ const Contact: React.FC = () => {
                 aria-label={profile.name}
               >
                 <motion.div
-                  whileHover={{ scale: 1.28 }}
-                  transition={{ type: "spring", stiffness: 280, damping: 16 }}
+                  whileHover={{ scale: 1.3 }}
+                  transition={{ type: "spring", stiffness: 260, damping: 18 }}
                   className="text-white/90 hover:text-white"
                 >
                   <Icon className="w-7 h-7" />
