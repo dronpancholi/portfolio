@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Linkedin, Github, Instagram, MessageSquare, Clipboard, Check } from 'lucide-react';
@@ -97,13 +96,13 @@ const Contact: React.FC = () => {
         className="relative mt-16 w-full flex items-center justify-center"
       >
         {/* Moving Code Background */}
-        <div className="absolute inset-0 h-[60px] overflow-hidden pointer-events-none">
+        <div className="absolute -bottom-4 w-full h-[54px] overflow-hidden pointer-events-none rounded-full">
           <motion.div
             animate={{ x: ["0%", "-100%"] }}
-            transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
-            className="whitespace-nowrap text-sm font-mono text-pink-200/60 opacity-[0.55]"
+            transition={{ duration: 14, repeat: Infinity, ease: "linear" }}
+            className="whitespace-nowrap text-sm font-mono font-medium bg-gradient-to-r from-pink-400 via-blue-400 via-purple-300 via-green-300 to-yellow-300 bg-clip-text text-transparent opacity-[0.85]"
           >
-            {`const dron = { name: "Dron Pancholi", skills: ["AI/ML", "Web Dev", "Systems"], location: "Surendranagar", vision: "Build Empires" }; `.repeat(12)}
+            {`const dron = { name: "Dron Pancholi", ai: true, empire: "New Lands", vision: "Black Core", strength: "Unmatched" }; `.repeat(24)}
           </motion.div>
         </div>
 
@@ -111,9 +110,9 @@ const Contact: React.FC = () => {
         <motion.div
           layout
           className="
-            relative flex items-center gap-6 px-6 py-3 rounded-full backdrop-blur-xl border
-            border-white/20 bg-white/12 shadow-[0_0_25px_rgba(255,255,255,0.18)]
-            hover:bg-white/18 transition-all duration-500"
+            relative z-10 flex items-center gap-6 px-7 py-3 rounded-full backdrop-blur-2xl
+            border border-white/25 bg-white/10 shadow-[0_0_22px_rgba(255,255,255,0.22)]
+            transition-all duration-[600ms] hover:bg-white/16"
           style={{ filter: "url(#liquidGlassEffect)" }}
         >
           {SOCIAL_LINKS.profiles.map((profile) => {
@@ -121,9 +120,9 @@ const Contact: React.FC = () => {
             return (
               <a key={profile.name} href={profile.url} target="_blank" rel="noopener noreferrer" aria-label={profile.name}>
                 <motion.div
-                  whileHover={{ scale: 1.18 }}
-                  transition={{ type: "spring", stiffness: 180, damping: 12 }}
-                  className="text-white/85 hover:text-white"
+                  whileHover={{ scale: 1.3 }}
+                  transition={{ type: "spring", stiffness: 260, damping: 18 }}
+                  className="text-white/90 hover:text-white"
                 >
                   <Icon className="w-7 h-7" />
                 </motion.div>
