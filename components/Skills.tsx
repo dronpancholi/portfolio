@@ -6,7 +6,8 @@ import { Briefcase, Code, Database, BrainCircuit, Bot } from 'lucide-react';
 
 // FIX: Derive a strict type for icon names from the `SKILLS_DATA` constant and use a `Record` to ensure type safety for the `icons` object. This explicitly informs TypeScript that all icon names from `SKILLS_DATA` are valid keys, resolving the 'Type 'string' is not assignable to type 'never'' error.
 type SkillIconName = typeof SKILLS_DATA[number]['icon'];
-const icons: Record<SkillIconName, React.ElementType> = {
+// FIX: Changed React.ElementType to React.ComponentType for more specific typing of icon components.
+const icons: Record<SkillIconName, React.ComponentType> = {
   ai: BrainCircuit,
   frontend: Code,
   backend: Database,
