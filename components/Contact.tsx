@@ -14,9 +14,9 @@ import {
 import { SOCIAL_LINKS } from "../constants";
 import GlassCard from "./ui/GlassCard";
 
-// FIX: To resolve an indexing error, explicitly type ICON_MAP using a strict type derived from SOCIAL_LINKS. This ensures type safety when mapping profile names to icons.
 type SocialProfileName = typeof SOCIAL_LINKS.profiles[number]["name"];
 
+// FIX: Explicitly type the icon map to ensure that profile names from constants can be safely used as keys, resolving the type error.
 const ICON_MAP: Partial<Record<SocialProfileName, React.ElementType>> = {
   LinkedIn: Linkedin,
   GitHub: Github,
@@ -40,7 +40,6 @@ function CodeTicker({
   delay?: number;
   reduced?: boolean;
 }) {
-  // Use two copies for a perfect loop
   const common = {
     className:
       "absolute top-0 whitespace-nowrap font-mono will-change-transform",
@@ -52,6 +51,7 @@ function CodeTicker({
       style={{ height }}
       aria-hidden
     >
+      {/* Two copies for a perfect loop */}
       <motion.div
         {...common}
         style={{ left: 0 }}
@@ -87,8 +87,6 @@ function CodeTicker({
 const Contact: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const reduceMotion = useReducedMotion();
-
-  // Unique filter id (SSR-safe) for any future pill filter usage
   const filterId = useId();
   const liquidId = `liquidGlass-${filterId}`;
 
@@ -120,8 +118,7 @@ const Contact: React.FC = () => {
         transition={{ duration: 0.6, delay: 0.1 }}
         className="text-lg text-[var(--text-secondary)] mb-12 max-w-xl mx-auto"
       >
-        I&apos;m actively exploring new opportunities and collaborations. Best
-        way to reach me is email.
+        I&apos;m actively exploring new opportunities and collaborations. Best way to reach me is email.
       </motion.p>
 
       {/* Email card */}
@@ -179,28 +176,39 @@ const Contact: React.FC = () => {
         transition={{ duration: 0.7 }}
         className="relative mt-24 flex justify-center"
       >
-        {/* Three independent tickers, vertically staggered so the pill sits centered among them */}
+        {/* SUBSTRATE BAND (only background pixels, improves blur without altering pill) */}
+        <div
+          aria-hidden
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(92vw,1000px)] h-[110px] rounded-[999px] z-[1] pointer-events-none"
+          style={{
+            // soft animated gradient so blur always has something to sample
+            background:
+              "linear-gradient(90deg, rgba(255,128,255,0.18), rgba(64,160,255,0.18), rgba(64,255,200,0.18), rgba(255,210,80,0.18))",
+            filter: "blur(16px) saturate(130%)",
+          }}
+        />
+
+        {/* Three independent tickers (z-0), vertically centered so pill sits among them */}
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none z-0 space-y-[6px]">
           {/* Row 1: pink → violet → sky */}
           <div className="flex justify-center">
             <CodeTicker
               reduced={!!reduceMotion}
-              duration={22}
+              duration={24}
               height={22}
-              delay={0}
               className="text-[13px] sm:text-sm font-medium bg-gradient-to-r from-pink-300 via-fuchsia-300 via-violet-300 via-indigo-300 to-sky-300 bg-clip-text text-transparent opacity-[0.9]"
             >
               {`const dron = { name: "Dron Pancholi", city: "Surendranagar", empire: "New Lands", tier: "Black Core" }; `}
             </CodeTicker>
           </div>
 
-          {/* Row 2: emerald → cyan → lime (slower, slight parallax) */}
+          {/* Row 2: emerald → cyan → lime (slower) */}
           <div className="flex justify-center">
             <CodeTicker
               reduced={!!reduceMotion}
-              duration={28}
+              duration={30}
               height={22}
-              delay={2}
+              delay={1.5}
               className="text-[13px] sm:text-sm font-medium bg-gradient-to-r from-emerald-300 via-teal-300 via-cyan-300 to-lime-300 bg-clip-text text-transparent opacity-[0.85]"
             >
               {`const socials = ["LinkedIn","GitHub","Instagram","Discord"]; const vision = "Build Empires"; const motto = "Faith • Trust • Transparency"; `}
@@ -211,9 +219,9 @@ const Contact: React.FC = () => {
           <div className="flex justify-center">
             <CodeTicker
               reduced={!!reduceMotion}
-              duration={34}
+              duration={36}
               height={22}
-              delay={4}
+              delay={3}
               className="text-[13px] sm:text-sm font-medium bg-gradient-to-r from-amber-300 via-orange-300 via-rose-300 to-fuchsia-300 bg-clip-text text-transparent opacity-[0.85]"
             >
               {`function contact(){ return { email: "${SOCIAL_LINKS.email}", responseTime: "fast" } } `}
@@ -221,23 +229,19 @@ const Contact: React.FC = () => {
           </div>
         </div>
 
-        {/* Your liquid glass pill (unchanged core look, just wrapped and layered correctly) */}
+        {/* Liquid glass pill (unchanged core look; only z-index/positioning tuned) */}
         <div
           className={[
             "relative z-10 flex items-center gap-7",
             "px-7 sm:px-8 py-3",
             "rounded-full overflow-hidden",
-            // Glass look (kept): heavy blur + thin border + subtle transparency
             "backdrop-blur-3xl bg-white/10 border border-white/25",
-            // Glow
             "shadow-[0_0_30px_rgba(255,255,255,0.30)]",
-            // Hover polish, no functional changes
             "transition-all duration-700 hover:bg-white/14 hover:shadow-[0_0_40px_rgba(255,255,255,0.45)]",
-            // Inner highlights, fully clipped to the pill
+            // Inner highlights, clipped to the pill. We removed any extra “soft layer”.
             "before:absolute before:inset-0 before:rounded-full before:shadow-[inset_3px_3px_6px_rgba(255,255,255,0.55),inset_-3px_-3px_6px_rgba(0,0,0,0.25)]",
-            "after:pointer-events-none after:absolute after:-top-[65%] after:left-0 after:w-full after:h-[210%] after:rounded-full",
-            "after:bg-gradient-to-b after:from-white/22 after:to-transparent after:opacity-70 after:rotate-[8deg]",
           ].join(" ")}
+          // Extra liquid wobble from your snippet 1. Safe and SSR-proof via unique id.
           style={{ filter: `url(#${liquidId})` }}
         >
           {SOCIAL_LINKS.profiles.map((profile) => {
@@ -262,7 +266,7 @@ const Contact: React.FC = () => {
           })}
         </div>
 
-        {/* Optional: keep a unique SVG filter ready if you want extra liquid wobble later */}
+        {/* Unique SVG filter for the pill’s distortion */}
         <svg className="hidden">
           <defs>
             <filter id={liquidId} x="0" y="0" width="100%" height="100%">
