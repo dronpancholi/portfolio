@@ -163,8 +163,8 @@ function LiquidPill({
         <div
           className="absolute inset-0"
           style={{
-            backdropFilter: "blur(28px) saturate(185%)",
-            WebkitBackdropFilter: "blur(28px) saturate(185%)",
+            backdropFilter: "blur(34px) saturate(265%)",
+            WebkitBackdropFilter: "blur(34px) saturate(265%)",
           }}
         />
         {/* Re-render the moving code lines INSIDE the pill (perfectly synced) */}
@@ -178,7 +178,7 @@ function LiquidPill({
         {/* Apply header-style refraction to the proxy */}
         <div
           className="absolute inset-0"
-          style={{ filter: "url(#header-pill-glass)", mixBlendMode: "overlay", opacity: 0.9 }}
+          style={{ filter: "url(#header-pill-glass)", mixBlendMode: "overlay", opacity: 1 }}
         />
         {/* Lens volume (inner highlights/shadows) */}
         <div className="absolute inset-0 rounded-full pointer-events-none shadow-[inset_1px_1px_4px_rgba(255,255,255,0.65),inset_-3px_-4px_10px_rgba(0,0,0,0.35)]" />

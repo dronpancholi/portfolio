@@ -18,7 +18,7 @@ const HeaderPillGlassFilter: React.FC = () => {
           <feDisplacementMap
             in="SourceGraphic"
             in2="softNoise"
-            scale="58"
+            scale="86"
             xChannelSelector="R"
             yChannelSelector="G"
             result="distort"
