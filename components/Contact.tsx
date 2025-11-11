@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   Mail,
@@ -14,37 +14,42 @@ import {
 import { SOCIAL_LINKS } from "../constants";
 import GlassCard from "./ui/GlassCard";
 
+/** Map social names -> icons (typed) */
 type SocialProfileName = typeof SOCIAL_LINKS.profiles[number]["name"];
-// FIX: Changed React.ElementType to React.ComponentType for more specific typing of icon components.
-// FIX: Explicitly type the component props to include `className`. `React.ComponentType` defaults to `React.ComponentType<{}>` (a component with no props), which caused the type error when passing `className` to the icon.
-const ICON_MAP: Partial<Record<SocialProfileName, React.ComponentType<{ className: string }>>> = {
+const ICON_MAP: Partial<
+  Record<SocialProfileName, React.ComponentType<{ className: string }>>
+> = {
   LinkedIn: Linkedin,
   GitHub: Github,
   Instagram: Instagram,
   Discord: MessageSquare,
 };
 
-/* ----------------------------- TICKER CORE ----------------------------- */
-/** Seamless ticker: 4 chunks in a row; animate x: 0% -> -25% for a perfect loop. */
+/* ======================= Marquee core (seamless) ======================= */
+/** 4 chunks, translate -25% for a perfect infinite loop; no gaps ever. */
 function SeamlessTicker({
-  children, // a single "chunk" of text (already coloured tokens)
+  chunk,
   duration,
   delay = 0,
   height = 22,
   className = "",
   reduced = false,
 }: {
-  children: React.ReactNode;
+  chunk: React.ReactNode; // one coloured “code line” chunk
   duration: number;
   delay?: number;
   height?: number;
   className?: string;
   reduced?: boolean;
 }) {
-  // Render 4 copies to ensure 400% width; translating -25% = one seamless cycle.
   const chunks = useMemo(
-    () => Array.from({ length: 4 }).map((_, i) => <span key={i} className="px-2">{children}</span>),
-    [children]
+    () =>
+      Array.from({ length: 4 }).map((_, i) => (
+        <span key={i} className="px-3">
+          {chunk}
+        </span>
+      )),
+    [chunk]
   );
 
   return (
@@ -69,68 +74,251 @@ function SeamlessTicker({
   );
 }
 
-/* ------------------------- MULTI-COLOUR TOKENS ------------------------- */
-/** Token -> coloured span. Cycles through palette for natural “code” mixes. */
-const CODE_PALETTE = [
-  "text-[#AEEBFF]", // aqua
-  "text-[#C9B7FF]", // lavender
-  "text-[#A0FFC9]", // mint
-  "text-[#FFE6A3]", // pale gold
-  "text-[#FFBBD4]", // rose
-  "text-[#9ED0FF]", // sky
-] as const;
+/* =================== Token colouring (no gradients) ==================== */
+const TOKENS = {
+  aqua: "text-[#AEEBFF]",
+  lav: "text-[#C9B7FF]",
+  mint: "text-[#A0FFC9]",
+  gold: "text-[#FFE6A3]",
+  rose: "text-[#FFBBD4]",
+  sky: "text-[#9ED0FF]",
+} as const;
+const PALETTE = [TOKENS.aqua, TOKENS.lav, TOKENS.mint, TOKENS.gold, TOKENS.rose, TOKENS.sky];
 
 function Colorize(tokens: (string | { t: string; cls?: string })[]) {
   let i = 0;
   return tokens.map((tok, idx) => {
     if (typeof tok === "string") {
-      // literal spacing / punctuation stays neutral
-      return <span key={idx} className="text-white/35">{tok}</span>;
+      return (
+        <span key={idx} className="text-white/35">
+          {tok}
+        </span>
+      );
     }
-    const cls = tok.cls ?? CODE_PALETTE[i++ % CODE_PALETTE.length];
+    const cls = tok.cls ?? PALETTE[i++ % PALETTE.length];
     return (
-      <span key={idx} className={`${cls}`}>
+      <span key={idx} className={cls}>
         {tok.t}
       </span>
     );
   });
 }
 
-/* Three “code” lines (each line is a mix of coloured tokens) */
+/* ======================== Mixed-colour code lines ====================== */
 function Line1() {
   return Colorize([
-    { t: "const" }, " ",
-    { t: "dron" }, " ", "=", " ", "{",
-    " ", { t: "name" }, ":", " ", { t: `"Dron Pancholi"` },
-    ", ", { t: "city" }, ":", " ", { t: `"Surendranagar"` },
-    ", ", { t: "tier" }, ":", " ", { t: `"Black Core"` }, " ",
+    { t: "const" },
+    " ",
+    { t: "dron" },
+    " ",
+    "=",
+    " ",
+    "{",
+    " ",
+    { t: "name" },
+    ":",
+    " ",
+    { t: `"Dron Pancholi"` },
+    ", ",
+    { t: "city" },
+    ":",
+    " ",
+    { t: `"Surendranagar"` },
+    ", ",
+    { t: "tier" },
+    ":",
+    " ",
+    { t: `"Black Core"` },
+    " ",
     "}; ",
   ]);
 }
 function Line2() {
   return Colorize([
-    { t: "const" }, " ", { t: "vision" }, " ", "=", " ", { t: `"Build Empires"` }, "; ",
-    { t: "const" }, " ", { t: "motto" }, " ", "=", " ",
-    { t: `"Faith • Trust • Transparency"` }, "; ",
-    { t: "const" }, " ", { t: "socials" }, "=", "[",
-    { t: `"LinkedIn"` }, ", ", { t: `"GitHub"` }, ", ", { t: `"Instagram"` }, ", ", { t: `"Discord"` },
-    "]", "; ",
+    { t: "const" },
+    " ",
+    { t: "vision" },
+    " ",
+    "=",
+    " ",
+    { t: `"Build Empires"` },
+    "; ",
+    { t: "const" },
+    " ",
+    { t: "motto" },
+    " ",
+    "=",
+    " ",
+    { t: `"Faith • Trust • Transparency"` },
+    "; ",
+    { t: "const" },
+    " ",
+    { t: "socials" },
+    "=",
+    "[",
+    { t: `"LinkedIn"` },
+    ", ",
+    { t: `"GitHub"` },
+    ", ",
+    { t: `"Instagram"` },
+    ", ",
+    { t: `"Discord"` },
+    "]",
+    "; ",
   ]);
 }
 function Line3(email: string) {
   return Colorize([
-    { t: "function" }, " ", { t: "contact" }, "()", " ", "{",
-    " ", { t: "return" }, " ", "{",
-    " ", { t: "email" }, ":", " ", { t: `"${email}"` },
-    ", ", { t: "responseTime" }, ":", " ", { t: `"fast"` }, " ",
-    "}", " ", "}", " ",
+    { t: "function" },
+    " ",
+    { t: "contact" },
+    "()",
+    " ",
+    "{",
+    " ",
+    { t: "return" },
+    " ",
+    "{",
+    " ",
+    { t: "email" },
+    ":",
+    " ",
+    { t: `"${email}"` },
+    ", ",
+    { t: "responseTime" },
+    ":",
+    " ",
+    { t: `"fast"` },
+    " ",
+    "}",
+    " ",
+    "}",
+    " ",
   ]);
 }
 
-/* ------------------------------ COMPONENT ------------------------------ */
+/* =================== Refraction layer (the key piece) ================== */
+/**
+ * Renders a clipped, auto-aligned clone of the moving background **inside** the pill,
+ * then displaces it with an SVG filter. This yields true “liquid” refraction/bleed.
+ */
+function RefractionLayer({
+  sceneRef,
+  buildChunk1,
+  buildChunk2,
+  buildChunk3,
+  reduced,
+}: {
+  sceneRef: React.RefObject<HTMLDivElement>;
+  buildChunk1: () => React.ReactNode;
+  buildChunk2: () => React.ReactNode;
+  buildChunk3: () => React.ReactNode;
+  reduced: boolean;
+}) {
+  const holderRef = useRef<HTMLDivElement>(null);
+  const [offset, setOffset] = useState({ x: 0, y: 0, w: 0, h: 0 });
+
+  useEffect(() => {
+    function update() {
+      if (!holderRef.current || !sceneRef.current) return;
+      const pill = holderRef.current.getBoundingClientRect();
+      const scene = sceneRef.current.getBoundingClientRect();
+      setOffset({
+        x: scene.left - pill.left,
+        y: scene.top - pill.top,
+        w: scene.width,
+        h: scene.height,
+      });
+    }
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(document.documentElement);
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [sceneRef]);
+
+  return (
+    <div
+      ref={holderRef}
+      aria-hidden
+      className="absolute inset-0 rounded-full overflow-hidden pointer-events-none"
+      style={{ contain: "strict" }}
+    >
+      {/* Frosted lens base (keeps your current opacity behaviour) */}
+      <div
+        className="absolute inset-0"
+        style={{
+          backdropFilter: "blur(26px) saturate(170%)",
+          WebkitBackdropFilter: "blur(26px) saturate(170%)",
+        }}
+      />
+
+      {/* Cloned moving background, aligned to the scene, then displaced */}
+      <div
+        className="absolute rounded-[inherit] overflow-hidden"
+        style={{
+          left: offset.x,
+          top: offset.y,
+          width: offset.w,
+          height: offset.h,
+          filter: "url(#liquid-displace)", // wobble/refraction
+          mixBlendMode: "overlay",
+          opacity: 0.9,
+        }}
+      >
+        <div className="relative w-full h-full flex items-center justify-center">
+          <div className="pointer-events-none space-y-[7px] select-none">
+            <div className="flex justify-center">
+              <SeamlessTicker
+                reduced={reduced}
+                duration={25}
+                height={22}
+                className="text-[13px] sm:text-sm"
+                chunk={buildChunk1()}
+              />
+            </div>
+            <div className="flex justify-center">
+              <SeamlessTicker
+                reduced={reduced}
+                duration={33}
+                delay={1.5}
+                height={22}
+                className="text-[13px] sm:text-sm"
+                chunk={buildChunk2()}
+              />
+            </div>
+            <div className="flex justify-center">
+              <SeamlessTicker
+                reduced={reduced}
+                duration={40}
+                delay={3}
+                height={22}
+                className="text-[13px] sm:text-sm"
+                chunk={buildChunk3()}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Glass depth + micro-edges */}
+      <div className="absolute inset-0 rounded-[inherit] shadow-[inset_1px_1px_4px_rgba(255,255,255,0.58),inset_-3px_-3px_8px_rgba(0,0,0,0.38)]" />
+      {/* Subtle shine */}
+      <div className="absolute inset-0 rounded-[inherit] bg-[linear-gradient(115deg,rgba(255,255,255,0.42)_0%,rgba(255,255,255,0.12)_33%,rgba(255,255,255,0)_66%)] opacity-35" />
+    </div>
+  );
+}
+
+/* ============================== Component ============================== */
 const Contact: React.FC = () => {
   const [copied, setCopied] = useState(false);
-  const reduceMotion = useReducedMotion();
+  const reduced = useReducedMotion();
+  const sceneRef = useRef<HTMLDivElement>(null);
 
   const handleCopy = () => {
     if (copied) return;
@@ -138,6 +326,11 @@ const Contact: React.FC = () => {
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
   };
+
+  // Prebuild chunk nodes so both foreground and refraction reuse identical content
+  const chunk1 = useMemo(() => <>{Line1()}</>, []);
+  const chunk2 = useMemo(() => <>{Line2()}</>, []);
+  const chunk3 = useMemo(() => <>{Line3(SOCIAL_LINKS.email)}</>, []);
 
   return (
     <section id="contact" className="py-16 md:py-24 text-center scroll-mt-24">
@@ -210,15 +403,16 @@ const Contact: React.FC = () => {
         </GlassCard>
       </motion.div>
 
-      {/* Social pill + mixed-colour continuous code background */}
+      {/* ======= Social pill + continuous multi-line code background ======= */}
       <motion.div
+        ref={sceneRef}
         initial={{ opacity: 0, y: 22 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.7 }}
         className="relative mt-24 flex justify-center"
       >
-        {/* Substrate band (neutral) to feed blur/refractive look */}
+        {/* Neutral substrate so the lens always has data to sample */}
         <div
           aria-hidden
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
@@ -226,87 +420,45 @@ const Contact: React.FC = () => {
           style={{ background: "rgba(255,255,255,0.08)", filter: "blur(22px) saturate(140%)" }}
         />
 
-        {/* Three lines, each internally multi-coloured (token-based), running seamlessly */}
+        {/* Foreground moving code (coloured by tokens; no gradients; no gaps) */}
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none z-[1] space-y-[7px] select-none">
           <div className="flex justify-center">
-            <SeamlessTicker
-              reduced={!!reduceMotion}
-              duration={25}
-              height={22}
-              className="text-[13px] sm:text-sm"
-            >
-              <Line1 />
-            </SeamlessTicker>
+            <SeamlessTicker reduced={!!reduced} duration={25} height={22} className="text-[13px] sm:text-sm" chunk={chunk1} />
           </div>
-
           <div className="flex justify-center">
-            <SeamlessTicker
-              reduced={!!reduceMotion}
-              duration={33}
-              delay={1.5}
-              height={22}
-              className="text-[13px] sm:text-sm"
-            >
-              <Line2 />
-            </SeamlessTicker>
+            <SeamlessTicker reduced={!!reduced} duration={33} delay={1.5} height={22} className="text-[13px] sm:text-sm" chunk={chunk2} />
           </div>
-
           <div className="flex justify-center">
-            <SeamlessTicker
-              reduced={!!reduceMotion}
-              duration={40}
-              delay={3}
-              height={22}
-              className="text-[13px] sm:text-sm"
-            >
-              {Line3(SOCIAL_LINKS.email)}
-            </SeamlessTicker>
+            <SeamlessTicker reduced={!!reduced} duration={40} delay={3} height={22} className="text-[13px] sm:text-sm" chunk={chunk3} />
           </div>
         </div>
 
-        {/* LIQUID GLASS PILL — EXACT SAME STRUCTURE AS HEADER PILL */}
+        {/* ===== Liquid Glass Pill (refracts live background) ===== */}
         <div
           className="
-            relative z-[3] flex items-center gap-7 px-8 py-3 
-            rounded-full cursor-pointer select-none overflow-hidden isolate
-            backdrop-blur-2xl bg-white/14 border border-white/25 
-            shadow-[0_4px_20px_rgba(0,0,0,0.22)]
+            relative z-[2] flex items-center gap-7 px-8 py-3 rounded-full overflow-hidden isolate
+            bg-white/10 border border-white/25 shadow-[0_4px_22px_rgba(0,0,0,0.22)]
           "
         >
-          {/* Distortion Liquid Layer */}
-          <div
-            className="absolute inset-0 rounded-full overflow-hidden pointer-events-none"
-            style={{ filter: "url(#header-pill-glass)" }}
+          {/* Refraction & depth */}
+          <RefractionLayer
+            sceneRef={sceneRef}
+            buildChunk1={() => chunk1}
+            buildChunk2={() => chunk2}
+            buildChunk3={() => chunk3}
+            reduced={!!reduced}
           />
 
-          {/* Depth Highlight */}
-          <div className="absolute inset-0 rounded-full pointer-events-none shadow-[inset_1px_1px_4px_rgba(255,255,255,0.55),inset_-2px_-2px_6px_rgba(0,0,0,0.35)]" />
-
-          {/* Shine Sweep */}
-          <div
-            className="
-              absolute inset-0 rounded-full pointer-events-none 
-              bg-[linear-gradient(115deg,rgba(255,255,255,0.45)_0%,rgba(255,255,255,0.1)_33%,rgba(255,255,255,0)_66%)]
-              opacity-35
-            "
-          />
-
-          {/* ICONS */}
-          <div className="relative z-[2] flex items-center gap-7">
-            {SOCIAL_LINKS.profiles.map((profile) => {
-              const Icon = ICON_MAP[profile.name] || Github;
+          {/* Icons (bright yellow) */}
+          <div className="relative z-[3] flex items-center gap-7">
+            {SOCIAL_LINKS.profiles.map((p) => {
+              const Icon = ICON_MAP[p.name] || Github;
               return (
-                <a
-                  key={profile.name}
-                  href={profile.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={profile.name}
-                >
+                <a key={p.name} href={p.url} target="_blank" rel="noopener noreferrer" aria-label={p.name}>
                   <motion.div
                     whileHover={{ scale: 1.28 }}
                     transition={{ type: "spring", stiffness: 260, damping: 14 }}
-                    className="text-[#FFEFAF] hover:text-[#FFF7C4] drop-shadow-[0_0_8px_rgba(255,249,200,0.65)] transition-all"
+                    className="text-[#FFF2A6] hover:text-[#FFF8C9] drop-shadow-[0_0_10px_rgba(255,248,205,0.6)] transition-all"
                   >
                     <Icon className="w-7 h-7" />
                   </motion.div>
@@ -315,6 +467,17 @@ const Contact: React.FC = () => {
             })}
           </div>
         </div>
+
+        {/* Displacement filter for refraction wobble */}
+        <svg className="hidden" aria-hidden="true">
+          <defs>
+            <filter id="liquid-displace" x="0" y="0" width="100%" height="100%" colorInterpolationFilters="sRGB">
+              <feTurbulence type="fractalNoise" baseFrequency="0.012 0.024" numOctaves="2" seed="7" result="noise" />
+              <feGaussianBlur in="noise" stdDeviation="1.15" result="soft" />
+              <feDisplacementMap in="SourceGraphic" in2="soft" scale="20" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+          </defs>
+        </svg>
       </motion.div>
     </section>
   );
