@@ -5,11 +5,7 @@ import { Mail, Linkedin, Github, Instagram, MessageSquare, Clipboard, Check } fr
 import { SOCIAL_LINKS } from '../constants';
 import GlassCard from './ui/GlassCard';
 
-// FIX: Removed explicit type annotation `{ [key: string]: React.ElementType }`.
-// This allows TypeScript to infer a more specific type for `icons`,
-// ensuring that `profile.name` is recognized as a valid key and resolving
-// a potential type inference issue that caused the error.
-const icons = {
+const icons: { [key: string]: React.ElementType } = {
   LinkedIn: Linkedin,
   GitHub: Github,
   Instagram: Instagram,
@@ -98,10 +94,10 @@ const Contact: React.FC = () => {
         transition={{ duration: 0.5, delay: 0.3 }}
         className="flex items-center justify-center space-x-4 mt-12"
       >
-        {SOCIAL_LINKS.profiles.map((profile) => {
+        {SOCIAL_LINKS.profiles.map((profile, i) => {
           const Icon = icons[profile.name];
           return (
-            <a key={profile.name} href={profile.url} target="_blank" rel="noopener noreferrer" aria-label={profile.name} className="p-2 rounded-full text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-black/5 transition-colors duration-200">
+            <a key={i} href={profile.url} target="_blank" rel="noopener noreferrer" aria-label={profile.name} className="p-2 rounded-full text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-black/5 transition-colors duration-200">
               <Icon className="w-8 h-8" />
               <span className="sr-only">{profile.name}</span>
             </a>
