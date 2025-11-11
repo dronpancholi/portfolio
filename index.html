@@ -89,6 +89,50 @@
       #liquid-glass-filter {
         display: none;
       }
+
+      /* TRUE LIQUID GLASS MATERIAL — EXACT FROM HEADER */
+      .liquid-pill {
+        backdrop-filter: blur(26px) saturate(185%);
+        -webkit-backdrop-filter: blur(26px) saturate(185%);
+        background: rgba(255, 255, 255, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.32);
+        box-shadow:
+          0 4px 20px rgba(0,0,0,0.25),
+          inset 1px 1px 4px rgba(255,255,255,0.55),
+          inset -2px -2px 5px rgba(0,0,0,0.35);
+        border-radius: 999px;
+        position: relative;
+        overflow: hidden;
+        isolation: isolate;
+      }
+
+      /* Shine sweep */
+      .liquid-pill::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: linear-gradient(
+          115deg,
+          rgba(255,255,255,0.45) 0%,
+          rgba(255,255,255,0.1) 33%,
+          rgba(255,255,255,0) 66%
+        );
+        opacity: 0.38;
+        pointer-events: none;
+      }
+
+      /* Distortion layer */
+      .liquid-pill::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        pointer-events: none;
+        filter: url(#header-pill-glass);
+        mix-blend-mode: overlay;
+        opacity: 0.75;
+      }
     </style>
   <script type="importmap">
 {

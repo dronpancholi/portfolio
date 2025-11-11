@@ -316,51 +316,28 @@ const Contact: React.FC = () => {
           </div>
         </div>
         
-        {/* LIQUID GLASS PILL — MATCH HEADER EXACTLY */}
-        <div
-          className="
-            relative z-[3] flex items-center gap-7 px-8 py-3 
-            rounded-full overflow-hidden isolate
-            backdrop-blur-2xl bg-white/18 dark:bg-white/10 
-            border border-white/30 dark:border-white/10 
-            shadow-[0_4px_20px_rgba(0,0,0,0.25)]
-          "
-        >
-          {/* Distortion Liquid Layer (same as header) */}
-          <div
-            className="absolute inset-0 rounded-full overflow-hidden pointer-events-none"
-            style={{ filter: "url(#header-pill-glass)" }}
-          />
-        
-          {/* Depth Highlight Layer (same as header) */}
-          <div className="absolute inset-0 rounded-full pointer-events-none shadow-[inset_1px_1px_4px_rgba(255,255,255,0.6),inset_-2px_-2px_6px_rgba(0,0,0,0.35)]" />
-        
-          {/* Liquid Shine Sweep Layer (same as header) */}
-          <div className="absolute inset-0 rounded-full pointer-events-none bg-[linear-gradient(115deg,rgba(255,255,255,0.45)_0%,rgba(255,255,255,0.1)_33%,rgba(255,255,255,0)_66%)] opacity-35" />
-        
-          {/* ICONS (unchanged) */}
-          <div className="relative z-[2] flex items-center gap-7">
-            {SOCIAL_LINKS.profiles.map((profile) => {
-              const Icon = ICON_MAP[profile.name] || Github;
-              return (
-                <a
-                  key={profile.name}
-                  href={profile.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={profile.name}
+        {/* REAL LIQUID GLASS PILL */}
+        <div className="liquid-pill px-8 py-3 flex items-center gap-7">
+          {SOCIAL_LINKS.profiles.map((profile) => {
+            const Icon = ICON_MAP[profile.name] || Github;
+            return (
+              <a
+                key={profile.name}
+                href={profile.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={profile.name}
+              >
+                <motion.div
+                  whileHover={{ scale: 1.28 }}
+                  transition={{ type: "spring", stiffness: 260, damping: 14 }}
+                  className="text-[#FFEFAF] hover:text-[#FFF7C4] drop-shadow-[0_0_8px_rgba(255,245,180,0.65)] transition-all"
                 >
-                  <motion.div
-                    whileHover={{ scale: 1.28 }}
-                    transition={{ type: "spring", stiffness: 260, damping: 14 }}
-                    className="text-[#FFEFAF] hover:text-[#FFF7C4] drop-shadow-[0_0_8px_rgba(255,245,180,0.65)] transition-all"
-                  >
-                    <Icon className="w-7 h-7" />
-                  </motion.div>
-                </a>
-              );
-            })}
-          </div>
+                  <Icon className="w-7 h-7" />
+                </motion.div>
+              </a>
+            );
+          })}
         </div>
 
       </motion.div>
