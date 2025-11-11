@@ -114,7 +114,7 @@ export default function Header(){
                 <a href="#projects" className="px-2 sm:px-3 py-1.5 hover:text-black transition-colors">Projects</a>
                 <a href="#skills"   className="px-2 sm:px-3 py-1.5 hover:text-black transition-colors">Skills</a>
                 <a href="#contact"  className="px-2 sm:px-3 py-1.5 hover:text-black transition-colors">Contact</a>
-              </nav>
+              </motion.nav>
             )}
           </AnimatePresence>
         </div>
