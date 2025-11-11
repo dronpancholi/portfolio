@@ -4,7 +4,9 @@ import GlassCard from './ui/GlassCard';
 import { SKILLS_DATA } from '../constants';
 import { Briefcase, Code, Database, BrainCircuit, Bot } from 'lucide-react';
 
-const icons: { [key: string]: React.ElementType } = {
+// FIX: Derive a strict type for icon names from the constants and use a Record to ensure type safety for the icons object. This resolves the 'Type 'string' is not assignable to type 'never'' error.
+type SkillIconName = typeof SKILLS_DATA[number]['icon'];
+const icons: Record<SkillIconName, React.ElementType> = {
   frontend: Code,
   backend: Database,
   fullstack: Briefcase,
@@ -44,7 +46,6 @@ const Skills: React.FC = () => {
                   <ul className="flex flex-wrap gap-2">
                     {category.skills.map((skill) => (
                       <li
-                        // FIX: An invalidly placed JavaScript-style comment was here, causing a JSX parsing error. It has been removed.
                         key={skill}
                         className="bg-black/5 text-[var(--text-secondary)] text-sm font-medium px-3 py-1 rounded-full"
                       >

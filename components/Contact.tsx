@@ -5,8 +5,7 @@ import { Mail, Linkedin, Github, Instagram, MessageSquare, Clipboard, Check } fr
 import { SOCIAL_LINKS } from '../constants';
 import GlassCard from './ui/GlassCard';
 
-// FIX: Derive a strict type for social profile names from the constants
-// and use a Record to ensure type safety for the icons object.
+// FIX: Derive a strict type for social profile names from the constants and use a Record to ensure type safety for the icons object. This resolves the 'Type 'string' is not assignable to type 'never'' error.
 type SocialProfileName = typeof SOCIAL_LINKS.profiles[number]['name'];
 const icons: Record<SocialProfileName, React.ElementType> = {
   LinkedIn: Linkedin,
@@ -91,22 +90,47 @@ const Contact: React.FC = () => {
       </motion.div>
 
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 25 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.5 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-        className="flex items-center justify-center space-x-4 mt-12"
+        viewport={{ once: true }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        className="relative mt-16 w-full flex items-center justify-center"
       >
-        {SOCIAL_LINKS.profiles.map((profile) => {
-          const Icon = icons[profile.name];
-          return (
-            // FIX: Using the array index as a key is not a best practice. Switched to `profile.name` which is a stable and unique identifier.
-            <a key={profile.name} href={profile.url} target="_blank" rel="noopener noreferrer" aria-label={profile.name} className="p-2 rounded-full text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-black/5 transition-colors duration-200">
-              <Icon className="w-8 h-8" />
-              <span className="sr-only">{profile.name}</span>
-            </a>
-          );
-        })}
+        {/* Moving Code Background */}
+        <div className="absolute inset-0 h-[60px] overflow-hidden pointer-events-none">
+          <motion.div
+            animate={{ x: ["0%", "-100%"] }}
+            transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+            className="whitespace-nowrap text-sm font-mono text-pink-200/60 opacity-[0.55]"
+          >
+            {`const dron = { name: "Dron Pancholi", skills: ["AI/ML", "Web Dev", "Systems"], location: "Surendranagar", vision: "Build Empires" }; `.repeat(12)}
+          </motion.div>
+        </div>
+
+        {/* Liquid Glass Social Pill */}
+        <motion.div
+          layout
+          className="
+            relative flex items-center gap-6 px-6 py-3 rounded-full backdrop-blur-xl border
+            border-white/20 bg-white/12 shadow-[0_0_25px_rgba(255,255,255,0.18)]
+            hover:bg-white/18 transition-all duration-500"
+          style={{ filter: "url(#liquidGlassEffect)" }}
+        >
+          {SOCIAL_LINKS.profiles.map((profile) => {
+            const Icon = icons[profile.name];
+            return (
+              <a key={profile.name} href={profile.url} target="_blank" rel="noopener noreferrer" aria-label={profile.name}>
+                <motion.div
+                  whileHover={{ scale: 1.18 }}
+                  transition={{ type: "spring", stiffness: 180, damping: 12 }}
+                  className="text-white/85 hover:text-white"
+                >
+                  <Icon className="w-7 h-7" />
+                </motion.div>
+              </a>
+            );
+          })}
+        </motion.div>
       </motion.div>
     </section>
   );
