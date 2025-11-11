@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import React from 'react';
+import { motion } from 'framer-motion';
 import GlassCard from './ui/GlassCard';
 import { SKILLS_DATA } from '../constants';
 import { Briefcase, Code, Database, BrainCircuit, Bot } from 'lucide-react';
@@ -13,31 +13,6 @@ const icons: { [key: string]: React.ElementType } = {
 };
 
 const Skills: React.FC = () => {
-  const ref = useRef<HTMLDivElement>(null);
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  const springConfig = { stiffness: 100, damping: 15 };
-  const mouseXSpring = useSpring(mouseX, springConfig);
-  const mouseYSpring = useSpring(mouseY, springConfig);
-
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['4deg', '-4deg']);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-4deg', '4deg']);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!ref.current) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
-    const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
-    mouseX.set(x);
-    mouseY.set(y);
-  };
-
-  const handleMouseLeave = () => {
-    mouseX.set(0);
-    mouseY.set(0);
-  };
-
   return (
     <section id="skills" className="py-16 md:py-24 scroll-mt-24">
       <motion.h2 
@@ -49,57 +24,40 @@ const Skills: React.FC = () => {
       >
         My Technical Stack
       </motion.h2>
-      <motion.div
-        ref={ref}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        style={{
-          transformStyle: 'preserve-3d',
-          perspective: '1500px',
-        }}
-      >
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-          style={{
-            rotateX,
-            rotateY,
-            transformStyle: 'preserve-3d',
-          }}
-        >
-          {SKILLS_DATA.map((category, index) => {
-            const Icon = icons[category.icon];
-            return (
-              <motion.div
-                key={category.title}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.5, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                style={{ transform: 'translateZ(40px)', transformStyle: 'preserve-3d' }}
-              >
-                <GlassCard className="h-full">
-                  <div className="p-8">
-                    <div className="flex items-center mb-4">
-                      {Icon && <Icon className="w-8 h-8 mr-4 text-[var(--accent)]" />}
-                      <h3 className="text-xl font-bold text-[var(--text-main)]">{category.title}</h3>
-                    </div>
-                    <ul className="flex flex-wrap gap-2">
-                      {category.skills.map((skill) => (
-                        <li
-                          key={skill}
-                          className="bg-black/5 text-[var(--text-secondary)] text-sm font-medium px-3 py-1 rounded-full"
-                        >
-                          {skill}
-                        </li>
-                      ))}
-                    </ul>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {SKILLS_DATA.map((category, index) => {
+          const Icon = icons[category.icon];
+          return (
+            <motion.div
+              key={category.title}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.5, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <GlassCard className="h-full">
+                <div className="p-8">
+                  <div className="flex items-center mb-4">
+                    {Icon && <Icon className="w-8 h-8 mr-4 text-[var(--accent)]" />}
+                    <h3 className="text-xl font-bold text-[var(--text-main)]">{category.title}</h3>
                   </div>
-                </GlassCard>
-              </motion.div>
-            );
-          })}
-        </motion.div>
-      </motion.div>
+                  <ul className="flex flex-wrap gap-2">
+                    {category.skills.map((skill) => (
+                      <li
+                        // FIX: Explicitly cast skill to a string to resolve TS error with `as const`.
+                        key={String(skill)}
+                        className="bg-black/5 text-[var(--text-secondary)] text-sm font-medium px-3 py-1 rounded-full"
+                      >
+                        {skill}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </GlassCard>
+            </motion.div>
+          );
+        })}
+      </div>
     </section>
   );
 };

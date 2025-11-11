@@ -95,7 +95,8 @@ const Contact: React.FC = () => {
         className="flex items-center justify-center space-x-4 mt-12"
       >
         {SOCIAL_LINKS.profiles.map((profile, i) => {
-          const Icon = icons[profile.name];
+          // FIX: Explicitly cast profile.name to a string to resolve TS error with `as const`.
+          const Icon = icons[String(profile.name)];
           return (
             <a key={i} href={profile.url} target="_blank" rel="noopener noreferrer" aria-label={profile.name} className="p-2 rounded-full text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-black/5 transition-colors duration-200">
               <Icon className="w-8 h-8" />
