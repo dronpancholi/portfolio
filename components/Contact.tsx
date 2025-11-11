@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React, { useId, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   Mail,
   Linkedin,
@@ -14,9 +14,11 @@ import {
 import { SOCIAL_LINKS } from "../constants";
 import GlassCard from "./ui/GlassCard";
 
-// FIX: Derive a strict type for social profile names and use a typed record for ICON_MAP to ensure type safety, resolving the 'Type 'string' is not assignable to type 'never'' error.
+// FIX: To resolve an indexing error, explicitly type ICON_MAP using a strict type derived from SOCIAL_LINKS. This ensures type safety when mapping profile names to icons.
+// Types from your constants for strict icon mapping
 type SocialProfileName = typeof SOCIAL_LINKS.profiles[number]["name"];
 
+// Map your names to icons; fallback handled below
 const ICON_MAP: Partial<Record<SocialProfileName, React.ElementType>> = {
   LinkedIn: Linkedin,
   GitHub: Github,
@@ -24,34 +26,73 @@ const ICON_MAP: Partial<Record<SocialProfileName, React.ElementType>> = {
   Discord: MessageSquare,
 };
 
-const TickerLine1 = () => (
-  <>
-    <span className="text-pink-300">const</span> <span className="text-purple-300">dron</span> = {"{"}
-    <span className="text-blue-300"> name</span>: <span className="text-green-300">"Dron Pancholi"</span>,
-    <span className="text-cyan-300"> city</span>: <span className="text-lime-300">"Surendranagar"</span>,
-    <span className="text-amber-300"> empire</span>: <span className="text-rose-300">"New Lands"</span>{"}; "}
-  </>
-);
+/** One seamless scrolling code row with its own gradient and speed. */
+function CodeTicker({
+  children,
+  duration,
+  className = "",
+  height = 22,
+  delay = 0,
+  reduced = false,
+}: {
+  children: React.ReactNode;
+  duration: number;
+  className?: string;
+  height?: number;
+  delay?: number;
+  reduced?: boolean;
+}) {
+  // Use two copies for a perfect loop
+  const common = {
+    className:
+      "absolute top-0 whitespace-nowrap font-mono will-change-transform",
+  } as const;
 
-const TickerLine2 = () => (
-  <>
-    <span className="text-indigo-300">const</span> <span className="text-pink-300">vision</span> =
-    <span className="text-orange-300"> "Black Core Supremacy"</span>; <span className="text-fuchsia-300">while</span>(true){"{"}
-    <span className="text-blue-300"> build</span>();{"}"}{" "}
-  </>
-);
-
-const TickerLine3 = () => (
-  <>
-    <span className="text-green-300">function</span> <span className="text-yellow-300">contact</span>(){"{"}
-    <span className="text-teal-300"> return </span>
-    <span className="text-cyan-300">SOCIAL_LINKS.email</span>;{"}"}{" "}
-  </>
-);
-
+  return (
+    <div
+      className="relative w-[min(100%,1100px)] overflow-hidden select-none"
+      style={{ height }}
+      aria-hidden
+    >
+      <motion.div
+        {...common}
+        style={{ left: 0 }}
+        animate={reduced ? undefined : { x: ["0%", "-100%"] }}
+        transition={
+          reduced
+            ? undefined
+            : { duration, repeat: Infinity, ease: "linear", delay }
+        }
+        className={className}
+      >
+        {children}
+        {children}
+      </motion.div>
+      <motion.div
+        {...common}
+        style={{ left: "100%" }}
+        animate={reduced ? undefined : { x: ["0%", "-100%"] }}
+        transition={
+          reduced
+            ? undefined
+            : { duration, repeat: Infinity, ease: "linear", delay }
+        }
+        className={className}
+      >
+        {children}
+        {children}
+      </motion.div>
+    </div>
+  );
+}
 
 const Contact: React.FC = () => {
   const [copied, setCopied] = useState(false);
+  const reduceMotion = useReducedMotion();
+
+  // Unique filter id (SSR-safe) for any future pill filter usage
+  const filterId = useId();
+  const liquidId = `liquidGlass-${filterId}`;
 
   const handleCopy = () => {
     if (copied) return;
@@ -62,7 +103,7 @@ const Contact: React.FC = () => {
 
   return (
     <section id="contact" className="py-16 md:py-24 text-center scroll-mt-24">
-      {/* H2 */}
+      {/* Title */}
       <motion.h2
         initial={{ opacity: 0, y: 18 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -81,7 +122,8 @@ const Contact: React.FC = () => {
         transition={{ duration: 0.6, delay: 0.1 }}
         className="text-lg text-[var(--text-secondary)] mb-12 max-w-xl mx-auto"
       >
-        I'm actively exploring new opportunities and collaborations. Best way to reach me is email.
+        I&apos;m actively exploring new opportunities and collaborations. Best
+        way to reach me is email.
       </motion.p>
 
       {/* Email card */}
@@ -131,66 +173,98 @@ const Contact: React.FC = () => {
         </GlassCard>
       </motion.div>
 
-      {/* SOCIAL LIQUID GLASS SECTION */}
+      {/* Social pill + three code lines behind it */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 22 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.7 }}
         className="relative mt-24 flex justify-center"
       >
-        {/* 3-Layer Code Background */}
-        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none space-y-1 select-none">
-          
-          {/* LINE 1 - Multi-shade syntax style */}
-          <motion.div
-            animate={{ x: ["0%", "-100%"] }}
-            transition={{ duration: 26, repeat: Infinity, ease: "linear" }}
-            className="whitespace-nowrap font-mono text-[13px] sm:text-sm"
-          >
-            {Array.from({ length: 25 }).map((_, i) => <TickerLine1 key={i} />)}
-          </motion.div>
+        {/* Contrast helper for visibility (behind code & pill, improves readability on bright bgs) */}
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 mx-auto w-[min(95%,1200px)] h-[120px] rounded-[40px] pointer-events-none -z-10"
+             style={{
+               background:
+                 "radial-gradient(60% 140% at 50% 50%, rgba(0,0,0,0.28), rgba(0,0,0,0.05) 70%, transparent 90%)",
+               filter: "blur(6px)",
+             }}
+        />
 
-          {/* LINE 2 */}
-          <motion.div
-            animate={{ x: ["0%", "-100%"] }}
-            transition={{ duration: 32, repeat: Infinity, ease: "linear" }}
-            className="whitespace-nowrap font-mono text-[13px] sm:text-sm opacity-[0.85]"
-          >
-            {Array.from({ length: 25 }).map((_, i) => <TickerLine2 key={i} />)}
-          </motion.div>
+        {/* Three independent tickers, vertically staggered so the pill sits centered among them */}
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none z-0 space-y-[6px]">
+          {/* Row 1: pink → violet → sky */}
+          <div className="flex justify-center">
+            <CodeTicker
+              reduced={!!reduceMotion}
+              duration={22}
+              height={22}
+              delay={0}
+              className="text-[13px] sm:text-sm font-medium bg-gradient-to-r from-pink-300 via-fuchsia-300 via-violet-300 via-indigo-300 to-sky-300 bg-clip-text text-transparent opacity-[0.9]"
+            >
+              {`const dron = { name: "Dron Pancholi", city: "Surendranagar", empire: "New Lands", tier: "Black Core" }; `}
+            </CodeTicker>
+          </div>
 
-          {/* LINE 3 */}
-          <motion.div
-            animate={{ x: ["0%", "-100%"] }}
-            transition={{ duration: 38, repeat: Infinity, ease: "linear" }}
-            className="whitespace-nowrap font-mono text-[13px] sm:text-sm opacity-[0.75]"
-          >
-            {Array.from({ length: 25 }).map((_, i) => <TickerLine3 key={i} />)}
-          </motion.div>
+          {/* Row 2: emerald → cyan → lime (slower, slight parallax) */}
+          <div className="flex justify-center">
+            <CodeTicker
+              reduced={!!reduceMotion}
+              duration={28}
+              height={22}
+              delay={2}
+              className="text-[13px] sm:text-sm font-medium bg-gradient-to-r from-emerald-300 via-teal-300 via-cyan-300 to-lime-300 bg-clip-text text-transparent opacity-[0.85]"
+            >
+              {`const socials = ["LinkedIn","GitHub","Instagram","Discord"]; const vision = "Build Empires"; const motto = "Faith • Trust • Transparency"; `}
+            </CodeTicker>
+          </div>
+
+          {/* Row 3: amber → orange → rose → fuchsia (slowest) */}
+          <div className="flex justify-center">
+            <CodeTicker
+              reduced={!!reduceMotion}
+              duration={34}
+              height={22}
+              delay={4}
+              className="text-[13px] sm:text-sm font-medium bg-gradient-to-r from-amber-300 via-orange-300 via-rose-300 to-fuchsia-300 bg-clip-text text-transparent opacity-[0.85]"
+            >
+              {`function contact(){ return { email: "${SOCIAL_LINKS.email}", responseTime: "fast" } } `}
+            </CodeTicker>
+          </div>
         </div>
-        
-        {/* SOFT VISIBILITY BALANCER — FIXES READABILITY WITHOUT TOUCHING GLASS */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
-          w-[115%] h-[135%] rounded-full 
-          backdrop-blur-xl bg-black/12 
-          opacity-70 pointer-events-none z-[5]" />
 
-        {/* LIQUID GLASS PILL - ELITE HIGH GLOSS */}
-        <div className="relative z-20 flex items-center gap-7 px-8 py-3 rounded-full overflow-hidden cursor-pointer
-            backdrop-blur-3xl bg-white/8 border border-white/20
-            shadow-[0_0_30px_rgba(255,255,255,0.30)]
-            transition-all duration-700 hover:bg-white/14 hover:shadow-[0_0_40px_rgba(255,255,255,0.45)]
-            before:absolute before:inset-0 before:rounded-full before:shadow-[inset_3px_3px_6px_rgba(255,255,255,0.55),inset_-3px_-3px_6px_rgba(0,0,0,0.25)]
-            after:absolute after:-top-[60%] after:left-0 after:w-full after:h-[200%] after:bg-gradient-to-b from-white/20 to-transparent after:opacity-70 after:rotate-[8deg] after:rounded-full pointer-events-none select-none"
+        {/* Your liquid glass pill (unchanged core look, just wrapped and layered correctly) */}
+        <div
+          className={[
+            "relative z-10 flex items-center gap-7",
+            "px-7 sm:px-8 py-3",
+            "rounded-full overflow-hidden",
+            // Glass look (kept): heavy blur + thin border + subtle transparency
+            "backdrop-blur-3xl bg-white/10 border border-white/25",
+            // Glow
+            "shadow-[0_0_30px_rgba(255,255,255,0.30)]",
+            // Hover polish, no functional changes
+            "transition-all duration-700 hover:bg-white/14 hover:shadow-[0_0_40px_rgba(255,255,255,0.45)]",
+            // Inner highlights, fully clipped to the pill
+            "before:absolute before:inset-0 before:rounded-full before:shadow-[inset_3px_3px_6px_rgba(255,255,255,0.55),inset_-3px_-3px_6px_rgba(0,0,0,0.25)]",
+            "after:pointer-events-none after:absolute after:-top-[65%] after:left-0 after:w-full after:h-[210%] after:rounded-full",
+            "after:bg-gradient-to-b after:from-white/22 after:to-transparent after:opacity-70 after:rotate-[8deg]",
+          ].join(" ")}
+          // If you were using an SVG displacement filter for wobble, keep it here:
+          // style={{ filter: `url(#${liquidId})` }}
         >
           {SOCIAL_LINKS.profiles.map((profile) => {
             const Icon = ICON_MAP[profile.name] || Github;
             return (
-              <a key={profile.name} href={profile.url} target="_blank" rel="noopener noreferrer" aria-label={profile.name}>
+              <a
+                key={profile.name}
+                href={profile.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={profile.name}
+              >
                 <motion.div
-                  whileHover={{ scale: 1.3 }}
-                  transition={{ type: "spring", stiffness: 280, damping: 15 }}
+                  whileHover={{ scale: 1.28 }}
+                  transition={{ type: "spring", stiffness: 280, damping: 16 }}
                   className="text-white/90 hover:text-white"
                 >
                   <Icon className="w-7 h-7" />
@@ -199,6 +273,32 @@ const Contact: React.FC = () => {
             );
           })}
         </div>
+
+        {/* Optional: keep a unique SVG filter ready if you want extra liquid wobble later */}
+        <svg className="hidden">
+          <defs>
+            <filter id={liquidId} x="0" y="0" width="100%" height="100%">
+              <feTurbulence
+                type="fractalNoise"
+                baseFrequency="0.008 0.02"
+                numOctaves="1"
+                seed="7"
+                result="noise"
+              />
+              <feGaussianBlur in="noise" stdDeviation="1.2" result="soft" />
+              <feDisplacementMap
+                in="SourceGraphic"
+                in2="soft"
+                scale="18"
+                xChannelSelector="R"
+                yChannelSelector="G"
+                result="displaced"
+              />
+              <feGaussianBlur in="displaced" stdDeviation="0.5" result="final" />
+              <feComposite in="final" in2="final" operator="over" />
+            </filter>
+          </defs>
+        </svg>
       </motion.div>
     </section>
   );
