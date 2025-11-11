@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 // FIX: Import Transition to correctly type the spring animation object.
 import { motion, AnimatePresence, Transition } from "framer-motion";
+import ThemeToggle from "./ui/ThemeToggle";
 
 export default function Header(){
   const pillRef = useRef<HTMLDivElement>(null);
@@ -50,7 +51,7 @@ export default function Header(){
         ref={pillRef}
         onClick={onPillClick}
         layout
-        className="pointer-events-auto relative flex items-center justify-center cursor-pointer select-none whitespace-nowrap rounded-full backdrop-blur-2xl bg-white/18 dark:bg-white/10 border border-white/30 dark:border-white/10 shadow-[0_4px_20px_rgba(0,0,0,0.25)]"
+        className="pointer-events-auto relative flex items-center justify-center cursor-pointer select-none whitespace-nowrap rounded-full backdrop-blur-2xl bg-white/18 dark:bg-black/20 border border-white/30 dark:border-white/10 shadow-[0_4px_20px_rgba(0,0,0,0.25)]"
         variants={{
           top:       { 
             padding: "12px 22px", 
@@ -88,10 +89,27 @@ export default function Header(){
             layout
             animate={{ fontSize: state==="collapsed" ? "0.74rem" : "1.05rem" }}
             transition={spring}
-            className="font-semibold tracking-tight text-neutral-900"
+            className="font-semibold tracking-tight text-[var(--text-main)]"
           >
             Dron Pancholi
           </motion.p>
+          
+          <AnimatePresence>
+            {(state==="top") && (
+              <motion.div 
+                key="theme-toggle"
+                layout="position"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -10, transition: { duration: 0.18 } }}
+                transition={{ duration: 0.32, ease:[0.22,1,0.36,1], delay: 0.1 }}
+                onClick={(e) => e.stopPropagation()}
+                className="ml-auto"
+              >
+                <ThemeToggle />
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <AnimatePresence initial={false} mode="popLayout">
             {(state==="top" || state==="expanded") && (
@@ -104,16 +122,16 @@ export default function Header(){
                 exit={{ opacity: 0, x: 6, transition: { duration: 0.18 } }}
                 transition={{ duration: 0.32, ease:[0.22,1,0.36,1] }}
                 className="
-                  flex items-center font-medium text-neutral-800 
+                  flex items-center font-medium text-[var(--text-secondary)] 
                   overflow-hidden
                   sm:flex-nowrap flex-wrap
                   sm:gap-0 gap-1
                 "
               >
-                <a href="#about"    className="px-2 sm:px-3 py-1.5 hover:text-black transition-colors">About</a>
-                <a href="#projects" className="px-2 sm:px-3 py-1.5 hover:text-black transition-colors">Projects</a>
-                <a href="#skills"   className="px-2 sm:px-3 py-1.5 hover:text-black transition-colors">Skills</a>
-                <a href="#contact"  className="px-2 sm:px-3 py-1.5 hover:text-black transition-colors">Contact</a>
+                <a href="#about"    className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">About</a>
+                <a href="#projects" className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">Projects</a>
+                <a href="#skills"   className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">Skills</a>
+                <a href="#contact"  className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">Contact</a>
               </motion.nav>
             )}
           </AnimatePresence>

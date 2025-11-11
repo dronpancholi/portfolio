@@ -254,14 +254,14 @@ const Contact: React.FC = () => {
               Email me directly at
             </h3>
 
-            <div className="w-full max-w-md flex items-center justify-between bg-black/5 rounded-xl p-3">
+            <div className="w-full max-w-md flex items-center justify-between bg-black/5 dark:bg-white/5 rounded-xl p-3">
               <span className="text-sm sm:text-base text-[var(--text-secondary)] font-mono truncate">
                 {SOCIAL_LINKS.email}
               </span>
 
               <button
                 onClick={handleCopy}
-                className="flex items-center justify-center gap-1 w-24 h-9 text-sm font-semibold bg-[var(--accent)] text-[var(--text-main)] rounded-lg hover:brightness-110 transition-all"
+                className="flex items-center justify-center gap-1 w-24 h-9 text-sm font-semibold bg-[var(--accent)] text-black dark:text-[var(--text-main)] rounded-lg hover:brightness-110 transition-all"
                 aria-label="Copy email address"
               >
                 {copied ? (
@@ -339,7 +339,6 @@ const Contact: React.FC = () => {
             );
           })}
         </div>
-
       </motion.div>
     </section>
   );

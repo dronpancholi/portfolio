@@ -49,7 +49,7 @@ const Skills: React.FC = () => {
                     {category.skills.map((skill) => (
                       <li
                         key={skill}
-                        className="bg-black/5 text-[var(--text-secondary)] text-sm font-medium px-3 py-1 rounded-full"
+                        className="bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] text-sm font-medium px-3 py-1 rounded-full"
                       >
                         {skill}
                       </li>

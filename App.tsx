@@ -1,11 +1,13 @@
 
 
+
 import React, { Suspense, lazy, useEffect } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Footer from './components/Footer';
 import Loader from './components/ui/Loader';
 import HeaderPillGlassFilter from './components/ui/HeaderPillGlassFilter';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 const Skills = lazy(() => import('./components/Skills'));
 const Projects = lazy(() => import('./components/Projects'));
@@ -25,20 +27,22 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="bg-[var(--bg-base)] text-[var(--text-main)] selection:bg-[var(--accent)]/30 min-h-screen">
-      <HeaderPillGlassFilter />
-      <Header />
-      <main className="container mx-auto px-6 md:px-8 pt-24 relative z-10">
-        <Hero />
-        <Suspense fallback={<Loader />}>
-          <About />
-          <Skills />
-          <Projects />
-          <Contact />
-        </Suspense>
-      </main>
-      <Footer />
-    </div>
+    <ThemeProvider>
+      <div className="bg-[var(--bg-base)] text-[var(--text-main)] selection:bg-[var(--accent)]/30 min-h-screen">
+        <HeaderPillGlassFilter />
+        <Header />
+        <main className="container mx-auto px-6 md:px-8 pt-24 relative z-10">
+          <Hero />
+          <Suspense fallback={<Loader />}>
+            <About />
+            <Skills />
+            <Projects />
+            <Contact />
+          </Suspense>
+        </main>
+        <Footer />
+      </div>
+    </ThemeProvider>
   );
 };
 

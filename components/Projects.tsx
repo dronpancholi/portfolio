@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import GlassCard from './ui/GlassCard';
@@ -54,12 +55,11 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
       aria-describedby={`modal-desc-${project.title}`}
     >
       <motion.div
-        className="absolute inset-0"
+        className="absolute inset-0 bg-black/20 dark:bg-black/40"
         initial={{ opacity:0 }}
         animate={{ opacity:1 }}
         exit={{ opacity:0 }}
         transition={{ duration:0.25, ease:"easeOut" }}
-        style={{ background: "linear-gradient(0deg, rgba(0,0,0,0.18), rgba(0,0,0,0.12))" }}
         onClick={onClose}
       />
       
@@ -72,7 +72,7 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
         <div className="p-8 md:p-12 relative max-h-[90vh] overflow-y-auto scrollbar-none">
           <motion.button
             onClick={onClose}
-            className="absolute top-4 right-4 z-20 text-[var(--text-secondary)] p-2 rounded-full hover:bg-black/10 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+            className="absolute top-4 right-4 z-20 text-[var(--text-secondary)] p-2 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
             aria-label="Close modal"
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1, transition: { delay: 0.3 } }}
@@ -86,7 +86,7 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
               <motion.h3 layoutId={`project-title-${project.title}`} id={`modal-title-${project.title}`} className="text-2xl md:text-3xl font-bold text-[var(--text-main)] pr-12">{project.title}</motion.h3>
               <motion.div variants={contentItemVariants}>
                 <span className={`text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap self-start ${
-                  project.status === 'Coming Soon' ? 'bg-[var(--accent)]/20 text-[var(--accent)] animate-pulse' : 'bg-black/5 text-[var(--text-secondary)]'
+                  project.status === 'Coming Soon' ? 'bg-[var(--accent)]/20 text-[var(--accent)] animate-pulse' : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)]'
                 }`}>
                   {project.status}
                 </span>
@@ -106,7 +106,7 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
               <h4 className="text-lg font-semibold text-[var(--text-main)] mb-3">Tech Stack</h4>
               <div className="flex flex-wrap gap-2">
                 {project.techStack.map(tech => (
-                  <span key={tech} className="bg-black/5 text-[var(--text-secondary)] text-sm font-medium px-3 py-1 rounded-full">{tech}</span>
+                  <span key={tech} className="bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] text-sm font-medium px-3 py-1 rounded-full">{tech}</span>
                 ))}
               </div>
             </motion.div>
@@ -219,7 +219,7 @@ const Projects: React.FC = () => {
                   <div className="flex justify-between items-start mb-4">
                     <motion.h3 layoutId={`project-title-${project.title}`} className="text-xl font-bold text-[var(--text-main)]">{project.title}</motion.h3>
                     <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
-                      project.status === 'Coming Soon' ? 'bg-[var(--accent)]/20 text-[var(--accent)] animate-pulse' : 'bg-black/5 text-[var(--text-secondary)]'
+                      project.status === 'Coming Soon' ? 'bg-[var(--accent)]/20 text-[var(--accent)] animate-pulse' : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)]'
                     }`}>
                       {project.status}
                     </span>
