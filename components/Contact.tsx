@@ -197,123 +197,6 @@ function Line3(email: string) {
   ]);
 }
 
-/* =================== Refraction layer (the key piece) ================== */
-/**
- * Renders a clipped, auto-aligned clone of the moving background **inside** the pill,
- * then displaces it with an SVG filter. This yields true “liquid” refraction/bleed.
- */
-function RefractionLayer({
-  sceneRef,
-  buildChunk1,
-  buildChunk2,
-  buildChunk3,
-  reduced,
-}: {
-  sceneRef: React.RefObject<HTMLDivElement>;
-  buildChunk1: () => React.ReactNode;
-  buildChunk2: () => React.ReactNode;
-  buildChunk3: () => React.ReactNode;
-  reduced: boolean;
-}) {
-  const holderRef = useRef<HTMLDivElement>(null);
-  const [offset, setOffset] = useState({ x: 0, y: 0, w: 0, h: 0 });
-
-  useEffect(() => {
-    function update() {
-      if (!holderRef.current || !sceneRef.current) return;
-      const pill = holderRef.current.getBoundingClientRect();
-      const scene = sceneRef.current.getBoundingClientRect();
-      setOffset({
-        x: scene.left - pill.left,
-        y: scene.top - pill.top,
-        w: scene.width,
-        h: scene.height,
-      });
-    }
-    update();
-    const ro = new ResizeObserver(update);
-    ro.observe(document.documentElement);
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-    };
-  }, [sceneRef]);
-
-  return (
-    <div
-      ref={holderRef}
-      aria-hidden
-      className="absolute inset-0 rounded-full overflow-hidden pointer-events-none"
-      style={{ contain: "strict" }}
-    >
-      {/* Frosted lens base (keeps your current opacity behaviour) */}
-      <div
-        className="absolute inset-0"
-        style={{
-          backdropFilter: "blur(26px) saturate(170%)",
-          WebkitBackdropFilter: "blur(26px) saturate(170%)",
-        }}
-      />
-
-      {/* Cloned moving background, aligned to the scene, then displaced */}
-      <div
-        className="absolute rounded-[inherit] overflow-hidden"
-        style={{
-          left: offset.x,
-          top: offset.y,
-          width: offset.w,
-          height: offset.h,
-          filter: "url(#liquid-displace)", // wobble/refraction
-          mixBlendMode: "overlay",
-          opacity: 0.9,
-        }}
-      >
-        <div className="relative w-full h-full flex items-center justify-center">
-          <div className="pointer-events-none space-y-[7px] select-none">
-            <div className="flex justify-center">
-              <SeamlessTicker
-                reduced={reduced}
-                duration={25}
-                height={22}
-                className="text-[13px] sm:text-sm"
-                chunk={buildChunk1()}
-              />
-            </div>
-            <div className="flex justify-center">
-              <SeamlessTicker
-                reduced={reduced}
-                duration={33}
-                delay={1.5}
-                height={22}
-                className="text-[13px] sm:text-sm"
-                chunk={buildChunk2()}
-              />
-            </div>
-            <div className="flex justify-center">
-              <SeamlessTicker
-                reduced={reduced}
-                duration={40}
-                delay={3}
-                height={22}
-                className="text-[13px] sm:text-sm"
-                chunk={buildChunk3()}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Glass depth + micro-edges */}
-      <div className="absolute inset-0 rounded-[inherit] shadow-[inset_1px_1px_4px_rgba(255,255,255,0.58),inset_-3px_-3px_8px_rgba(0,0,0,0.38)]" />
-      {/* Subtle shine */}
-      <div className="absolute inset-0 rounded-[inherit] bg-[linear-gradient(115deg,rgba(255,255,255,0.42)_0%,rgba(255,255,255,0.12)_33%,rgba(255,255,255,0)_66%)] opacity-35" />
-    </div>
-  );
-}
-
 /* ============================== Component ============================== */
 const Contact: React.FC = () => {
   const [copied, setCopied] = useState(false);
@@ -327,7 +210,7 @@ const Contact: React.FC = () => {
     setTimeout(() => setCopied(false), 2500);
   };
 
-  // Prebuild chunk nodes so both foreground and refraction reuse identical content
+  // Prebuild chunk nodes so background tickers can reuse identical content
   const chunk1 = useMemo(() => <>{Line1()}</>, []);
   const chunk2 = useMemo(() => <>{Line2()}</>, []);
   const chunk3 = useMemo(() => <>{Line3(SOCIAL_LINKS.email)}</>, []);
@@ -432,33 +315,45 @@ const Contact: React.FC = () => {
             <SeamlessTicker reduced={!!reduced} duration={40} delay={3} height={22} className="text-[13px] sm:text-sm" chunk={chunk3} />
           </div>
         </div>
-
-        {/* ===== Liquid Glass Pill (refracts live background) ===== */}
+        
+        {/* LIQUID GLASS PILL — MATCH HEADER EXACTLY */}
         <div
           className="
-            relative z-[2] flex items-center gap-7 px-8 py-3 rounded-full overflow-hidden isolate
-            bg-white/10 border border-white/25 shadow-[0_4px_22px_rgba(0,0,0,0.22)]
+            relative z-[3] flex items-center gap-7 px-8 py-3 
+            rounded-full overflow-hidden isolate
+            backdrop-blur-2xl bg-white/18 dark:bg-white/10 
+            border border-white/30 dark:border-white/10 
+            shadow-[0_4px_20px_rgba(0,0,0,0.25)]
           "
         >
-          {/* Refraction & depth */}
-          <RefractionLayer
-            sceneRef={sceneRef}
-            buildChunk1={() => chunk1}
-            buildChunk2={() => chunk2}
-            buildChunk3={() => chunk3}
-            reduced={!!reduced}
+          {/* Distortion Liquid Layer (same as header) */}
+          <div
+            className="absolute inset-0 rounded-full overflow-hidden pointer-events-none"
+            style={{ filter: "url(#header-pill-glass)" }}
           />
-
-          {/* Icons (bright yellow) */}
-          <div className="relative z-[3] flex items-center gap-7">
-            {SOCIAL_LINKS.profiles.map((p) => {
-              const Icon = ICON_MAP[p.name] || Github;
+        
+          {/* Depth Highlight Layer (same as header) */}
+          <div className="absolute inset-0 rounded-full pointer-events-none shadow-[inset_1px_1px_4px_rgba(255,255,255,0.6),inset_-2px_-2px_6px_rgba(0,0,0,0.35)]" />
+        
+          {/* Liquid Shine Sweep Layer (same as header) */}
+          <div className="absolute inset-0 rounded-full pointer-events-none bg-[linear-gradient(115deg,rgba(255,255,255,0.45)_0%,rgba(255,255,255,0.1)_33%,rgba(255,255,255,0)_66%)] opacity-35" />
+        
+          {/* ICONS (unchanged) */}
+          <div className="relative z-[2] flex items-center gap-7">
+            {SOCIAL_LINKS.profiles.map((profile) => {
+              const Icon = ICON_MAP[profile.name] || Github;
               return (
-                <a key={p.name} href={p.url} target="_blank" rel="noopener noreferrer" aria-label={p.name}>
+                <a
+                  key={profile.name}
+                  href={profile.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={profile.name}
+                >
                   <motion.div
                     whileHover={{ scale: 1.28 }}
                     transition={{ type: "spring", stiffness: 260, damping: 14 }}
-                    className="text-[#FFF2A6] hover:text-[#FFF8C9] drop-shadow-[0_0_10px_rgba(255,248,205,0.6)] transition-all"
+                    className="text-[#FFEFAF] hover:text-[#FFF7C4] drop-shadow-[0_0_8px_rgba(255,245,180,0.65)] transition-all"
                   >
                     <Icon className="w-7 h-7" />
                   </motion.div>
@@ -468,16 +363,6 @@ const Contact: React.FC = () => {
           </div>
         </div>
 
-        {/* Displacement filter for refraction wobble */}
-        <svg className="hidden" aria-hidden="true">
-          <defs>
-            <filter id="liquid-displace" x="0" y="0" width="100%" height="100%" colorInterpolationFilters="sRGB">
-              <feTurbulence type="fractalNoise" baseFrequency="0.012 0.024" numOctaves="2" seed="7" result="noise" />
-              <feGaussianBlur in="noise" stdDeviation="1.15" result="soft" />
-              <feDisplacementMap in="SourceGraphic" in2="soft" scale="20" xChannelSelector="R" yChannelSelector="G" />
-            </filter>
-          </defs>
-        </svg>
       </motion.div>
     </section>
   );
