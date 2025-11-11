@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useId, useState } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import {
   Mail,
@@ -24,10 +24,34 @@ const ICON_MAP: Partial<Record<SocialProfileName, React.ElementType>> = {
   Discord: MessageSquare,
 };
 
+const TickerLine1 = () => (
+  <>
+    <span className="text-pink-300">const</span> <span className="text-purple-300">dron</span> = {"{"}
+    <span className="text-blue-300"> name</span>: <span className="text-green-300">"Dron Pancholi"</span>,
+    <span className="text-cyan-300"> city</span>: <span className="text-lime-300">"Surendranagar"</span>,
+    <span className="text-amber-300"> empire</span>: <span className="text-rose-300">"New Lands"</span>{"}; "}
+  </>
+);
+
+const TickerLine2 = () => (
+  <>
+    <span className="text-indigo-300">const</span> <span className="text-pink-300">vision</span> =
+    <span className="text-orange-300"> "Black Core Supremacy"</span>; <span className="text-fuchsia-300">while</span>(true){"{"}
+    <span className="text-blue-300"> build</span>();{"}"}{" "}
+  </>
+);
+
+const TickerLine3 = () => (
+  <>
+    <span className="text-green-300">function</span> <span className="text-yellow-300">contact</span>(){"{"}
+    <span className="text-teal-300"> return </span>
+    <span className="text-cyan-300">SOCIAL_LINKS.email</span>;{"}"}{" "}
+  </>
+);
+
+
 const Contact: React.FC = () => {
   const [copied, setCopied] = useState(false);
-  const filterId = useId(); // unique per render to avoid duplicate IDs on SSR
-  const liquidId = `liquidGlass-${filterId}`;
 
   const handleCopy = () => {
     if (copied) return;
@@ -107,71 +131,60 @@ const Contact: React.FC = () => {
         </GlassCard>
       </motion.div>
 
-      {/* Social pill with moving code underneath */}
+      {/* SOCIAL LIQUID GLASS SECTION */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.7 }}
-        className="relative mt-16 flex justify-center"
+        className="relative mt-24 flex justify-center"
       >
-        {/* Three moving code lines (under the pill) */}
-        <div
-          aria-hidden
-          className="absolute left-1/2 -translate-x-1/2 bottom-[-28px] sm:bottom-[-30px] w-[min(100%,900px)] pointer-events-none"
-        >
-          {/* Each row gets slightly different speed/offset and colors */}
-          <CodeTicker
-            text={`const dron = { name: "Dron Pancholi", city: "Surendranagar", empire: "New Lands", tier: "Black Core" }; `}
-            duration={18}
-            className="text-[13px] sm:text-sm bg-gradient-to-r from-pink-400 via-purple-400 via-blue-400 to-sky-400 bg-clip-text text-transparent opacity-80"
-          />
-          <CodeTicker
-            text={`const socials = ["LinkedIn","GitHub","Instagram","Discord"]; const vision = "Build Empires."; `}
-            duration={22}
-            className="text-[13px] sm:text-sm mt-1 bg-gradient-to-r from-emerald-300 via-teal-300 via-cyan-300 to-lime-300 bg-clip-text text-transparent opacity-80"
-          />
-          <CodeTicker
-            text={`function contact(d){ return { email: "${SOCIAL_LINKS.email}", responseTime: "fast", motto: "Faith • Trust • Transparency" }; } `}
-            duration={26}
-            className="text-[13px] sm:text-sm mt-1 bg-gradient-to-r from-amber-300 via-orange-300 via-rose-300 to-fuchsia-300 bg-clip-text text-transparent opacity-80"
-          />
+        {/* 3-Layer Code Background */}
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none space-y-1 select-none">
+          
+          {/* LINE 1 - Multi-shade syntax style */}
+          <motion.div
+            animate={{ x: ["0%", "-100%"] }}
+            transition={{ duration: 26, repeat: Infinity, ease: "linear" }}
+            className="whitespace-nowrap font-mono text-[13px] sm:text-sm"
+          >
+            {Array.from({ length: 25 }).map((_, i) => <TickerLine1 key={i} />)}
+          </motion.div>
+
+          {/* LINE 2 */}
+          <motion.div
+            animate={{ x: ["0%", "-100%"] }}
+            transition={{ duration: 32, repeat: Infinity, ease: "linear" }}
+            className="whitespace-nowrap font-mono text-[13px] sm:text-sm opacity-[0.85]"
+          >
+            {Array.from({ length: 25 }).map((_, i) => <TickerLine2 key={i} />)}
+          </motion.div>
+
+          {/* LINE 3 */}
+          <motion.div
+            animate={{ x: ["0%", "-100%"] }}
+            transition={{ duration: 38, repeat: Infinity, ease: "linear" }}
+            className="whitespace-nowrap font-mono text-[13px] sm:text-sm opacity-[0.75]"
+          >
+            {Array.from({ length: 25 }).map((_, i) => <TickerLine3 key={i} />)}
+          </motion.div>
         </div>
 
-        {/* Liquid glass pill */}
-        <motion.div
-          layout
-          className={[
-            // Outer wrapper guarantees a perfect pill shape and clips inner blur/shadows
-            "relative z-10 flex items-center gap-6",
-            "px-6 sm:px-7 py-2.5 sm:py-3",
-            "rounded-[999px] overflow-hidden", // critical: keep pill perfectly shaped
-            "backdrop-blur-2xl",
-            "border border-white/25 bg-white/10",
-            "shadow-[0_0_22px_rgba(255,255,255,0.22)]",
-            "transition-all duration-500 hover:bg-white/16",
-          ].join(" ")}
-          style={{ filter: `url(#${liquidId})` }}
+        {/* LIQUID GLASS PILL - ELITE HIGH GLOSS */}
+        <div className="relative z-10 flex items-center gap-7 px-8 py-3 rounded-full overflow-hidden cursor-pointer
+            backdrop-blur-3xl bg-white/8 border border-white/20
+            shadow-[0_0_30px_rgba(255,255,255,0.30)]
+            transition-all duration-700 hover:bg-white/14 hover:shadow-[0_0_40px_rgba(255,255,255,0.45)]
+            before:absolute before:inset-0 before:rounded-full before:shadow-[inset_3px_3px_6px_rgba(255,255,255,0.55),inset_-3px_-3px_6px_rgba(0,0,0,0.25)]
+            after:absolute after:-top-[60%] after:left-0 after:w-full after:h-[200%] after:bg-gradient-to-b from-white/20 to-transparent after:opacity-70 after:rotate-[8deg] after:rounded-full pointer-events-none select-none"
         >
-          {/* Subtle inner shine and inset lines, both clipped by rounded wrapper */}
-          <div className="pointer-events-none absolute inset-0 rounded-[999px]">
-            <div className="absolute inset-0 rounded-[999px] opacity-70 mix-blend-screen bg-gradient-to-t from-white/10 to-white/0" />
-            <div className="absolute inset-0 rounded-[999px] shadow-[inset_2px_2px_1px_rgba(255,255,255,0.45),inset_-2px_-2px_1px_rgba(255,255,255,0.2)]" />
-          </div>
-
           {SOCIAL_LINKS.profiles.map((profile) => {
-            const Icon = ICON_MAP[profile.name] || Github; // safe fallback
+            const Icon = ICON_MAP[profile.name] || Github;
             return (
-              <a
-                key={profile.name}
-                href={profile.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={profile.name}
-              >
+              <a key={profile.name} href={profile.url} target="_blank" rel="noopener noreferrer" aria-label={profile.name}>
                 <motion.div
-                  whileHover={{ scale: 1.22 }}
-                  transition={{ type: "spring", stiffness: 280, damping: 16 }}
+                  whileHover={{ scale: 1.3 }}
+                  transition={{ type: "spring", stiffness: 280, damping: 15 }}
                   className="text-white/90 hover:text-white"
                 >
                   <Icon className="w-7 h-7" />
@@ -179,74 +192,10 @@ const Contact: React.FC = () => {
               </a>
             );
           })}
-        </motion.div>
-
-        {/* Inline SVG filter: unique id so multiple pills don't clash */}
-        <svg className="hidden">
-          <defs>
-            <filter id={liquidId} x="0" y="0" width="100%" height="100%">
-              {/* Turbulence to create glass wobble */}
-              <feTurbulence
-                type="fractalNoise"
-                baseFrequency="0.008 0.02"
-                numOctaves="1"
-                seed="7"
-                result="noise"
-              />
-              <feGaussianBlur in="noise" stdDeviation="1.2" result="soft" />
-              <feDisplacementMap
-                in="SourceGraphic"
-                in2="soft"
-                scale="18"
-                xChannelSelector="R"
-                yChannelSelector="G"
-                result="displaced"
-              />
-              {/* Slight blur to smooth edges */}
-              <feGaussianBlur in="displaced" stdDeviation="0.5" result="final" />
-              <feComposite in="final" in2="final" operator="over" />
-            </filter>
-          </defs>
-        </svg>
+        </div>
       </motion.div>
     </section>
   );
 };
 
 export default Contact;
-
-/**
- * A single scrolling code row with infinite marquee effect.
- * Uses framer-motion for smooth, SSR-safe animation.
- */
-function CodeTicker({
-  text,
-  duration,
-  className = "",
-}: {
-  text: string;
-  duration: number;
-  className?: string;
-}) {
-  return (
-    <div className="relative w-full h-[20px] sm:h-[22px] overflow-hidden">
-      {/* Two copies to simulate seamless loop */}
-      <motion.div
-        aria-hidden
-        className={`absolute left-0 top-0 whitespace-nowrap font-mono ${className}`}
-        animate={{ x: ["0%", "-100%"] }}
-        transition={{ duration, repeat: Infinity, ease: "linear" }}
-      >
-        {text.repeat(30)}
-      </motion.div>
-      <motion.div
-        aria-hidden
-        className={`absolute left-[100%] top-0 whitespace-nowrap font-mono ${className}`}
-        animate={{ x: ["0%", "-100%"] }}
-        transition={{ duration, repeat: Infinity, ease: "linear" }}
-      >
-        {text.repeat(30)}
-      </motion.div>
-    </div>
-  );
-}
