@@ -187,52 +187,56 @@ const Contact: React.FC = () => {
           }}
         />
 
-        {/* Three continuous code streams */}
+        {/* Three continuous code streams with soft spectral blends */}
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none z-[1] space-y-[7px] select-none">
+          {/* Row 1 (cool spectrum) */}
           <div className="flex justify-center">
             <CodeTicker
               reduced={!!reduceMotion}
               duration={25}
               height={22}
-              className="text-[13px] sm:text-sm font-mono text-white/34"
+              className="text-[13px] sm:text-sm font-mono bg-gradient-to-r from-[#9efaff] via-[#8db9ff] to-[#c8a5ff] bg-clip-text text-transparent opacity-[0.85]"
             >
-              {Array.from({ length: 80 })
+              {Array.from({ length: 70 })
                 .map(
                   () =>
-                    `const dron = { name: "Dron Pancholi", city: "Surendranagar", empire: "New Lands", tier: "Black Core" }; `
+                    `const dron = { name:"Dron Pancholi", city:"Surendranagar", tier:"Black Core"}; `
                 )
                 .join("")}
             </CodeTicker>
           </div>
 
+          {/* Row 2 (emerald → cyan → lime haze) */}
           <div className="flex justify-center">
             <CodeTicker
               reduced={!!reduceMotion}
               duration={33}
               delay={2}
               height={22}
-              className="text-[13px] sm:text-sm font-mono text-white/30"
+              className="text-[13px] sm:text-sm font-mono bg-gradient-to-r from-[#afffcb] via-[#7de9ff] to-[#d7ffa3] bg-clip-text text-transparent opacity-[0.82]"
             >
-              {Array.from({ length: 80 })
+              {Array.from({ length: 70 })
                 .map(
                   () =>
-                    `const vision = "Build Empires"; const motto = "Faith • Trust • Transparency"; `
+                    `const motto="Faith • Trust • Transparency"; const empire="New Lands"; `
                 )
                 .join("")}
             </CodeTicker>
           </div>
 
+          {/* Row 3 (warm subtle rose → gold) */}
           <div className="flex justify-center">
             <CodeTicker
               reduced={!!reduceMotion}
               duration={40}
               delay={4}
               height={22}
-              className="text-[13px] sm:text-sm font-mono text-white/26"
+              className="text-[13px] sm:text-sm font-mono bg-gradient-to-r from-[#ffd4a8] via-[#ffc9e7] to-[#fff7b1] bg-clip-text text-transparent opacity-[0.78]"
             >
-              {Array.from({ length: 80 })
+              {Array.from({ length: 70 })
                 .map(
-                  () => `function contact(){ return "${SOCIAL_LINKS.email}"; } `
+                  () =>
+                    `function contact(){ return "${SOCIAL_LINKS.email}"; } `
                 )
                 .join("")}
             </CodeTicker>
@@ -243,7 +247,7 @@ const Contact: React.FC = () => {
         <div
           className="relative z-[2] flex items-center gap-7 px-8 py-3 rounded-full overflow-hidden isolate"
           style={{
-            backdropFilter: 'blur(28px) url("#container-glass")',
+            backdropFilter: 'blur(26px) saturate(160%) url("#container-glass")',
             background: "rgba(255,255,255,0.10)",
             border: "1px solid rgba(255,255,255,0.24)",
             boxShadow:
@@ -275,7 +279,7 @@ const Contact: React.FC = () => {
                 <motion.div
                   whileHover={{ scale: 1.28 }}
                   transition={{ type: "spring", stiffness: 260, damping: 14 }}
-                  className="text-white/90 hover:text-white"
+                  className="text-[#FFF9D8] hover:text-[#FFEFAF] drop-shadow-[0_0_6px_rgba(255,245,180,0.55)] transition-all"
                 >
                   <Icon className="w-7 h-7" />
                 </motion.div>
