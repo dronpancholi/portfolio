@@ -316,28 +316,61 @@ const Contact: React.FC = () => {
           </div>
         </div>
         
-        {/* REAL LIQUID GLASS PILL */}
-        <div className="liquid-pill px-8 py-3 flex items-center gap-7">
-          {SOCIAL_LINKS.profiles.map((profile) => {
-            const Icon = ICON_MAP[profile.name] || Github;
-            return (
-              <a
-                key={profile.name}
-                href={profile.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={profile.name}
-              >
-                <motion.div
-                  whileHover={{ scale: 1.28 }}
-                  transition={{ type: "spring", stiffness: 260, damping: 14 }}
-                  className="text-[#FFEFAF] hover:text-[#FFF7C4] drop-shadow-[0_0_8px_rgba(255,245,180,0.65)] transition-all"
+        {/* TRUE LIQUID LIGHT-BLEND PILL */}
+        <div className="liquid-pill px-8 py-3 flex items-center gap-7 relative">
+          {/* Distortion layer (refracts text behind pill) */}
+          <div
+            className="absolute inset-0 rounded-full pointer-events-none"
+            style={{
+              filter: "url(#header-pill-glass)",
+              mixBlendMode: "screen",
+              opacity: 0.85,
+            }}
+          />
+
+          {/* Glass material (blur + saturation) */}
+          <div
+            className="absolute inset-0 rounded-full pointer-events-none"
+            style={{
+              backdropFilter: "blur(28px) saturate(185%)",
+              WebkitBackdropFilter: "blur(28px) saturate(185%)",
+            }}
+          />
+
+          {/* Soft internal brightness */}
+          <div
+            className="absolute inset-0 rounded-full pointer-events-none"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(255,255,255,0.48), rgba(255,255,255,0.06))",
+              opacity: 0.50,
+              mixBlendMode: "soft-light",
+            }}
+          />
+
+          {/* Icons */}
+          <div className="relative z-[2] flex items-center gap-7">
+            {SOCIAL_LINKS.profiles.map((profile) => {
+              const Icon = ICON_MAP[profile.name] || Github;
+              return (
+                <a 
+                  key={profile.name} 
+                  href={profile.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  aria-label={profile.name}
                 >
-                  <Icon className="w-7 h-7" />
-                </motion.div>
-              </a>
-            );
-          })}
+                  <motion.div
+                    whileHover={{ scale: 1.28 }}
+                    transition={{ type: "spring", stiffness: 260, damping: 14 }}
+                    className="text-[#FFF5C7] hover:text-[#FFFBD8] drop-shadow-[0_0_10px_rgba(255,249,210,0.65)] transition-all"
+                  >
+                    <Icon className="w-7 h-7" />
+                  </motion.div>
+                </a>
+              );
+            })}
+          </div>
         </div>
       </motion.div>
     </section>

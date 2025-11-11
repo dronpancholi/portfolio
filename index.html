@@ -19,6 +19,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <style>
       :root {
+        color-scheme: light;
         --bg-base: #f9fafb;
         --text-main: #1f2937;
         --text-secondary: #374151;
@@ -102,21 +103,17 @@
         scrollbar-width: none;  /* Firefox */
       }
 
-      /* TRUE LIQUID GLASS MATERIAL — EXACT FROM HEADER */
       .liquid-pill {
-        backdrop-filter: blur(26px) saturate(185%);
-        -webkit-backdrop-filter: blur(26px) saturate(185%);
-        background: rgba(255, 255, 255, 0.18);
-        border: 1px solid rgba(255, 255, 255, 0.32);
-        box-shadow:
-          0 4px 20px rgba(0,0,0,0.25),
-          inset 1px 1px 4px rgba(255,255,255,0.55),
-          inset -2px -2px 5px rgba(0,0,0,0.35);
+        background: rgba(255, 255, 255, 0.16);
+        border: 1px solid rgba(255, 255, 255, 0.28);
         border-radius: 999px;
         position: relative;
         overflow: hidden;
         isolation: isolate;
-        transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        box-shadow:
+          0 4px 18px rgba(0,0,0,0.20),
+          inset 1px 1px 4px rgba(255,255,255,0.55),
+          inset -2px -2px 5px rgba(0,0,0,0.35);
       }
       
       html.dark .liquid-pill {
@@ -128,41 +125,6 @@
             inset -2px -2px 5px rgba(0,0,0,0.5);
       }
 
-      /* Shine sweep */
-      .liquid-pill::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        background: linear-gradient(
-          115deg,
-          rgba(255,255,255,0.45) 0%,
-          rgba(255,255,255,0.1) 33%,
-          rgba(255,255,255,0) 66%
-        );
-        opacity: 0.38;
-        pointer-events: none;
-      }
-      
-      html.dark .liquid-pill::after {
-        opacity: 0.2;
-      }
-
-      /* Distortion layer */
-      .liquid-pill::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        pointer-events: none;
-        filter: url(#header-pill-glass);
-        mix-blend-mode: overlay;
-        opacity: 0.75;
-      }
-      
-      html.dark .liquid-pill::before {
-        opacity: 1;
-      }
     </style>
   <script type="importmap">
 {
