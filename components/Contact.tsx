@@ -264,103 +264,57 @@ const Contact: React.FC = () => {
           </div>
         </div>
 
-        {/* LIQUID GLASS PILL — TRUE REFRACTION */}
+        {/* LIQUID GLASS PILL — EXACT SAME STRUCTURE AS HEADER PILL */}
         <div
-          className="relative z-[2] flex items-center gap-7 px-8 py-3 rounded-full overflow-hidden isolate"
-          style={{
-            background: "rgba(255,255,255,0.08)",
-            backdropFilter: "blur(32px) saturate(180%)",
-            WebkitBackdropFilter: "blur(32px) saturate(180%)",
-          }}
+          className="
+            relative z-[3] flex items-center gap-7 px-8 py-3 
+            rounded-full cursor-pointer select-none overflow-hidden isolate
+            backdrop-blur-2xl bg-white/14 border border-white/25 
+            shadow-[0_4px_20px_rgba(0,0,0,0.22)]
+          "
         >
-          {/* 1) Displacement refraction layer */}
+          {/* Distortion Liquid Layer */}
           <div
-            aria-hidden
-            className="absolute inset-0 rounded-full pointer-events-none"
-            style={{
-              mixBlendMode: "overlay",
-              filter: "url(#real-liquid-refraction)",
-              opacity: 0.9,
-            }}
+            className="absolute inset-0 rounded-full overflow-hidden pointer-events-none"
+            style={{ filter: "url(#header-pill-glass)" }}
           />
 
-          {/* 2) Caustic edge bloom */}
+          {/* Depth Highlight */}
+          <div className="absolute inset-0 rounded-full pointer-events-none shadow-[inset_1px_1px_4px_rgba(255,255,255,0.55),inset_-2px_-2px_6px_rgba(0,0,0,0.35)]" />
+
+          {/* Shine Sweep */}
           <div
-            aria-hidden
-            className="absolute inset-0 rounded-full pointer-events-none"
-            style={{
-              boxShadow:
-                "inset 0 0 18px rgba(255,255,255,0.55), inset 0 0 42px rgba(255,255,255,0.35), 0 0 50px rgba(255,255,255,0.22)",
-            }}
+            className="
+              absolute inset-0 rounded-full pointer-events-none 
+              bg-[linear-gradient(115deg,rgba(255,255,255,0.45)_0%,rgba(255,255,255,0.1)_33%,rgba(255,255,255,0)_66%)]
+              opacity-35
+            "
           />
 
-          {/* 3) Micro-specular highlight */}
-          <div
-            aria-hidden
-            className="absolute inset-0 rounded-full pointer-events-none"
-            style={{
-              background:
-                "radial-gradient(circle at 30% 20%, rgba(255,255,255,0.6), transparent 55%)",
-              opacity: 0.6,
-              mixBlendMode: "screen",
-            }}
-          />
-
-          {/* Social Icons — Now liq-glass-glow-yellow */}
-          {SOCIAL_LINKS.profiles.map((profile) => {
-            const Icon = ICON_MAP[profile.name] || Github;
-            return (
-              <a
-                key={profile.name}
-                href={profile.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={profile.name}
-              >
-                <motion.div
-                  whileHover={{ scale: 1.32 }}
-                  transition={{ type: "spring", stiffness: 240, damping: 15 }}
-                  className="text-[#FFF8C5] hover:text-[#FFEB74] drop-shadow-[0_0_9px_rgba(255,245,140,0.75)] transition-all"
+          {/* ICONS */}
+          <div className="relative z-[2] flex items-center gap-7">
+            {SOCIAL_LINKS.profiles.map((profile) => {
+              const Icon = ICON_MAP[profile.name] || Github;
+              return (
+                <a
+                  key={profile.name}
+                  href={profile.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={profile.name}
                 >
-                  <Icon className="w-7 h-7" />
-                </motion.div>
-              </a>
-            );
-          })}
+                  <motion.div
+                    whileHover={{ scale: 1.28 }}
+                    transition={{ type: "spring", stiffness: 260, damping: 14 }}
+                    className="text-[#FFEFAF] hover:text-[#FFF7C4] drop-shadow-[0_0_8px_rgba(255,249,200,0.65)] transition-all"
+                  >
+                    <Icon className="w-7 h-7" />
+                  </motion.div>
+                </a>
+              );
+            })}
+          </div>
         </div>
-
-        {/* New SVG filter for true refraction */}
-        <svg className="hidden">
-          <defs>
-            <filter
-              id="real-liquid-refraction"
-              x="-20%" y="-20%" width="140%" height="140%"
-              colorInterpolationFilters="sRGB"
-            >
-              {/* Create moving liquid noise */}
-              <feTurbulence
-                type="turbulence"
-                baseFrequency="0.008 0.012"
-                numOctaves="3"
-                seed="14"
-                result="noise"
-              />
-              {/* Smooth to get glass-like curvature */}
-              <feGaussianBlur in="noise" stdDeviation="6" result="blurredNoise" />
-              {/* Stronger displacement = stronger glass refraction */}
-              <feDisplacementMap
-                in="SourceGraphic"
-                in2="blurredNoise"
-                scale="38"
-                xChannelSelector="R"
-                yChannelSelector="G"
-                result="distorted"
-              />
-              {/* Final output */}
-              <feBlend in="distorted" in2="SourceGraphic" mode="overlay" />
-            </filter>
-          </defs>
-        </svg>
       </motion.div>
     </section>
   );
