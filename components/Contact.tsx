@@ -28,7 +28,7 @@ function useForceLightTheme() {
 /* ------------------------ ICON TYPING ------------------------ */
 type SocialProfileName = typeof SOCIAL_LINKS.profiles[number]["name"];
 const ICON_MAP: Partial<
-  Record<SocialProfileName, React.ComponentType<{ className?: string }>>
+  Record<SocialProfileName, React.ComponentType<{ className?: string; style?: React.CSSProperties }>>
 > = {
   LinkedIn: Linkedin,
   GitHub: Github,
@@ -194,7 +194,7 @@ function LiquidPill({
       </div>
 
       {/* CONTENT (icons) */}
-      <div className="relative z-[2] flex items-center gap-7">
+      <div className="relative z-[3] flex items-center gap-7">
         {children}
       </div>
     </div>
@@ -369,14 +369,15 @@ const Contact: React.FC = () => {
                 <motion.div
                   whileHover={{ scale: 1.28 }}
                   transition={{ type: "spring", stiffness: 260, damping: 14 }}
-                  className="
-                    text-[#FFF9A8] 
-                    hover:text-[#FFFEEF]
-                    drop-shadow-[0_0_14px_rgba(255,250,200,0.95)]
-                    transition-all
-                  "
+                  className="transition-all"
                 >
-                  <Icon className="w-7 h-7" />
+                  <Icon
+                    className="w-7 h-7 text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.85)] 
+                               dark:text-[#FFF7C5] dark:drop-shadow-[0_0_10px_rgba(255,247,200,0.75)]"
+                    style={{
+                      WebkitTextStroke: "1px rgba(0,0,0,0.45)", // visible in light mode
+                    }}
+                  />
                 </motion.div>
               </a>
             );
