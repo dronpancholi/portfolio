@@ -169,9 +169,15 @@ const Contact: React.FC = () => {
             {Array.from({ length: 25 }).map((_, i) => <TickerLine3 key={i} />)}
           </motion.div>
         </div>
+        
+        {/* SOFT VISIBILITY BALANCER — FIXES READABILITY WITHOUT TOUCHING GLASS */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
+          w-[115%] h-[135%] rounded-full 
+          backdrop-blur-xl bg-black/12 
+          opacity-70 pointer-events-none z-[5]" />
 
         {/* LIQUID GLASS PILL - ELITE HIGH GLOSS */}
-        <div className="relative z-10 flex items-center gap-7 px-8 py-3 rounded-full overflow-hidden cursor-pointer
+        <div className="relative z-20 flex items-center gap-7 px-8 py-3 rounded-full overflow-hidden cursor-pointer
             backdrop-blur-3xl bg-white/8 border border-white/20
             shadow-[0_0_30px_rgba(255,255,255,0.30)]
             transition-all duration-700 hover:bg-white/14 hover:shadow-[0_0_40px_rgba(255,255,255,0.45)]
