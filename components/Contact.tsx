@@ -15,10 +15,8 @@ import { SOCIAL_LINKS } from "../constants";
 import GlassCard from "./ui/GlassCard";
 
 // FIX: To resolve an indexing error, explicitly type ICON_MAP using a strict type derived from SOCIAL_LINKS. This ensures type safety when mapping profile names to icons.
-// Types from your constants for strict icon mapping
 type SocialProfileName = typeof SOCIAL_LINKS.profiles[number]["name"];
 
-// Map your names to icons; fallback handled below
 const ICON_MAP: Partial<Record<SocialProfileName, React.ElementType>> = {
   LinkedIn: Linkedin,
   GitHub: Github,
@@ -181,15 +179,6 @@ const Contact: React.FC = () => {
         transition={{ duration: 0.7 }}
         className="relative mt-24 flex justify-center"
       >
-        {/* Contrast helper for visibility (behind code & pill, improves readability on bright bgs) */}
-        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 mx-auto w-[min(95%,1200px)] h-[120px] rounded-[40px] pointer-events-none -z-10"
-             style={{
-               background:
-                 "radial-gradient(60% 140% at 50% 50%, rgba(0,0,0,0.28), rgba(0,0,0,0.05) 70%, transparent 90%)",
-               filter: "blur(6px)",
-             }}
-        />
-
         {/* Three independent tickers, vertically staggered so the pill sits centered among them */}
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none z-0 space-y-[6px]">
           {/* Row 1: pink → violet → sky */}
@@ -249,8 +238,7 @@ const Contact: React.FC = () => {
             "after:pointer-events-none after:absolute after:-top-[65%] after:left-0 after:w-full after:h-[210%] after:rounded-full",
             "after:bg-gradient-to-b after:from-white/22 after:to-transparent after:opacity-70 after:rotate-[8deg]",
           ].join(" ")}
-          // If you were using an SVG displacement filter for wobble, keep it here:
-          // style={{ filter: `url(#${liquidId})` }}
+          style={{ filter: `url(#${liquidId})` }}
         >
           {SOCIAL_LINKS.profiles.map((profile) => {
             const Icon = ICON_MAP[profile.name] || Github;
