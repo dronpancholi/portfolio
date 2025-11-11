@@ -97,10 +97,11 @@ const Contact: React.FC = () => {
         transition={{ duration: 0.5, delay: 0.3 }}
         className="flex items-center justify-center space-x-4 mt-12"
       >
-        {SOCIAL_LINKS.profiles.map((profile, i) => {
+        {SOCIAL_LINKS.profiles.map((profile) => {
           const Icon = icons[profile.name];
           return (
-            <a key={i} href={profile.url} target="_blank" rel="noopener noreferrer" aria-label={profile.name} className="p-2 rounded-full text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-black/5 transition-colors duration-200">
+            // FIX: Using the array index as a key is not a best practice. Switched to `profile.name` which is a stable and unique identifier.
+            <a key={profile.name} href={profile.url} target="_blank" rel="noopener noreferrer" aria-label={profile.name} className="p-2 rounded-full text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-black/5 transition-colors duration-200">
               <Icon className="w-8 h-8" />
               <span className="sr-only">{profile.name}</span>
             </a>

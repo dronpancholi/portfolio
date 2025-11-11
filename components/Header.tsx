@@ -50,7 +50,7 @@ export default function Header(){
         ref={pillRef}
         onClick={onPillClick}
         layout
-        className="pointer-events-auto relative flex items-center justify-center cursor-pointer select-none whitespace-nowrap rounded-full border border-white/30 dark:border-white/10 backdrop-blur-xl bg-white/15 dark:bg-white/10 shadow-[0_4px_14px_rgba(0,0,0,0.18)]"
+        className="pointer-events-auto relative flex items-center justify-center cursor-pointer select-none whitespace-nowrap rounded-full backdrop-blur-2xl bg-white/18 dark:bg-white/10 border border-white/30 dark:border-white/10 shadow-[0_4px_20px_rgba(0,0,0,0.25)]"
         variants={{
           top:       { 
             padding: "12px 22px", 
@@ -70,14 +70,17 @@ export default function Header(){
         transition={spring}
         aria-label="Primary navigation"
       >
-        {/* Liquid Glass Inner Layer */}
+        {/* Distortion Liquid Layer (inside only) */}
         <div
-          className="absolute inset-0 rounded-full pointer-events-none overflow-hidden"
+          className="absolute inset-0 rounded-full overflow-hidden pointer-events-none"
           style={{ filter: "url(#header-pill-glass)" }}
         />
 
-        {/* Highlight + Depth */}
-        <div className="absolute inset-0 rounded-full pointer-events-none shadow-[inset_2px_2px_4px_rgba(255,255,255,0.55),inset_-2px_-2px_6px_rgba(0,0,0,0.35)]" />
+        {/* Depth Highlight Layer */}
+        <div className="absolute inset-0 rounded-full pointer-events-none shadow-[inset_1px_1px_4px_rgba(255,255,255,0.6),inset_-2px_-2px_6px_rgba(0,0,0,0.35)]" />
+
+        {/* Liquid Shine Sweep Layer */}
+        <div className="absolute inset-0 rounded-full pointer-events-none bg-[linear-gradient(115deg,rgba(255,255,255,0.45)_0%,rgba(255,255,255,0.1)_33%,rgba(255,255,255,0)_66%)] opacity-35" />
         
         {/* Content */}
         <div className="relative z-10 flex items-center justify-center gap-4">

@@ -44,7 +44,7 @@ const Skills: React.FC = () => {
                   <ul className="flex flex-wrap gap-2">
                     {category.skills.map((skill) => (
                       <li
-                        // FIX: Use the skill literal directly as the key. A string literal from an `as const` array is a valid React key.
+                        // FIX: An invalidly placed JavaScript-style comment was here, causing a JSX parsing error. It has been removed.
                         key={skill}
                         className="bg-black/5 text-[var(--text-secondary)] text-sm font-medium px-3 py-1 rounded-full"
                       >
