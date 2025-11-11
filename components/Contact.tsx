@@ -369,7 +369,12 @@ const Contact: React.FC = () => {
                 <motion.div
                   whileHover={{ scale: 1.28 }}
                   transition={{ type: "spring", stiffness: 260, damping: 14 }}
-                  className="text-[#FFF4B8] hover:text-[#FFF9D6] drop-shadow-[0_0_10px_rgba(255,249,210,0.65)] transition-all"
+                  className="
+                    text-[#FFF9A8] 
+                    hover:text-[#FFFEEF]
+                    drop-shadow-[0_0_14px_rgba(255,250,200,0.95)]
+                    transition-all
+                  "
                 >
                   <Icon className="w-7 h-7" />
                 </motion.div>
