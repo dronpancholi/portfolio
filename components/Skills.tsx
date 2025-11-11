@@ -44,8 +44,8 @@ const Skills: React.FC = () => {
                   <ul className="flex flex-wrap gap-2">
                     {category.skills.map((skill) => (
                       <li
-                        // FIX: Explicitly cast skill to a string to resolve TS error with `as const`.
-                        key={String(skill)}
+                        // FIX: Use the skill literal directly as the key. A string literal from an `as const` array is a valid React key.
+                        key={skill}
                         className="bg-black/5 text-[var(--text-secondary)] text-sm font-medium px-3 py-1 rounded-full"
                       >
                         {skill}

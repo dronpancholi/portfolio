@@ -5,7 +5,10 @@ import { Mail, Linkedin, Github, Instagram, MessageSquare, Clipboard, Check } fr
 import { SOCIAL_LINKS } from '../constants';
 import GlassCard from './ui/GlassCard';
 
-const icons: { [key: string]: React.ElementType } = {
+// FIX: Derive a strict type for social profile names from the constants
+// and use a Record to ensure type safety for the icons object.
+type SocialProfileName = typeof SOCIAL_LINKS.profiles[number]['name'];
+const icons: Record<SocialProfileName, React.ElementType> = {
   LinkedIn: Linkedin,
   GitHub: Github,
   Instagram: Instagram,
@@ -95,8 +98,7 @@ const Contact: React.FC = () => {
         className="flex items-center justify-center space-x-4 mt-12"
       >
         {SOCIAL_LINKS.profiles.map((profile, i) => {
-          // FIX: Explicitly cast profile.name to a string to resolve TS error with `as const`.
-          const Icon = icons[String(profile.name)];
+          const Icon = icons[profile.name];
           return (
             <a key={i} href={profile.url} target="_blank" rel="noopener noreferrer" aria-label={profile.name} className="p-2 rounded-full text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-black/5 transition-colors duration-200">
               <Icon className="w-8 h-8" />
