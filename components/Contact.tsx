@@ -151,7 +151,7 @@ function LiquidPill({
   return (
     <div
       className="
-        relative z-[3] flex items-center gap-7 px-8 py-3 rounded-full overflow-hidden isolate
+        relative z-[3] flex items-center px-6 sm:px-8 py-2.5 sm:py-3 rounded-full overflow-hidden isolate
         bg-white/14 border border-black/10 dark:border-white/20
         shadow-[0_8px_30px_rgba(0,0,0,0.18)]
       "
@@ -169,7 +169,7 @@ function LiquidPill({
         />
         {/* Re-render the moving code lines INSIDE the pill (perfectly synced) */}
         <div className="absolute inset-0 rounded-full overflow-hidden">
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[calc(50%-11px)] space-y-[7px] pointer-events-none">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[calc(50%-11px)] space-y-1 sm:space-y-[7px] pointer-events-none">
             <div className="w-[min(100%,1100px)]">{proxy1}</div>
             <div className="w-[min(100%,1100px)]">{proxy2}</div>
             <div className="w-[min(100%,1100px)]">{proxy3}</div>
@@ -194,7 +194,7 @@ function LiquidPill({
       </div>
 
       {/* CONTENT (icons) */}
-      <div className="relative z-[3] flex items-center gap-7">
+      <div className="relative z-[3] flex items-center gap-5 sm:gap-7">
         {children}
       </div>
     </div>
@@ -208,7 +208,7 @@ const HeaderPillGlassFilter: React.FC = () => (
       <filter id="header-pill-glass" x="0" y="0" width="100%" height="100%">
         <feTurbulence type="fractalNoise" baseFrequency="0.009 0.015" numOctaves="2" seed="12" result="noise" />
         <feGaussianBlur in="noise" stdDeviation="1.6" result="softNoise" />
-        <feDisplacementMap in="SourceGraphic" in2="softNoise" scale="48" xChannelSelector="R" yChannelSelector="G" result="distort" />
+        <feDisplacementMap in="SourceGraphic" in2="softNoise" scale="86" xChannelSelector="R" yChannelSelector="G" result="distort" />
         <feGaussianBlur in="distort" stdDeviation="0.6" result="final" />
         <feComposite in="final" in2="final" operator="over" />
       </filter>
@@ -315,15 +315,15 @@ const Contact: React.FC = () => {
         <div
           aria-hidden
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
-                     w-[min(92vw,1100px)] h-[120px] rounded-full pointer-events-none z-0"
+                     w-[90vw] h-[90px] sm:w-[min(92vw,1100px)] sm:h-[120px] rounded-full pointer-events-none z-0"
           style={{ background: "rgba(0,0,0,0.04)", filter: "blur(22px) saturate(140%)" }}
         />
 
         {/* Foreground tikers (outer scene) — NO gradients, mixed tokens */}
-        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none z-[1] space-y-[7px] select-none">
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none z-[1] space-y-1 sm:space-y-[7px] select-none">
           <div className="flex justify-center">
             <div className="relative w-[min(100%,1100px)] overflow-hidden select-none" aria-hidden>
-              <div className={`ticker-rail run-anim ticker-anim speed-25s delay-0 text-[13px] sm:text-sm`}>
+              <div className={`ticker-rail run-anim ticker-anim speed-25s delay-0 text-[11px] sm:text-[13px]`}>
                 {Array.from({ length: 4 }).map((_, i) => (
                   <span key={i} className="ticker-chunk">{chunk1}</span>
                 ))}
@@ -332,7 +332,7 @@ const Contact: React.FC = () => {
           </div>
           <div className="flex justify-center">
             <div className="relative w-[min(100%,1100px)] overflow-hidden select-none" aria-hidden>
-              <div className={`ticker-rail run-anim ticker-anim speed-33s delay-15 text-[13px] sm:text-sm`}>
+              <div className={`ticker-rail run-anim ticker-anim speed-33s delay-15 text-[11px] sm:text-[13px]`}>
                 {Array.from({ length: 4 }).map((_, i) => (
                   <span key={i} className="ticker-chunk">{chunk2}</span>
                 ))}
@@ -341,7 +341,7 @@ const Contact: React.FC = () => {
           </div>
           <div className="flex justify-center">
             <div className="relative w-[min(100%,1100px)] overflow-hidden select-none" aria-hidden>
-              <div className={`ticker-rail run-anim ticker-anim speed-40s delay-3 text-[13px] sm:text-sm`}>
+              <div className={`ticker-rail run-anim ticker-anim speed-40s delay-3 text-[11px] sm:text-[13px]`}>
                 {Array.from({ length: 4 }).map((_, i) => (
                   <span key={i} className="ticker-chunk">{chunk3}</span>
                 ))}
@@ -352,9 +352,9 @@ const Contact: React.FC = () => {
 
         {/* LIQUID PILL — proxy backdrop inside for TRUE light-blend + refraction */}
         <LiquidPill
-          proxy1={<SeamlessRow chunk={chunk1} speedClass="speed-25s" delayClass="delay-0" />}
-          proxy2={<SeamlessRow chunk={chunk2} speedClass="speed-33s" delayClass="delay-15" />}
-          proxy3={<SeamlessRow chunk={chunk3} speedClass="speed-40s" delayClass="delay-3" />}
+          proxy1={<SeamlessRow chunk={chunk1} speedClass="speed-25s" delayClass="delay-0" className="text-[11px] sm:text-[13px]" />}
+          proxy2={<SeamlessRow chunk={chunk2} speedClass="speed-33s" delayClass="delay-15" className="text-[11px] sm:text-[13px]" />}
+          proxy3={<SeamlessRow chunk={chunk3} speedClass="speed-40s" delayClass="delay-3" className="text-[11px] sm:text-[13px]" />}
         >
           {SOCIAL_LINKS.profiles.map((profile) => {
             const Icon = ICON_MAP[profile.name] || Github;
@@ -372,7 +372,7 @@ const Contact: React.FC = () => {
                   className="transition-all"
                 >
                   <Icon
-                    className="w-7 h-7 text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.85)] 
+                    className="w-6 h-6 sm:w-7 sm:h-7 text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.85)] 
                                dark:text-[#FFF7C5] dark:drop-shadow-[0_0_10px_rgba(255,247,200,0.75)]"
                     style={{
                       WebkitTextStroke: "1px rgba(0,0,0,0.45)", // visible in light mode
