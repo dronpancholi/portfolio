@@ -1,7 +1,24 @@
 
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useTransform, useScroll, useSpring } from 'framer-motion';
-import MorphingPortrait from './ui/MorphingPortrait';
+
+const InteractivePortrait: React.FC = () => {
+  return (
+    <motion.div
+      className="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden cursor-pointer shadow-2xl shadow-black/10"
+      style={{ transformStyle: 'preserve-3d' }}
+      whileHover={{ scale: 1.05 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+    >
+      <img
+        src="https://i.ibb.co/RFn5HJY/headshot.jpg"
+        alt="Dron Pancholi"
+        className="w-full h-full object-cover"
+      />
+    </motion.div>
+  );
+};
+
 
 const Hero: React.FC = () => {
   const { scrollY } = useScroll();
@@ -46,7 +63,7 @@ const Hero: React.FC = () => {
         transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
         className="mb-8"
       >
-        <MorphingPortrait />
+        <InteractivePortrait />
       </motion.div>
       
       <motion.div

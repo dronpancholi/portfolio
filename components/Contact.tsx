@@ -137,19 +137,17 @@ function SeamlessRow({
 /* We re-render the 3 ticker lines INSIDE the pill (clipped) and apply
    the same distortion filter + blur/saturation to that proxy content.
    This produces *perceptual refraction + light blending* even in LIGHT theme. */
-// FIX: Refactored props to use a named type alias (`LiquidPillProps`). This provides a clearer component signature and helps the TypeScript compiler correctly infer the `children` prop, resolving the type error.
-type LiquidPillProps = {
-  children: React.ReactNode;
-  proxy1: React.ReactNode;
-  proxy2: React.ReactNode;
-  proxy3: React.ReactNode;
-};
 function LiquidPill({
   children,
   proxy1,
   proxy2,
   proxy3,
-}: LiquidPillProps) {
+}: {
+  children: React.ReactNode;
+  proxy1: React.ReactNode;
+  proxy2: React.ReactNode;
+  proxy3: React.ReactNode;
+}) {
   return (
     <div
       className="
