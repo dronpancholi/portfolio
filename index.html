@@ -25,14 +25,18 @@
         --text-secondary: #374151;
         --accent: #f59e0b; /* Saffron-like accent */
         
-        --glass-bg: rgba(255,255,255,0.42);
-        --glass-border: rgba(255,255,255,0.45);
+        --glass-bg: rgba(255,255,255,0.28);
+        --glass-border: rgba(255,255,255,0.36);
         --glass-shadow: 0 10px 36px rgba(0,0,0,0.08);
-        --glass-blur: 26px;
-        --glass-blur-min: 16px;
+        --glass-blur: 24px;
+        --glass-blur-min: 14px;
         --glass-reflect: radial-gradient(140% 60% at var(--mx,10%) var(--my,10%), rgba(255,255,255,0.44), rgba(255,255,255,0.10) 40%, transparent 70%);
         --glass-caustic: radial-gradient(60% 48% at 70% 34%, rgba(255,255,255,0.18), transparent 60%);
         --glass-intensity: 1;
+        --glass-reflect-opacity: 0.9;
+        --glass-caustic-opacity: 0.9;
+        --pill-padding-y: 10px;
+        --pill-padding-x: 20px;
       }
       
       html.dark {
@@ -143,72 +147,81 @@
       }
 
       @media (max-width: 520px), (prefers-reduced-motion: reduce) {
-        :root { --glass-blur: 16px; --glass-intensity: 0.85; }
+        :root { --glass-blur: var(--glass-blur-min); --glass-intensity: 0.75; }
         .glass::before, .glass::after, .lens-shine { opacity: .45; }
       }
       
-      /* New Browser-Safe Liquid Pill */
+      /* Liquid pill — browser-safe, layered approach */
       .liquid-pill {
         position: relative;
-        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        gap: 1.5rem; /* Increased gap for better icon spacing */
+        padding: var(--pill-padding-y) var(--pill-padding-x);
         border-radius: 9999px;
-        padding: 12px 28px;
-        background: rgba(255,255,255,0.25);
-        backdrop-filter: blur(22px) saturate(180%);
-        -webkit-backdrop-filter: blur(22px) saturate(180%);
-        border: 1px solid rgba(255,255,255,0.4);
-        box-shadow:
-          0 8px 32px rgba(0,0,0,0.08),
-          inset 0 2px 6px rgba(255,255,255,0.35),
-          inset 0 -2px 8px rgba(0,0,0,0.15);
+        background: linear-gradient(180deg, rgba(255,255,255,0.48), rgba(255,255,255,0.36));
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08), inset 0 2px 6px rgba(255,255,255,0.36);
+        isolation: isolate;
+        overflow: clip; /* better for performance than hidden in some engines */
+        -webkit-backdrop-filter: blur(calc(var(--glass-blur) * var(--glass-intensity))) saturate(180%);
+        backdrop-filter: blur(calc(var(--glass-blur) * var(--glass-intensity))) saturate(180%);
+        will-change: transform, opacity;
       }
 
-      .liquid-pill::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: url("https://grainy-gradients.vercel.app/noise.svg");
-        mix-blend-mode: overlay;
-        opacity: 0.65;
-        animation: drift 18s linear infinite;
-        transform: scale(1.8);
-      }
-
-      .liquid-pill::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(120% 120% at var(--mx, 50%) var(--my, 50%),
-          rgba(255,255,255,0.55),
-          rgba(255,255,255,0.18) 45%,
-          rgba(255,255,255,0) 70%);
-        pointer-events: none;
-        opacity: 0.9;
-      }
-      
       html.dark .liquid-pill {
-        background: rgba(40, 40, 45, 0.6);
+        background: linear-gradient(180deg, rgba(40,40,45,0.7), rgba(28,28,32,0.8));
         border-color: rgba(255, 255, 255, 0.2);
-        box-shadow: 0 8px 32px rgba(0,0,0,0.25), inset 0 1px 2px rgba(255,255,255,0.1), inset 0 -2px 8px rgba(0,0,0,0.2);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.25), inset 0 1px 2px rgba(255,255,255,0.1), inset 0 -2px 8px rgba(0,0,0,0.2);
       }
 
-      html.dark .liquid-pill::before {
+      /* proxy layer sits underneath content and is clipped to pill */
+      .liquid-pill__proxy {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        border-radius: inherit;
+        overflow: hidden;
+        z-index: 0;
+        mix-blend-mode: normal;
+      }
+
+      /* the filtered proxy receives the SVG displacement for refraction */
+      .liquid-pill__proxyInner {
+        position: absolute;
+        inset: 0;
+        -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.95)) saturate(200%);
+        backdrop-filter: blur(calc(var(--glass-blur) * 0.95)) saturate(200%);
+        filter: url('#liquidRefraction'); /* safe small displacement */
+        transform: translateZ(0); /* force GPU layer */
+      }
+
+      /* overlay highlights / caustics above proxy but below content */
+      .liquid-pill__shine {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+          radial-gradient(160% 60% at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.52), rgba(255,255,255,0.12) 36%, rgba(255,255,255,0) 60%),
+          radial-gradient(60% 48% at 72% 34%, rgba(255,255,255,0.14), transparent 60%);
         mix-blend-mode: screen;
-        opacity: 0.4;
+        opacity: var(--glass-reflect-opacity);
+        z-index: 1;
       }
 
-      html.dark .liquid-pill::after {
-        background: radial-gradient(120% 120% at var(--mx, 50%) var(--my, 50%),
-          rgba(255,255,255,0.15),
-          rgba(255,255,255,0.05) 45%,
-          rgba(255,255,255,0) 70%);
+      html.dark .liquid-pill__shine {
+        background:
+          radial-gradient(160% 60% at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.15), rgba(255,255,255,0.05) 36%, rgba(255,255,255,0) 60%),
+          radial-gradient(60% 48% at 72% 34%, rgba(255,255,255,0.06), transparent 60%);
+        mix-blend-mode: plus-lighter;
       }
 
-      @keyframes drift {
-        from { transform: translate3d(0,0,0) scale(1.8); }
-        to   { transform: translate3d(-35%,0,0) scale(1.8); }
-      }
+      /* Ensure the visible content sits above the proxy and shine */
+      .liquid-pill__content { position: relative; z-index: 2; display:flex; gap: 1.5rem; align-items:center; }
 
+      /* Ticker styles (outer scene) — reuse your tickers but add will-change */
+      .ticker-rail { will-change: transform; }
+      .ticker-anim { animation-timing-function: linear; animation-iteration-count: infinite; }
     </style>
   <script type="importmap">
 {

@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { SOCIAL_LINKS } from "../constants";
 import GlassCard from "./ui/GlassCard";
+import LiquidPill from "./ui/LiquidPill";
 
 /* ------------------------ ICON TYPING ------------------------ */
 type SocialProfileName = typeof SOCIAL_LINKS.profiles[number]["name"];
@@ -217,7 +218,7 @@ const Contact: React.FC = () => {
         </div>
         
         <div className="relative z-10">
-          <div className="liquid-pill flex items-center gap-6">
+          <LiquidPill proxyRows={[chunk1, chunk2, chunk3]}>
             {SOCIAL_LINKS.profiles.map((profile) => {
               const Icon = ICON_MAP[profile.name] || Github;
               return (
@@ -227,11 +228,11 @@ const Contact: React.FC = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={profile.name}
+                  className="focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] rounded-full"
                 >
                   <motion.div
-                    whileHover={{ scale: 1.28 }}
-                    transition={{ type: "spring", stiffness: 260, damping: 14 }}
-                    className="transition-all"
+                    whileHover={{ scale: 1.18 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 18 }}
                   >
                     <Icon
                       className="w-6 h-6 sm:w-7 sm:h-7 text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.85)] 
@@ -244,7 +245,7 @@ const Contact: React.FC = () => {
                 </a>
               );
             })}
-          </div>
+          </LiquidPill>
         </div>
 
       </motion.div>
