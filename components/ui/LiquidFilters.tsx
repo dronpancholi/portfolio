@@ -8,7 +8,7 @@ export default function LiquidFilters() {
           {/* low-cost turbulence → tiny displacement → slight blur */}
           <feTurbulence type="fractalNoise" baseFrequency="0.0065" numOctaves="2" seed="8" result="noise" />
           <feGaussianBlur in="noise" stdDeviation="0.9" result="softNoise" />
-          <feDisplacementMap in="SourceGraphic" in2="softNoise" scale="6" xChannelSelector="R" yChannelSelector="G" />
+          <feDisplacementMap in="SourceGraphic" in2="softNoise" scale="8" xChannelSelector="R" yChannelSelector="G" />
           <feColorMatrix type="saturate" values="1.05" />
         </filter>
       </defs>
