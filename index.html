@@ -26,18 +26,12 @@
         --accent: #f59e0b; /* Saffron-like accent */
         
         --glass-bg: rgba(255,255,255,0.28);
-        --glass-border: rgba(255,255,255,0.36);
-        --glass-shadow: 0 10px 36px rgba(0,0,0,0.08);
-        --glass-blur: 24px;
-        --glass-blur-min: 14px;
-        --glass-reflect: radial-gradient(140% 60% at var(--mx,10%) var(--my,10%), rgba(255,255,255,0.44), rgba(255,255,255,0.10) 40%, transparent 70%);
-        --glass-caustic: radial-gradient(60% 48% at 70% 34%, rgba(255,255,255,0.18), transparent 60%);
-        --glass-intensity: 1;
-        --glass-reflect-opacity: 0.9;
-        --glass-caustic-opacity: 0.9;
-        --pill-padding-y: 10px;
-        --pill-padding-x: 22px;
-        --shine-opacity: 0.9;
+        --glass-border: rgba(255,255,255,0.45);
+        --glass-shadow: 0 12px 40px rgba(0,0,0,0.10);
+        --glass-blur: 28px;
+        --glass-reflect-color-1: rgba(255,255,255,0.35);
+        --glass-reflect-color-2: rgba(255,255,255,0.1);
+        --glass-caustic-color: rgba(255,255,255,0.18);
       }
       
       html.dark {
@@ -46,11 +40,12 @@
         --text-secondary: #9ca3af;
         --accent: #fbbf24;
 
-        --glass-bg: rgba(28, 28, 32, 0.75);
-        --glass-border: rgba(255, 255, 255, 0.18);
-        --glass-shadow: 0 10px 36px rgba(0,0,0,0.2);
-        --glass-reflect: radial-gradient(140% 60% at var(--mx,10%) var(--my,10%), rgba(255,255,255,0.12), rgba(255,255,255,0.03) 40%, transparent 70%);
-        --glass-caustic: radial-gradient(60% 48% at 70% 34%, rgba(255,255,255,0.06), transparent 60%);
+        --glass-bg: rgba(28, 28, 32, 0.65);
+        --glass-border: rgba(255, 255, 255, 0.15);
+        --glass-shadow: 0 12px 40px rgba(0,0,0,0.25);
+        --glass-reflect-color-1: rgba(255,255,255,0.1);
+        --glass-reflect-color-2: rgba(255,255,255,0.05);
+        --glass-caustic-color: rgba(255,255,255,0.08);
       }
 
       html, body { 
@@ -63,19 +58,13 @@
       
       .glass {
         position: relative;
-        background: linear-gradient(180deg, rgba(255,255,255,0.50), rgba(255,255,255,0.40));
+        background: var(--glass-bg);
+        backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+        -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
         border: 1px solid var(--glass-border);
         box-shadow: var(--glass-shadow);
         overflow: clip;
-        isolation: isolate;
-        -webkit-backdrop-filter: blur(calc(var(--glass-blur) * var(--glass-intensity))) saturate(160%);
-        backdrop-filter: blur(calc(var(--glass-blur) * var(--glass-intensity))) saturate(160%);
-        will-change: transform, opacity;
         transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-      }
-
-      html.dark .glass {
-        background: linear-gradient(180deg, rgba(40,40,45,0.7), rgba(28,28,32,0.8));
       }
       
       .glass--panel { 
@@ -87,51 +76,18 @@
         position:absolute; 
         inset:0; 
         pointer-events:none;
-        mix-blend-mode: screen;
         will-change: background;
-        transition: opacity .35s ease;
-      }
-
-      html.dark .glass::before {
-        mix-blend-mode: plus-lighter;
-      }
-      
-      html.dark .glass::after {
-        mix-blend-mode: plus-lighter;
       }
 
       .glass::before {
-        background: var(--glass-reflect);
-        opacity: 0.95;
+        background: radial-gradient(280px 200px at var(--mx,50%) var(--my,50%), var(--glass-reflect-color-1), var(--glass-reflect-color-2) 60%, transparent 75%);
+        mix-blend-mode: screen;
+        transition: opacity .25s ease;
       }
       
       .glass::after { 
-        background: var(--glass-caustic);
+        background: radial-gradient(60% 50% at 70% 30%, var(--glass-caustic-color), transparent 60%); 
         mix-blend-mode: overlay; 
-        opacity: 0.9;
-      }
-
-      .contact-proxy {
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        overflow: hidden;
-        border-radius: inherit;
-        -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.9)) saturate(200%);
-        backdrop-filter: blur(calc(var(--glass-blur) * 0.9)) saturate(200%);
-      }
-
-      .lens-shine {
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        background: linear-gradient(115deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.10) 30%, rgba(255,255,255,0) 60%);
-        opacity: .35;
-        border-radius: inherit;
-      }
-
-      html.dark .lens-shine {
-        background: linear-gradient(115deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 30%, rgba(255,255,255,0) 60%);
       }
       
       .min-glow { 
@@ -147,119 +103,28 @@
         scrollbar-width: none;  /* Firefox */
       }
 
-      @media (max-width: 520px), (prefers-reduced-motion: reduce) {
-        :root { --glass-blur: var(--glass-blur-min); --glass-intensity: 0.75; }
-        .glass::before, .glass::after, .lens-shine { opacity: .45; }
+      .liquid-pill {
+        background: rgba(255, 255, 255, 0.16);
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        border-radius: 999px;
+        position: relative;
+        overflow: hidden;
+        isolation: isolate;
+        box-shadow:
+          0 4px 18px rgba(0,0,0,0.20),
+          inset 1px 1px 4px rgba(255,255,255,0.55),
+          inset -2px -2px 5px rgba(0,0,0,0.35);
       }
       
-      /* Browser-safe layered liquid pill */
-      .liquid-pill {
-        position: relative;
-        display: inline-flex;
-        align-items: center;
-        gap: 1.25rem;
-        padding: var(--pill-padding-y) var(--pill-padding-x);
-        border-radius: 9999px;
-        background: linear-gradient(180deg, rgba(255,255,255,0.50), rgba(255,255,255,0.36));
-        border: 1px solid rgba(255,255,255,0.36);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        isolation: isolate;
-        overflow: clip;
-        -webkit-backdrop-filter: blur(calc(var(--glass-blur) * var(--glass-intensity))) saturate(180%);
-        backdrop-filter: blur(calc(var(--glass-blur) * var(--glass-intensity))) saturate(180%);
-        will-change: transform, opacity;
-        transition: transform .22s cubic-bezier(.2,.9,.2,1), filter .22s;
-      }
-
       html.dark .liquid-pill {
-        background: linear-gradient(180deg, rgba(40,40,45,0.7), rgba(28,28,32,0.8));
-        border-color: rgba(255, 255, 255, 0.2);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+        background: rgba(28, 28, 32, 0.7);
+        border-color: rgba(255, 255, 255, 0.15);
+        box-shadow:
+            0 4px 20px rgba(0,0,0,0.35),
+            inset 1px 1px 4px rgba(255,255,255,0.15),
+            inset -2px -2px 5px rgba(0,0,0,0.5);
       }
 
-      /* proxy sits below content — clipped and GPU composited */
-      .liquid-pill__proxy {
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        border-radius: inherit;
-        overflow: hidden;
-        z-index: 0;
-        transform: translateZ(0); /* create GPU layer */
-      }
-
-      /* apply safe SVG filter; fallback to blur-only */
-      .liquid-pill__proxyInner {
-        position: absolute;
-        inset: 0;
-        -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.9)) saturate(200%);
-        backdrop-filter: blur(calc(var(--glass-blur) * 0.9)) saturate(200%);
-        /* If browser supports filters, this will apply; if not, fallback remains */
-        filter: url('#liquidRefraction');
-        will-change: transform, filter;
-      }
-
-      /* highlight + caustic */
-      .liquid-pill__shine {
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        z-index: 1;
-        background:
-          radial-gradient(160% 60% at var(--mx,50%) var(--my,50%),
-            rgba(255,255,255,0.6),
-            rgba(255,255,255,0.25) 40%,
-            rgba(255,255,255,0) 65%),
-          radial-gradient(60% 48% at 72% 34%, rgba(255,255,255,0.14), transparent 60%);
-        mix-blend-mode: screen;
-        opacity: var(--shine-opacity);
-        transition: opacity .25s ease;
-        will-change: transform;
-      }
-
-      html.dark .liquid-pill__shine {
-        background:
-          radial-gradient(160% 60% at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.18), rgba(255,255,255,0.06) 40%, rgba(255,255,255,0) 65%),
-          radial-gradient(60% 48% at 72% 34%, rgba(255,255,255,0.06), transparent 60%);
-        mix-blend-mode: plus-lighter;
-      }
-
-      /* 3D depth via inset shadow */
-      .liquid-pill__depth {
-        position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        pointer-events: none;
-        box-shadow: inset 0 2px 5px rgba(255,255,255,0.5), inset 0 -3px 6px rgba(0,0,0,0.2);
-        mix-blend-mode: overlay;
-        z-index: 1;
-      }
-      html.dark .liquid-pill__depth {
-        box-shadow: inset 0 2px 5px rgba(255,255,255,0.08), inset 0 -3px 8px rgba(0,0,0,0.5);
-      }
-
-      /* content above everything */
-      .liquid-pill__content { position: relative; z-index: 2; display:flex; gap: 1.25rem; align-items:center; }
-
-      /* micro-grain overlay for material (low cost SVG or noise dataURI) */
-      .liquid-pill::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='1' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.03'/></svg>");
-        mix-blend-mode: overlay;
-        pointer-events: none;
-        transform: scale(1.6);
-        z-index: 1;
-      }
-      @media (max-width:520px), (prefers-reduced-motion: reduce) {
-        :root { --glass-blur: 16px; --shine-opacity: 0.6; }
-        .liquid-pill__shine, .liquid-pill::before { opacity: .45; }
-      }
-
-      /* Ticker styles (outer scene) — reuse your tickers but add will-change */
-      .ticker-rail { will-change: transform; }
-      .ticker-anim { animation-timing-function: linear; animation-iteration-count: infinite; }
     </style>
   <script type="importmap">
 {
