@@ -47,7 +47,7 @@ const GlobalStyles = () => (
     }
     .ticker-rail { width:400%; display:flex; align-items:center; }
     .ticker-chunk { padding-left:0.75rem; padding-right:0.75rem; }
-    .ticker-anim { animation-timing-function: linear; animation-iteration-count: infinite; }
+    .ticker-anim { animation-timing-function: linear; animation-iteration-count: infinite; will-change: transform; }
     /* Different speeds */
     .speed-25s { animation-duration: 25s; }
     .speed-33s { animation-duration: 33s; }
@@ -146,13 +146,18 @@ function LiquidPill({
   proxy3: React.ReactNode;
 }) {
   return (
-    <div
+    <motion.div
       className="
         relative z-[3] flex items-center px-6 sm:px-8 py-2.5 sm:py-3 rounded-full overflow-hidden isolate
         bg-white/14 border border-black/10 dark:border-white/20
         shadow-[0_8px_30px_rgba(0,0,0,0.18)]
+        will-change-transform transform-gpu
       "
-      /* base translucency kept here; no opacity change */
+      whileHover={{
+        filter: "brightness(1.06) saturate(1.08)",
+        scale: 1.015,
+      }}
+      transition={{ type: "spring", stiffness: 200, damping: 22 }}
     >
       {/* PROXY BACKDROP (clipped inside pill) */}
       <div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none">
@@ -178,7 +183,7 @@ function LiquidPill({
           style={{ filter: "url(#header-pill-glass)", mixBlendMode: "overlay", opacity: 1 }}
         />
         {/* Lens volume (inner highlights/shadows) */}
-        <div className="absolute inset-0 rounded-full pointer-events-none shadow-[inset_1px_1px_4px_rgba(255,255,255,0.65),inset_-3px_-4px_10px_rgba(0,0,0,0.35)]" />
+        <div className="absolute inset-0 rounded-full shadow-[inset_1px_1px_5px_rgba(255,255,255,0.55),inset_-4px_-6px_12px_rgba(0,0,0,0.32)] pointer-events-none" />
         {/* Shine sweep */}
         <div
           className="absolute inset-0 rounded-full pointer-events-none"
@@ -194,7 +199,7 @@ function LiquidPill({
       <div className="relative z-[3] flex items-center gap-5 sm:gap-7">
         {children}
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -203,11 +208,11 @@ const HeaderPillGlassFilter: React.FC = () => (
   <svg style={{ display: "none" }} aria-hidden="true">
     <defs>
       <filter id="header-pill-glass" x="0" y="0" width="100%" height="100%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.009 0.015" numOctaves="2" seed="12" result="noise" />
-        <feGaussianBlur in="noise" stdDeviation="1.6" result="softNoise" />
-        <feDisplacementMap in="SourceGraphic" in2="softNoise" scale="86" xChannelSelector="R" yChannelSelector="G" result="distort" />
-        <feGaussianBlur in="distort" stdDeviation="0.6" result="final" />
-        <feComposite in="final" in2="final" operator="over" />
+        <feTurbulence type="fractalNoise" baseFrequency="0.006 0.012" numOctaves="2" seed="14" result="noise"/>
+        <feGaussianBlur in="noise" stdDeviation="1.1" result="soft"/>
+        <feDisplacementMap in="SourceGraphic" in2="soft" scale="66" xChannelSelector="R" yChannelSelector="G" result="distort"/>
+        <feGaussianBlur in="distort" stdDeviation="0.45" result="final"/>
+        <feComposite in="final" in2="final" operator="over"/>
       </filter>
     </defs>
   </svg>
