@@ -18,12 +18,21 @@ const App: React.FC = () => {
 
   // Subtle pointer-driven highlight for more “liquid” feel
   useEffect(() => {
+    let rafId: number;
     const onMove = (e: MouseEvent) => {
-      document.documentElement.style.setProperty("--mx", e.clientX + "px");
-      document.documentElement.style.setProperty("--my", e.clientY + "px");
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const x = Math.round((e.clientX / window.innerWidth) * 100);
+        const y = Math.round((e.clientY / window.innerHeight) * 100);
+        document.documentElement.style.setProperty("--mx", `${x}%`);
+        document.documentElement.style.setProperty("--my", `${y}%`);
+      });
     };
-    window.addEventListener("mousemove", onMove);
-    return () => window.removeEventListener("mousemove", onMove);
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("mousemove", onMove);
+    };
   }, []);
 
   return (

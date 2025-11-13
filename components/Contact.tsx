@@ -147,29 +147,15 @@ function LiquidPill({
 }) {
   return (
     <motion.div
-      className="
-        relative z-[3] flex items-center px-6 sm:px-8 py-2.5 sm:py-3 rounded-full overflow-hidden isolate
-        bg-white/14 border border-black/10 dark:border-white/20
-        shadow-[0_8px_30px_rgba(0,0,0,0.18)]
-        will-change-transform transform-gpu
-      "
-      whileHover={{
-        filter: "brightness(1.06) saturate(1.08)",
-        scale: 1.015,
+      className="glass flex items-center px-6 sm:px-8 py-2.5 sm:py-3 rounded-full"
+      whileHover={{ 
+        filter: "brightness(1.06) saturate(1.08)", 
+        scale: 1.015 
       }}
       transition={{ type: "spring", stiffness: 200, damping: 22 }}
     >
-      {/* PROXY BACKDROP (clipped inside pill) */}
-      <div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none">
-        {/* Distortion + blend over a blurred/saturated copy */}
-        <div
-          className="absolute inset-0"
-          style={{
-            backdropFilter: "blur(34px) saturate(265%)",
-            WebkitBackdropFilter: "blur(34px) saturate(265%)",
-          }}
-        />
-        {/* Re-render the moving code lines INSIDE the pill (perfectly synced) */}
+      {/* PROXY BACKDROP (clipped and filtered) */}
+      <div className="contact-proxy" style={{ filter: 'url(#liquid-refraction)' }}>
         <div className="absolute inset-0 rounded-full overflow-hidden">
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[calc(50%-11px)] space-y-1 sm:space-y-[7px] pointer-events-none">
             <div className="w-[min(100%,1100px)]">{proxy1}</div>
@@ -177,26 +163,14 @@ function LiquidPill({
             <div className="w-[min(100%,1100px)]">{proxy3}</div>
           </div>
         </div>
-        {/* Apply header-style refraction to the proxy */}
-        <div
-          className="absolute inset-0"
-          style={{ filter: "url(#header-pill-glass)", mixBlendMode: "overlay", opacity: 1 }}
-        />
         {/* Lens volume (inner highlights/shadows) */}
         <div className="absolute inset-0 rounded-full shadow-[inset_1px_1px_5px_rgba(255,255,255,0.55),inset_-4px_-6px_12px_rgba(0,0,0,0.32)] pointer-events-none" />
         {/* Shine sweep */}
-        <div
-          className="absolute inset-0 rounded-full pointer-events-none"
-          style={{
-            background:
-              "linear-gradient(115deg,rgba(255,255,255,0.45) 0%,rgba(255,255,255,0.12) 33%,rgba(255,255,255,0) 66%)",
-            opacity: 0.35,
-          }}
-        />
+        <div className="lens-shine" />
       </div>
 
       {/* CONTENT (icons) */}
-      <div className="relative z-[3] flex items-center gap-5 sm:gap-7">
+      <div className="relative z-[20] flex items-center gap-5 sm:gap-7">
         {children}
       </div>
     </motion.div>
@@ -204,15 +178,13 @@ function LiquidPill({
 }
 
 /* ======================= HEADER FILTER (refraction) ======================= */
-const HeaderPillGlassFilter: React.FC = () => (
+const LiquidRefractionFilter: React.FC = () => (
   <svg style={{ display: "none" }} aria-hidden="true">
     <defs>
-      <filter id="header-pill-glass" x="0" y="0" width="100%" height="100%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.006 0.012" numOctaves="2" seed="14" result="noise"/>
-        <feGaussianBlur in="noise" stdDeviation="1.1" result="soft"/>
-        <feDisplacementMap in="SourceGraphic" in2="soft" scale="66" xChannelSelector="R" yChannelSelector="G" result="distort"/>
-        <feGaussianBlur in="distort" stdDeviation="0.45" result="final"/>
-        <feComposite in="final" in2="final" operator="over"/>
+      <filter id="liquid-refraction" x="-20%" y="-20%" width="140%" height="140%">
+        <feTurbulence baseFrequency="0.006" numOctaves="2" seed="9" result="noise" />
+        <feGaussianBlur stdDeviation="1" in="noise" result="softNoise" />
+        <feDisplacementMap in="SourceGraphic" in2="softNoise" scale="10" xChannelSelector="R" yChannelSelector="G" />
       </filter>
     </defs>
   </svg>
@@ -239,7 +211,7 @@ const Contact: React.FC = () => {
   return (
     <section id="contact" className="py-16 md:py-24 text-center scroll-mt-24">
       <GlobalStyles />
-      <HeaderPillGlassFilter />
+      <LiquidRefractionFilter />
 
       {/* Title */}
       <motion.h2
@@ -318,7 +290,7 @@ const Contact: React.FC = () => {
           aria-hidden
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
                      w-[90vw] h-[90px] sm:w-[min(92vw,1100px)] sm:h-[120px] rounded-full pointer-events-none z-0"
-          style={{ background: "rgba(0,0,0,0.04)", filter: "blur(22px) saturate(140%)" }}
+          style={{ background: "rgba(0,0,0,0.03)", filter: "blur(18px) saturate(120%)" }}
         />
 
         {/* Foreground tikers (outer scene) — NO gradients, mixed tokens */}
@@ -333,7 +305,7 @@ const Contact: React.FC = () => {
             </div>
           </div>
           <div className="flex justify-center">
-            <div className="relative w-[min(100%,1100px)] overflow-hidden select-none" aria-hidden>
+            <div className={`relative w-[min(100%,1100px)] overflow-hidden select-none`} aria-hidden>
               <div className={`ticker-rail run-anim ticker-anim speed-33s delay-15 text-[11px] sm:text-[13px]`}>
                 {Array.from({ length: 4 }).map((_, i) => (
                   <span key={i} className="ticker-chunk">{chunk2}</span>
@@ -351,40 +323,42 @@ const Contact: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* LIQUID PILL — proxy backdrop inside for TRUE light-blend + refraction */}
-        <LiquidPill
-          proxy1={<SeamlessRow chunk={chunk1} speedClass="speed-25s" delayClass="delay-0" className="text-[11px] sm:text-[13px]" />}
-          proxy2={<SeamlessRow chunk={chunk2} speedClass="speed-33s" delayClass="delay-15" className="text-[11px] sm:text-[13px]" />}
-          proxy3={<SeamlessRow chunk={chunk3} speedClass="speed-40s" delayClass="delay-3" className="text-[11px] sm:text-[13px]" />}
-        >
-          {SOCIAL_LINKS.profiles.map((profile) => {
-            const Icon = ICON_MAP[profile.name] || Github;
-            return (
-              <a
-                key={profile.name}
-                href={profile.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={profile.name}
-              >
-                <motion.div
-                  whileHover={{ scale: 1.28 }}
-                  transition={{ type: "spring", stiffness: 260, damping: 14 }}
-                  className="transition-all"
+        
+        <div className="relative z-10">
+          <LiquidPill
+            proxy1={<SeamlessRow chunk={chunk1} speedClass="speed-25s" delayClass="delay-0" className="text-[11px] sm:text-[13px]" />}
+            proxy2={<SeamlessRow chunk={chunk2} speedClass="speed-33s" delayClass="delay-15" className="text-[11px] sm:text-[13px]" />}
+            proxy3={<SeamlessRow chunk={chunk3} speedClass="speed-40s" delayClass="delay-3" className="text-[11px] sm:text-[13px]" />}
+          >
+            {SOCIAL_LINKS.profiles.map((profile) => {
+              const Icon = ICON_MAP[profile.name] || Github;
+              return (
+                <a
+                  key={profile.name}
+                  href={profile.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={profile.name}
                 >
-                  <Icon
-                    className="w-6 h-6 sm:w-7 sm:h-7 text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.85)] 
-                               dark:text-[#FFF7C5] dark:drop-shadow-[0_0_10px_rgba(255,247,200,0.75)]"
-                    style={{
-                      WebkitTextStroke: "1px rgba(0,0,0,0.45)", // visible in light mode
-                    }}
-                  />
-                </motion.div>
-              </a>
-            );
-          })}
-        </LiquidPill>
+                  <motion.div
+                    whileHover={{ scale: 1.28 }}
+                    transition={{ type: "spring", stiffness: 260, damping: 14 }}
+                    className="transition-all"
+                  >
+                    <Icon
+                      className="w-6 h-6 sm:w-7 sm:h-7 text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.85)] 
+                                dark:text-[#FFF7C5] dark:drop-shadow-[0_0_10px_rgba(255,247,200,0.75)]"
+                      style={{
+                        WebkitTextStroke: "1px rgba(0,0,0,0.45)", // visible in light mode
+                      }}
+                    />
+                  </motion.div>
+                </a>
+              );
+            })}
+          </LiquidPill>
+        </div>
+
       </motion.div>
     </section>
   );
