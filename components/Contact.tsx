@@ -87,24 +87,21 @@ function Colorize(tokens: (string | { t: string; cls?: string })[]) {
 
 function Line1() {
   return Colorize([
-    { t: "const" }, " ", { t: "dron" }, " ", "=", " ", "{", " ",
-    { t: "name" }, ":", " ", { t: `"Dron Pancholi"` }, ", ", { t: "city" }, ":", " ",
-    { t: `"Surendranagar"` }, ", ", { t: "tier" }, ":", " ", { t: `"Black Core"` }, " ", "}; ",
+    { t: "const" }, " ", { t: "identity" }, " ", "=", " ", "{", " ",
+    { t: "name" }, ":", " ", { t: `"Dron Pancholi"` }, ", ", { t: "focus" }, ":", " ",
+    "[", { t: `"AI"` }, ",", " ", { t: `"Systems"` }, ",", " ", { t: `"Design"` }, "]", " ", "};",
   ]);
 }
 function Line2() {
   return Colorize([
-    { t: "const" }, " ", { t: "vision" }, " ", "=", " ", { t: `"Build Empires"` }, "; ",
-    { t: "const" }, " ", { t: "motto" }, " ", "=", " ", { t: `"Faith • Trust • Transparency"` }, "; ",
-    { t: "const" }, " ", { t: "socials" }, "=", "[",
-    { t: `"LinkedIn"` }, ", ", { t: `"GitHub"` }, ", ", { t: `"Instagram"` }, ", ", { t: `"Discord"` }, "]", "; ",
+    { t: "const" }, " ", { t: "principles" }, " ", "=", " ", "[",
+    { t: `"Clarity"` }, ", ", { t: `"Depth"` }, ", ", { t: `"Intention"` }, "]", ";",
   ]);
 }
 function Line3(email: string) {
   return Colorize([
-    { t: "function" }, " ", { t: "contact" }, "()", " ", "{", " ",
-    { t: "return" }, " ", "{", " ", { t: "email" }, ":", " ", { t: `"${email}"` },
-    ", ", { t: "responseTime" }, ":", " ", { t: `"fast"` }, " ", "}", " ", "}", " ",
+    { t: "function" }, " ", { t: "contact" }, "(", { t: "email" }, ")", " ", "{", " ",
+    { t: "return" }, " ", { t: `\`mailto:\${email}\``}, ";", " ", "}",
   ]);
 }
 
@@ -247,7 +244,7 @@ const Contact: React.FC = () => {
         transition={{ duration: 0.6 }}
         className="text-3xl md:text-4xl font-bold text-[var(--text-main)] mb-3"
       >
-        Get In Touch
+        Start a Conversation
       </motion.h2>
 
       {/* Lead */}
@@ -258,7 +255,7 @@ const Contact: React.FC = () => {
         transition={{ duration: 0.6, delay: 0.1 }}
         className="text-lg text-[var(--text-secondary)] mb-12 max-w-xl mx-auto"
       >
-        I&apos;m actively exploring new opportunities and collaborations. Best way to reach me is email.
+        I am open to new projects and collaborations. For inquiries, please reach out via email.
       </motion.p>
 
       {/* Email card */}

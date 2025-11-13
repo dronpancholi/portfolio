@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import GlassCard from './ui/GlassCard';
 import { SKILLS_DATA } from '../constants';
 import { Briefcase, Code, Database, BrainCircuit, Bot } from 'lucide-react';
+import TypingAnimation from './ui/TypingAnimation';
 
 // FIX: Derive a strict type for icon names from the `SKILLS_DATA` constant and use a `Record` to ensure type safety for the `icons` object. This explicitly informs TypeScript that all icon names from `SKILLS_DATA` are valid keys, resolving the 'Type 'string' is not assignable to type 'never'' error.
 type SkillIconName = typeof SKILLS_DATA[number]['icon'];
@@ -19,15 +20,19 @@ const icons: Record<SkillIconName, React.ComponentType<{ className: string }>> =
 const Skills: React.FC = () => {
   return (
     <section id="skills" className="py-16 md:py-24 scroll-mt-24">
-      <motion.h2 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.5 }}
         transition={{ duration: 0.5 }}
-        className="text-3xl md:text-4xl font-bold text-[var(--text-main)] mb-12 text-center tracking-tight"
+        className="text-center"
       >
-        My Technical Stack
-      </motion.h2>
+        <TypingAnimation
+          as="h2"
+          text="Core Capabilities"
+          className="text-3xl md:text-4xl font-bold text-[var(--text-main)] mb-12 tracking-tight"
+        />
+      </motion.div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {SKILLS_DATA.map((category, index) => {
           const Icon = icons[category.icon];

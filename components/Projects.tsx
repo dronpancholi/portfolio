@@ -1,5 +1,6 @@
 
 
+
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import GlassCard from './ui/GlassCard';
@@ -181,7 +182,7 @@ const Projects: React.FC = () => {
         transition={{ duration: 0.5 }}
         className="text-3xl md:text-4xl font-bold text-[var(--text-main)] mb-12 text-center tracking-tight"
       >
-        Current & Upcoming Projects
+        Selected Work
       </motion.h2>
       <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ${selectedProject ? 'pointer-events-none' : ''}`}>
         {PROJECTS_DATA.map((project, index) => (

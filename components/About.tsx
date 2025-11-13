@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import GlassCard from './ui/GlassCard';
+import TypingAnimation from './ui/TypingAnimation';
 
 const About: React.FC = () => {
   return (
@@ -13,13 +14,17 @@ const About: React.FC = () => {
       >
         <GlassCard>
           <div className="p-10 md:p-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-[var(--text-main)] mb-6 tracking-tight">About Me</h2>
+            <TypingAnimation
+              as="h2"
+              text="A Study in Precision."
+              className="text-3xl md:text-4xl font-bold text-[var(--text-main)] mb-6 tracking-tight"
+            />
             <div className="space-y-4 text-[var(--text-secondary)] text-lg leading-relaxed font-light">
               <p>
-                I am a forward-thinking engineer driven by a profound fascination with artificial intelligence and its potential to reshape our world. My current academic path in Computer Engineering serves as a robust foundation for my primary ambition: to specialize in deep learning, applied machine learning, and the creation of AI-augmented systems.
+                My work is guided by a single principle: build with intention. I specialize in developing intelligent systems where every component, from the backend architecture to the user interface, is crafted with precision and purpose.
               </p>
               <p>
-                My focus extends beyond theoretical knowledge; I am dedicated to practical application and innovation. I believe in a future where intelligent systems seamlessly integrate into every facet of technology, and I am committed to being at the forefront of that revolution, building solutions that are not only powerful but also intuitive and impactful.
+                My background in computer engineering provides a foundation in systems thinking, allowing me to create solutions that are not only technically robust but also clear and effective. My focus is on applied AI, building tools and platforms that solve complex problems with elegant simplicity.
               </p>
             </div>
           </div>

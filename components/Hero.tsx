@@ -1,6 +1,8 @@
 
+
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useTransform, useScroll, useSpring } from 'framer-motion';
+import TypingAnimation from './ui/TypingAnimation';
 
 const InteractivePortrait: React.FC = () => {
   return (
@@ -77,24 +79,27 @@ const Hero: React.FC = () => {
         className="w-full max-w-4xl"
       >
         <motion.div style={{ rotateX, rotateY }}>
-          <motion.h1 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tighter text-[var(--text-main)] mb-4"
             style={{ transform: 'translateZ(50px)', transformStyle: 'preserve-3d' }}
           >
-            I build with <span className="text-[var(--accent)]">Artificial Intelligence.</span>
-          </motion.h1>
+            <TypingAnimation 
+              as="h1"
+              text="Systems, designed with depth. Interfaces, designed with clarity."
+              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tighter text-[var(--text-main)] mb-4"
+            />
+          </motion.div>
+          
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.8, delay: 7.2, ease: [0.22, 1, 0.36, 1] }}
             className="max-w-2xl text-base sm:text-lg md:text-xl text-[var(--text-secondary)] font-light mx-auto"
-            // FIX: Corrected typo in `transformStyle` property from `preserve-d` to `preserve-3d`.
             style={{ transform: 'translateZ(25px)', transformStyle: 'preserve-3d' }}
           >
-            Pursuing a Diploma in Computer Engineering and advancing into AI & ML specialization to architect the next generation of intelligent systems.
+            I engineer intelligent systems and thoughtful digital experiences, focusing on the intersection of artificial intelligence, full-stack development, and design.
           </motion.p>
         </motion.div>
       </motion.div>

@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 
 const Footer: React.FC = () => {
@@ -8,7 +9,7 @@ const Footer: React.FC = () => {
     <footer className="py-8 text-center">
       <div className="container mx-auto px-6">
         <p className="text-sm text-[var(--text-secondary)]">
-          Designed & Built by Dron Pancholi — {currentYear}
+          Dron Pancholi © {currentYear}
         </p>
       </div>
     </footer>

@@ -36,9 +36,9 @@ export const SKILLS_DATA = [
 
 export const PROJECTS_DATA = [
   {
-    title: 'Life Plus Healthcare',
-    description: 'A visionary real-time healthcare platform leveraging AI for predictive diagnostics and personalized patient care.',
-    longDescription: 'Life Plus is a comprehensive healthcare ecosystem designed to bridge the gap between patients and medical professionals. By integrating real-time data from wearables and medical devices, our AI models provide early-stage diagnostic predictions, monitor chronic conditions, and suggest personalized wellness plans. The platform aims to democratize healthcare, making proactive and preventative care accessible to everyone.',
+    title: 'Predictive Health AI',
+    description: 'An exploration into real-time healthcare AI, designed for predictive diagnostics and personalized patient care.',
+    longDescription: 'A concept for a comprehensive healthcare ecosystem designed to bridge patients and medical professionals. By processing real-time data from wearables, its AI models are intended to provide early-stage diagnostic predictions, monitor chronic conditions, and suggest personalized wellness plans. The platform explores how to make proactive and preventative care more accessible through technology.',
     techStack: ['TensorFlow', 'Python', 'React Native', 'Node.js', 'PostgreSQL', 'Google Cloud AI'],
     features: ['Real-time Health Monitoring', 'AI-Powered Predictive Diagnostics', 'Telemedicine Integration', 'Personalized Wellness Plans'],
     status: 'Coming Soon',
@@ -46,9 +46,9 @@ export const PROJECTS_DATA = [
     repoUrl: null,
   },
   {
-    title: 'AI-Powered Creative Suite',
-    description: 'Developing a suite of tools that use generative AI to assist in creative workflows, from text to image generation.',
-    longDescription: 'This project is a collection of generative AI tools aimed at augmenting the creative process for artists, designers, and writers. It includes models for high-fidelity image generation from text prompts, style transfer, and an AI co-writer that assists with brainstorming and drafting content. The suite is built with a focus on intuitive user interfaces and fine-grained control over the creative output.',
+    title: 'Generative Creative Suite',
+    description: 'A suite of generative AI tools designed to augment creative workflows, from text to image.',
+    longDescription: 'A collection of generative AI tools designed to augment the creative process. The suite includes models for high-fidelity image generation, artistic style transfer, and an AI co-writer for brainstorming content, all built with a focus on intuitive interfaces and fine-grained control over the output.',
     techStack: ['PyTorch', 'Stable Diffusion', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Hugging Face'],
     features: ['Text-to-Image Generation', 'AI-Assisted Writing & Editing', 'Artistic Style Transfer', 'Intuitive User Interface'],
     status: 'In Progress',
@@ -56,9 +56,9 @@ export const PROJECTS_DATA = [
     repoUrl: 'https://github.com/dronpancholi',
   },
   {
-    title: 'Autonomous Systems Research',
-    description: 'Exploratory project focused on reinforcement learning for autonomous navigation and decision-making.',
-    longDescription: 'This research delves into the application of deep reinforcement learning (DRL) for creating autonomous agents capable of navigating complex, dynamic environments. The primary focus is on developing and training models in simulated environments (like CARLA or AirSim) that can perform tasks such as drone navigation or autonomous driving, with an emphasis on safety, efficiency, and adaptability to unforeseen circumstances.',
+    title: 'Reinforcement Learning for Navigation',
+    description: 'Research into reinforcement learning for autonomous navigation and decision-making in complex environments.',
+    longDescription: 'This research explores the application of deep reinforcement learning (DRL) for creating autonomous agents that navigate complex, dynamic environments. The focus is on training models in simulation to perform tasks like drone navigation or autonomous driving, with an emphasis on safety, efficiency, and adaptability.',
     techStack: ['Reinforcement Learning', 'PyTorch', 'OpenAI Gym', 'CARLA Simulator', 'Python'],
     features: ['Pathfinding in Dynamic Environments', 'Collision Avoidance Systems', 'Sim-to-Real Model Transfer', 'Behavioral Cloning'],
     status: 'In Progress',
