@@ -36,7 +36,8 @@
         --glass-reflect-opacity: 0.9;
         --glass-caustic-opacity: 0.9;
         --pill-padding-y: 10px;
-        --pill-padding-x: 20px;
+        --pill-padding-x: 22px;
+        --shine-opacity: 0.9;
       }
       
       html.dark {
@@ -151,31 +152,32 @@
         .glass::before, .glass::after, .lens-shine { opacity: .45; }
       }
       
-      /* Liquid pill — browser-safe, layered approach */
+      /* Browser-safe layered liquid pill */
       .liquid-pill {
         position: relative;
         display: inline-flex;
         align-items: center;
-        gap: 1.5rem; /* Increased gap for better icon spacing */
+        gap: 1.25rem;
         padding: var(--pill-padding-y) var(--pill-padding-x);
         border-radius: 9999px;
-        background: linear-gradient(180deg, rgba(255,255,255,0.48), rgba(255,255,255,0.36));
-        border: 1px solid var(--glass-border);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.08), inset 0 2px 6px rgba(255,255,255,0.36);
+        background: linear-gradient(180deg, rgba(255,255,255,0.50), rgba(255,255,255,0.36));
+        border: 1px solid rgba(255,255,255,0.36);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         isolation: isolate;
-        overflow: clip; /* better for performance than hidden in some engines */
+        overflow: clip;
         -webkit-backdrop-filter: blur(calc(var(--glass-blur) * var(--glass-intensity))) saturate(180%);
         backdrop-filter: blur(calc(var(--glass-blur) * var(--glass-intensity))) saturate(180%);
         will-change: transform, opacity;
+        transition: transform .22s cubic-bezier(.2,.9,.2,1), filter .22s;
       }
 
       html.dark .liquid-pill {
         background: linear-gradient(180deg, rgba(40,40,45,0.7), rgba(28,28,32,0.8));
         border-color: rgba(255, 255, 255, 0.2);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.25), inset 0 1px 2px rgba(255,255,255,0.1), inset 0 -2px 8px rgba(0,0,0,0.2);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.25);
       }
 
-      /* proxy layer sits underneath content and is clipped to pill */
+      /* proxy sits below content — clipped and GPU composited */
       .liquid-pill__proxy {
         position: absolute;
         inset: 0;
@@ -183,42 +185,77 @@
         border-radius: inherit;
         overflow: hidden;
         z-index: 0;
-        mix-blend-mode: normal;
+        transform: translateZ(0); /* create GPU layer */
       }
 
-      /* the filtered proxy receives the SVG displacement for refraction */
+      /* apply safe SVG filter; fallback to blur-only */
       .liquid-pill__proxyInner {
         position: absolute;
         inset: 0;
-        -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.95)) saturate(200%);
-        backdrop-filter: blur(calc(var(--glass-blur) * 0.95)) saturate(200%);
-        filter: url('#liquidRefraction'); /* safe small displacement */
-        transform: translateZ(0); /* force GPU layer */
+        -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.9)) saturate(200%);
+        backdrop-filter: blur(calc(var(--glass-blur) * 0.9)) saturate(200%);
+        /* If browser supports filters, this will apply; if not, fallback remains */
+        filter: url('#liquidRefraction');
+        will-change: transform, filter;
       }
 
-      /* overlay highlights / caustics above proxy but below content */
+      /* highlight + caustic */
       .liquid-pill__shine {
         position: absolute;
         inset: 0;
         pointer-events: none;
+        z-index: 1;
         background:
-          radial-gradient(160% 60% at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.52), rgba(255,255,255,0.12) 36%, rgba(255,255,255,0) 60%),
+          radial-gradient(160% 60% at var(--mx,50%) var(--my,50%),
+            rgba(255,255,255,0.6),
+            rgba(255,255,255,0.25) 40%,
+            rgba(255,255,255,0) 65%),
           radial-gradient(60% 48% at 72% 34%, rgba(255,255,255,0.14), transparent 60%);
         mix-blend-mode: screen;
-        opacity: var(--glass-reflect-opacity);
-        z-index: 1;
+        opacity: var(--shine-opacity);
+        transition: opacity .25s ease;
         will-change: transform;
       }
 
       html.dark .liquid-pill__shine {
         background:
-          radial-gradient(160% 60% at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.15), rgba(255,255,255,0.05) 36%, rgba(255,255,255,0) 60%),
+          radial-gradient(160% 60% at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.18), rgba(255,255,255,0.06) 40%, rgba(255,255,255,0) 65%),
           radial-gradient(60% 48% at 72% 34%, rgba(255,255,255,0.06), transparent 60%);
         mix-blend-mode: plus-lighter;
       }
 
-      /* Ensure the visible content sits above the proxy and shine */
-      .liquid-pill__content { position: relative; z-index: 2; display:flex; gap: 1.5rem; align-items:center; }
+      /* 3D depth via inset shadow */
+      .liquid-pill__depth {
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        pointer-events: none;
+        box-shadow: inset 0 2px 5px rgba(255,255,255,0.5), inset 0 -3px 6px rgba(0,0,0,0.2);
+        mix-blend-mode: overlay;
+        z-index: 1;
+      }
+      html.dark .liquid-pill__depth {
+        box-shadow: inset 0 2px 5px rgba(255,255,255,0.08), inset 0 -3px 8px rgba(0,0,0,0.5);
+      }
+
+      /* content above everything */
+      .liquid-pill__content { position: relative; z-index: 2; display:flex; gap: 1.25rem; align-items:center; }
+
+      /* micro-grain overlay for material (low cost SVG or noise dataURI) */
+      .liquid-pill::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='1' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.03'/></svg>");
+        mix-blend-mode: overlay;
+        pointer-events: none;
+        transform: scale(1.6);
+        z-index: 1;
+      }
+      @media (max-width:520px), (prefers-reduced-motion: reduce) {
+        :root { --glass-blur: 16px; --shine-opacity: 0.6; }
+        .liquid-pill__shine, .liquid-pill::before { opacity: .45; }
+      }
 
       /* Ticker styles (outer scene) — reuse your tickers but add will-change */
       .ticker-rail { will-change: transform; }

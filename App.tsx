@@ -18,18 +18,20 @@ const App: React.FC = () => {
   // Pointer-driven highlight for liquid-glass effects
   useEffect(() => {
     let raf = 0;
+    const capDPR = Math.min(window.devicePixelRatio || 1, 1.5);
+    (window as any).CAP_DEVICE_PIXEL_RATIO = capDPR;
+  
     const onMove = (e: MouseEvent) => {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
-        const x = Math.round((e.clientX / window.innerWidth) * 100);
-        const y = Math.round((e.clientY / window.innerHeight) * 100);
-        document.documentElement.style.setProperty("--mx", `${x}%`);
-        document.documentElement.style.setProperty("--my", `${y}%`);
+        // use percent values for better CSS interpolation and non-integer pixels
+        const mx = Math.round((e.clientX / window.innerWidth) * 100);
+        const my = Math.round((e.clientY / window.innerHeight) * 100);
+        document.documentElement.style.setProperty("--mx", `${mx}%`);
+        document.documentElement.style.setProperty("--my", `${my}%`);
       });
     };
-    // Cap devicePixelRatio for performance on heavy effects
-    (window as any).CAP_DEVICE_PIXEL_RATIO = Math.min(window.devicePixelRatio || 1, 1.5);
-
+  
     window.addEventListener("mousemove", onMove, { passive: true });
     return () => {
       cancelAnimationFrame(raf);

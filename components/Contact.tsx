@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Mail,
@@ -33,9 +33,9 @@ const GlobalStyles = () => (
       from { transform: translateX(0%); }
       to   { transform: translateX(-25%); }
     }
-    .ticker-rail { width:400%; display:flex; align-items:center; }
+    .ticker-rail { width:400%; display:flex; align-items:center; will-change: transform; backface-visibility: hidden; transform: translateZ(0); }
     .ticker-chunk { padding-left:0.75rem; padding-right:0.75rem; }
-    .ticker-anim { animation-timing-function: linear; animation-iteration-count: infinite; will-change: transform; }
+    .ticker-anim { animation-timing-function: linear; animation-iteration-count: infinite; will-change: transform; animation-play-state: running; }
     /* Different speeds */
     .speed-25s { animation-duration: 25s; }
     .speed-33s { animation-duration: 33s; }
@@ -96,6 +96,19 @@ function Line3(email: string) {
 /* =============================== CONTACT =============================== */
 const Contact: React.FC = () => {
   const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      document.documentElement.style.setProperty("--glass-blur", "12px");
+      document.querySelectorAll(".ticker-rail").forEach((r) => {
+        if (r instanceof HTMLElement) {
+          r.style.animationPlayState = "paused";
+        }
+      });
+    }
+  }, []);
+
 
   const handleCopy = () => {
     if (copied) return;
@@ -231,15 +244,11 @@ const Contact: React.FC = () => {
                   className="focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] rounded-full"
                 >
                   <motion.div
-                    whileHover={{ scale: 1.18 }}
-                    transition={{ type: "spring", stiffness: 200, damping: 18 }}
+                    whileHover={{ scale: 1.14 }}
+                    transition={{ type: "spring", stiffness: 220, damping: 18 }}
                   >
                     <Icon
-                      className="w-6 h-6 sm:w-7 sm:h-7 text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.85)] 
-                                dark:text-[#FFF7C5] dark:drop-shadow-[0_0_10px_rgba(255,247,200,0.75)]"
-                      style={{
-                        WebkitTextStroke: "1px rgba(0,0,0,0.45)",
-                      }}
+                      className="w-6 h-6 sm:w-7 sm:h-7 text-stone-800 dark:text-white drop-shadow-[0_0_2px_rgba(0,0,0,0.3)] dark:drop-shadow-[0_0_8px_rgba(255,255,255,0.85)]"
                     />
                   </motion.div>
                 </a>
