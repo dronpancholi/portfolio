@@ -1,6 +1,7 @@
 
 
 
+
 import React, { Suspense, lazy, useEffect } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -22,10 +23,8 @@ const App: React.FC = () => {
     const onMove = (e: MouseEvent) => {
       cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(() => {
-        const x = Math.round((e.clientX / window.innerWidth) * 100);
-        const y = Math.round((e.clientY / window.innerHeight) * 100);
-        document.documentElement.style.setProperty("--mx", `${x}%`);
-        document.documentElement.style.setProperty("--my", `${y}%`);
+        document.documentElement.style.setProperty("--mx", `${e.clientX}px`);
+        document.documentElement.style.setProperty("--my", `${e.clientY}px`);
       });
     };
     window.addEventListener("mousemove", onMove, { passive: true });

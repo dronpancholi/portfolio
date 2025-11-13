@@ -146,6 +146,68 @@
         :root { --glass-blur: 16px; --glass-intensity: 0.85; }
         .glass::before, .glass::after, .lens-shine { opacity: .45; }
       }
+      
+      /* New Browser-Safe Liquid Pill */
+      .liquid-pill {
+        position: relative;
+        overflow: hidden;
+        border-radius: 9999px;
+        padding: 12px 28px;
+        background: rgba(255,255,255,0.25);
+        backdrop-filter: blur(22px) saturate(180%);
+        -webkit-backdrop-filter: blur(22px) saturate(180%);
+        border: 1px solid rgba(255,255,255,0.4);
+        box-shadow:
+          0 8px 32px rgba(0,0,0,0.08),
+          inset 0 2px 6px rgba(255,255,255,0.35),
+          inset 0 -2px 8px rgba(0,0,0,0.15);
+      }
+
+      .liquid-pill::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: url("https://grainy-gradients.vercel.app/noise.svg");
+        mix-blend-mode: overlay;
+        opacity: 0.65;
+        animation: drift 18s linear infinite;
+        transform: scale(1.8);
+      }
+
+      .liquid-pill::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(120% 120% at var(--mx, 50%) var(--my, 50%),
+          rgba(255,255,255,0.55),
+          rgba(255,255,255,0.18) 45%,
+          rgba(255,255,255,0) 70%);
+        pointer-events: none;
+        opacity: 0.9;
+      }
+      
+      html.dark .liquid-pill {
+        background: rgba(40, 40, 45, 0.6);
+        border-color: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.25), inset 0 1px 2px rgba(255,255,255,0.1), inset 0 -2px 8px rgba(0,0,0,0.2);
+      }
+
+      html.dark .liquid-pill::before {
+        mix-blend-mode: screen;
+        opacity: 0.4;
+      }
+
+      html.dark .liquid-pill::after {
+        background: radial-gradient(120% 120% at var(--mx, 50%) var(--my, 50%),
+          rgba(255,255,255,0.15),
+          rgba(255,255,255,0.05) 45%,
+          rgba(255,255,255,0) 70%);
+      }
+
+      @keyframes drift {
+        from { transform: translate3d(0,0,0) scale(1.8); }
+        to   { transform: translate3d(-35%,0,0) scale(1.8); }
+      }
 
     </style>
   <script type="importmap">
