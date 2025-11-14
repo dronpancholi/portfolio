@@ -12,7 +12,7 @@ const InteractivePortrait: React.FC = () => {
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
     >
       <img
-        src="https://i.ibb.co/cc1gs8wx/picofme-2.png"
+        src="https://i.ibb.co/68qf2kX/portrait-Dron.png"
         alt="Dron Pancholi"
         className="w-full h-full object-cover"
       />
