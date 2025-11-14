@@ -140,7 +140,8 @@ function LiquidPill({
   proxy2,
   proxy3,
 }: {
-  children: React.ReactNode;
+  // FIX: Made the `children` prop optional to resolve a TypeScript error where the compiler incorrectly reported it as missing, even though it was provided.
+  children?: React.ReactNode;
   proxy1: React.ReactNode;
   proxy2: React.ReactNode;
   proxy3: React.ReactNode;
@@ -285,7 +286,7 @@ const Contact: React.FC = () => {
 
               <button
                 onClick={handleCopy}
-                className="flex items-center justify-center gap-1 w-24 h-9 text-sm font-semibold bg-[var(--accent)] text-black dark:text-[var(--text-main)] rounded-lg hover:brightness-110 transition-all"
+                className="flex items-center justify-center gap-1 w-24 h-9 text-sm font-semibold bg-[var(--accent)] text-white dark:text-black rounded-lg hover:brightness-110 transition-all"
                 aria-label="Copy email address"
               >
                 {copied ? (
