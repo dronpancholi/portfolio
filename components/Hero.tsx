@@ -1,7 +1,4 @@
 
-
-
-
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useTransform, useScroll, useSpring } from 'framer-motion';
 import TypingAnimation from './ui/TypingAnimation';
@@ -15,7 +12,7 @@ const InteractivePortrait: React.FC = () => {
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
     >
       <img
-        src="https://i.ibb.co/Kz2W6s8/profile.jpg"
+        src="https://i.ibb.co/cc1gs8wx/picofme-2.png"
         alt="Dron Pancholi"
         className="w-full h-full object-cover"
       />
