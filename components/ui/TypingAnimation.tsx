@@ -9,8 +9,9 @@ interface TypingAnimationProps {
   delay?: number;
 }
 
-// FIX: Removed explicit `Variants` type as it was causing an error.
-// Using `as const` ensures TypeScript infers literal types (e.g. 'linear' instead of string), satisfying the Variants type.
+// FIX: Using `as const` on the entire object caused the keyframe arrays to become `readonly`,
+// which is incompatible with framer-motion's types. The fix is to remove `as const`
+// from the object and apply it only to properties that need a literal type, such as `ease`.
 const cursorVariants = {
   blinking: {
     opacity: [0, 0, 1, 1],
@@ -18,11 +19,11 @@ const cursorVariants = {
       duration: 1,
       repeat: Infinity,
       repeatDelay: 0,
-      ease: "linear",
+      ease: "linear" as const,
       times: [0, 0.5, 0.5, 1]
     }
   }
-} as const;
+};
 
 const TypingAnimation: React.FC<TypingAnimationProps> = ({ text, as: Component = 'span', className, delay = 0 }) => {
   const count = useMotionValue(0);
