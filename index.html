@@ -182,34 +182,6 @@
       .delay-15  { animation-delay: 1.5s; }
       .delay-3   { animation-delay: 3s; }
       .run-anim  { animation-name: xloop25; }
-      
-      /* --- Performance Fallbacks --- */
-      .gpu-layer {
-        transform: translateZ(0);
-        will-change: transform, opacity;
-        backface-visibility: hidden;
-      }
-
-      .low-perf .glass,
-      .low-perf .liquid-pill,
-      .low-perf .glass--panel,
-      .low-perf .liquid-pill__proxyInner {
-        backdrop-filter: none !important;
-        -webkit-backdrop-filter: none !important;
-        box-shadow: 0 6px 16px rgba(0,0,0,0.06) !important;
-        background: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.40));
-      }
-
-      .mid-perf .glass,
-      .mid-perf .liquid-pill {
-        backdrop-filter: blur(calc(var(--glass-blur) * 0.8)) saturate(140%);
-        -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.8)) saturate(140%);
-        box-shadow: 0 8px 22px rgba(0,0,0,0.07);
-      }
-
-      .project-card {
-        contain: paint;
-      }
 
     </style>
   <script type="importmap">
