@@ -1,7 +1,11 @@
 
 
 
+
 import React, { Suspense, lazy, useEffect } from 'react';
+// FIX: Import LazyMotion and domAnimation to enable framer-motion features.
+// This resolves TypeScript errors across the app where motion props were not recognized.
+import { LazyMotion, domAnimation } from 'framer-motion';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Footer from './components/Footer';
@@ -27,22 +31,24 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <ThemeProvider>
-      <div className="bg-[var(--bg-base)] text-[var(--text-main)] selection:bg-[var(--accent)]/30 min-h-screen">
-        <HeaderPillGlassFilter />
-        <Header />
-        <main className="container mx-auto px-6 md:px-8 pt-24 relative z-10">
-          <Hero />
-          <Suspense fallback={<Loader />}>
-            <About />
-            <Skills />
-            <Projects />
-            <Contact />
-          </Suspense>
-        </main>
-        <Footer />
-      </div>
-    </ThemeProvider>
+    <LazyMotion features={domAnimation}>
+      <ThemeProvider>
+        <div className="bg-[var(--bg-base)] text-[var(--text-main)] selection:bg-[var(--accent)]/30 min-h-screen">
+          <HeaderPillGlassFilter />
+          <Header />
+          <main className="container mx-auto px-6 md:px-8 pt-24 relative z-10">
+            <Hero />
+            <Suspense fallback={<Loader />}>
+              <About />
+              <Skills />
+              <Projects />
+              <Contact />
+            </Suspense>
+          </main>
+          <Footer />
+        </div>
+      </ThemeProvider>
+    </LazyMotion>
   );
 };
 

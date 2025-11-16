@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-// FIX: Import `Variants` to correctly type the animation variants object.
-import { motion, useMotionValue, useTransform, animate, Variants } from 'framer-motion';
+// FIX: Removed `Variants` from import as it was causing a module resolution error.
+import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 
 interface TypingAnimationProps {
   text: string;
@@ -9,8 +9,9 @@ interface TypingAnimationProps {
   delay?: number;
 }
 
-// FIX: Explicitly type `cursorVariants` as `Variants` to resolve the type error.
-const cursorVariants: Variants = {
+// FIX: Removed explicit `Variants` type as it was causing an error.
+// Type inference correctly handles the variant object.
+const cursorVariants = {
   blinking: {
     opacity: [0, 0, 1, 1],
     transition: {
@@ -25,8 +26,10 @@ const cursorVariants: Variants = {
 
 const TypingAnimation: React.FC<TypingAnimationProps> = ({ text, as: Component = 'span', className, delay = 0 }) => {
   const count = useMotionValue(0);
-  const rounded = useTransform(count, (latest) => Math.round(latest));
-  const displayText = useTransform(rounded, (latest) => text.slice(0, latest));
+  // FIX: Explicitly type `latest` as `number` to resolve `unknown` type error.
+  const rounded = useTransform(count, (latest: number) => Math.round(latest));
+  // FIX: Explicitly type `latest` as `number` to resolve `unknown` type error.
+  const displayText = useTransform(rounded, (latest: number) => text.slice(0, latest));
 
   useEffect(() => {
     const controls = animate(count, text.length, {

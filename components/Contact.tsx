@@ -45,6 +45,10 @@ const GlobalStyles = () => (
       from { transform: translateX(0%); }
       to   { transform: translateX(-25%); }
     }
+    .liquid-pill {
+      contain: layout paint size style;
+      transform: translateZ(0);
+    }
     .ticker-rail { width:400%; display:flex; align-items:center; }
     .ticker-chunk { padding-left:0.75rem; padding-right:0.75rem; }
     .ticker-anim { animation-timing-function: linear; animation-iteration-count: infinite; will-change: transform; }
@@ -149,6 +153,7 @@ function LiquidPill({
   return (
     <motion.div
       className="
+        liquid-pill
         relative z-[3] flex items-center px-6 sm:px-8 py-2.5 sm:py-3 rounded-full overflow-hidden isolate
         bg-white/14 border border-black/10 dark:border-white/20
         shadow-[0_8px_30px_rgba(0,0,0,0.18)]

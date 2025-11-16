@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
-// FIX: Import Transition to correctly type the spring animation object.
-import { motion, AnimatePresence, Transition } from "framer-motion";
+// FIX: Removed `Transition` import which was causing a module resolution error.
+// The `spring` object's type is correctly inferred by TypeScript without explicit annotation.
+import { motion, AnimatePresence } from "framer-motion";
 import ThemeToggle from "./ui/ThemeToggle";
 
 export default function Header(){
@@ -36,9 +37,9 @@ export default function Header(){
 
   const state = isAtTop ? "top" : expanded ? "expanded" : "collapsed";
 
-  // FIX: Explicitly define the type of `spring` as `Transition` to fix type error.
-  // Without this, TypeScript infers `type` as `string` instead of the literal "spring".
-  const spring: Transition = {
+  // FIX: Removed explicit `Transition` type to fix type error.
+  // TypeScript correctly infers the type from the object literal.
+  const spring = {
     type: "spring",
     stiffness: 72,
     damping: 16,

@@ -1,15 +1,18 @@
 
 
 
+
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, Variants } from 'framer-motion';
+// FIX: Removed `Variants` import as it was causing a module resolution error.
+// Type inference is sufficient for variant objects.
+import { motion, AnimatePresence } from 'framer-motion';
 import GlassCard from './ui/GlassCard';
 import { PROJECTS_DATA } from '../constants';
 import { ArrowUpRight, X, ExternalLink, Github } from 'lucide-react';
 
 type Project = (typeof PROJECTS_DATA)[number];
 
-const contentContainerVariants: Variants = {
+const contentContainerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -20,7 +23,7 @@ const contentContainerVariants: Variants = {
   },
 };
 
-const contentItemVariants: Variants = {
+const contentItemVariants = {
   hidden: { opacity: 0, y: 12 },
   visible: { 
     opacity: 1, 
@@ -132,7 +135,7 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
 };
 
 
-const projectCardVariants: Variants = {
+const projectCardVariants = {
   offscreen: {
     opacity: 0,
     y: 50,
