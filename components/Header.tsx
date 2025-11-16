@@ -37,14 +37,15 @@ export default function Header(){
 
   const state = isAtTop ? "top" : expanded ? "expanded" : "collapsed";
 
-  // FIX: Removed explicit `Transition` type to fix type error.
-  // TypeScript correctly infers the type from the object literal.
+  // FIX: Using `as const` to ensure TypeScript infers the narrowest possible types
+  // for the transition properties (e.g., 'spring' instead of string), resolving 
+  // the 'is not assignable to type Transition' error.
   const spring = {
     type: "spring",
     stiffness: 72,
     damping: 16,
     mass: 1.1
-  };
+  } as const;
 
   return (
     <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full flex justify-center pointer-events-none">

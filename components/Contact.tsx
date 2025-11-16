@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import React, { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import {
   Mail,
   Linkedin,
@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { SOCIAL_LINKS } from "../constants";
 import GlassCard from "./ui/GlassCard";
+import LiquidPill from "./ui/LiquidPill";
 
 /* -------------------- THEME: default to LIGHT -------------------- */
 function useForceLightTheme() {
@@ -20,7 +21,6 @@ function useForceLightTheme() {
     const r = document.documentElement;
     r.classList.add("light");
     r.classList.remove("dark");
-    // Optional: if you use next-themes, also ensure data-theme
     r.setAttribute("data-theme", "light");
   }, []);
 }
@@ -35,34 +35,6 @@ const ICON_MAP: Partial<
   Instagram: Instagram,
   Discord: MessageSquare,
 };
-
-/* =================== SHARED KEYFRAME (NO GAPS) =================== */
-/* We use a class keyframe so both foreground rows and the pill’s
-   internal proxy rows are guaranteed to stay in sync. */
-const GlobalStyles = () => (
-  <style>{`
-    @keyframes xloop25 {
-      from { transform: translateX(0%); }
-      to   { transform: translateX(-25%); }
-    }
-    .liquid-pill {
-      contain: layout paint size style;
-      transform: translateZ(0);
-    }
-    .ticker-rail { width:400%; display:flex; align-items:center; }
-    .ticker-chunk { padding-left:0.75rem; padding-right:0.75rem; }
-    .ticker-anim { animation-timing-function: linear; animation-iteration-count: infinite; will-change: transform; }
-    /* Different speeds */
-    .speed-25s { animation-duration: 25s; }
-    .speed-33s { animation-duration: 33s; }
-    .speed-40s { animation-duration: 40s; }
-    /* Optional delays */
-    .delay-0   { animation-delay: 0s; }
-    .delay-15  { animation-delay: 1.5s; }
-    .delay-3   { animation-delay: 3s; }
-    .run-anim  { animation-name: xloop25; }
-  `}</style>
-);
 
 /* =================== TOKEN COLOUR MIX (per-line) =================== */
 const TOKENS = [
@@ -134,101 +106,10 @@ function SeamlessRow({
   );
 }
 
-/* =================== LIQUID PILL (with proxy) =================== */
-/* We re-render the 3 ticker lines INSIDE the pill (clipped) and apply
-   the same distortion filter + blur/saturation to that proxy content.
-   This produces *perceptual refraction + light blending* even in LIGHT theme. */
-function LiquidPill({
-  children,
-  proxy1,
-  proxy2,
-  proxy3,
-}: {
-  // FIX: Made the `children` prop optional to resolve a TypeScript error where the compiler incorrectly reported it as missing, even though it was provided.
-  children?: React.ReactNode;
-  proxy1: React.ReactNode;
-  proxy2: React.ReactNode;
-  proxy3: React.ReactNode;
-}) {
-  return (
-    <motion.div
-      className="
-        liquid-pill
-        relative z-[3] flex items-center px-6 sm:px-8 py-2.5 sm:py-3 rounded-full overflow-hidden isolate
-        bg-white/14 border border-black/10 dark:border-white/20
-        shadow-[0_8px_30px_rgba(0,0,0,0.18)]
-        will-change-transform transform-gpu
-      "
-      whileHover={{
-        filter: "brightness(1.06) saturate(1.08)",
-        scale: 1.015,
-      }}
-      transition={{ type: "spring", stiffness: 200, damping: 22 }}
-    >
-      {/* PROXY BACKDROP (clipped inside pill) */}
-      <div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none">
-        {/* Distortion + blend over a blurred/saturated copy */}
-        <div
-          className="absolute inset-0"
-          style={{
-            backdropFilter: "blur(34px) saturate(265%)",
-            WebkitBackdropFilter: "blur(34px) saturate(265%)",
-          }}
-        />
-        {/* Re-render the moving code lines INSIDE the pill (perfectly synced) */}
-        <div className="absolute inset-0 rounded-full overflow-hidden">
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[calc(50%-11px)] space-y-1 sm:space-y-[7px] pointer-events-none">
-            <div className="w-[min(100%,1100px)]">{proxy1}</div>
-            <div className="w-[min(100%,1100px)]">{proxy2}</div>
-            <div className="w-[min(100%,1100px)]">{proxy3}</div>
-          </div>
-        </div>
-        {/* Apply header-style refraction to the proxy */}
-        <div
-          className="absolute inset-0"
-          style={{ filter: "url(#header-pill-glass)", mixBlendMode: "overlay", opacity: 1 }}
-        />
-        {/* Lens volume (inner highlights/shadows) */}
-        <div className="absolute inset-0 rounded-full shadow-[inset_1px_1px_5px_rgba(255,255,255,0.55),inset_-4px_-6px_12px_rgba(0,0,0,0.32)] pointer-events-none" />
-        {/* Shine sweep */}
-        <div
-          className="absolute inset-0 rounded-full pointer-events-none"
-          style={{
-            background:
-              "linear-gradient(115deg,rgba(255,255,255,0.45) 0%,rgba(255,255,255,0.12) 33%,rgba(255,255,255,0) 66%)",
-            opacity: 0.35,
-          }}
-        />
-      </div>
-
-      {/* CONTENT (icons) */}
-      <div className="relative z-[3] flex items-center gap-5 sm:gap-7">
-        {children}
-      </div>
-    </motion.div>
-  );
-}
-
-/* ======================= HEADER FILTER (refraction) ======================= */
-const HeaderPillGlassFilter: React.FC = () => (
-  <svg style={{ display: "none" }} aria-hidden="true">
-    <defs>
-      <filter id="header-pill-glass" x="0" y="0" width="100%" height="100%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.006 0.012" numOctaves="2" seed="14" result="noise"/>
-        <feGaussianBlur in="noise" stdDeviation="1.1" result="soft"/>
-        <feDisplacementMap in="SourceGraphic" in2="soft" scale="66" xChannelSelector="R" yChannelSelector="G" result="distort"/>
-        <feGaussianBlur in="distort" stdDeviation="0.45" result="final"/>
-        <feComposite in="final" in2="final" operator="over"/>
-      </filter>
-    </defs>
-  </svg>
-);
-
 /* =============================== CONTACT =============================== */
 const Contact: React.FC = () => {
   useForceLightTheme();
   const [copied, setCopied] = useState(false);
-  const reduceMotion = useReducedMotion();
 
   const handleCopy = () => {
     if (copied) return;
@@ -242,11 +123,14 @@ const Contact: React.FC = () => {
   const chunk2 = useMemo(() => <>{Line2()}</>, []);
   const chunk3 = useMemo(() => <>{Line3(SOCIAL_LINKS.email)}</>, []);
 
+  const proxyRows = useMemo(() => [
+    <SeamlessRow key="p1" chunk={chunk1} speedClass="speed-25s" delayClass="delay-0" className="text-[11px] sm:text-[13px]" />,
+    <SeamlessRow key="p2" chunk={chunk2} speedClass="speed-33s" delayClass="delay-15" className="text-[11px] sm:text-[13px]" />,
+    <SeamlessRow key="p3" chunk={chunk3} speedClass="speed-40s" delayClass="delay-3" className="text-[11px] sm:text-[13px]" />
+  ], [chunk1, chunk2, chunk3]);
+
   return (
     <section id="contact" className="py-16 md:py-24 text-center scroll-mt-24">
-      <GlobalStyles />
-      <HeaderPillGlassFilter />
-
       {/* Title */}
       <motion.h2
         initial={{ opacity: 0, y: 18 }}
@@ -359,11 +243,7 @@ const Contact: React.FC = () => {
         </div>
 
         {/* LIQUID PILL — proxy backdrop inside for TRUE light-blend + refraction */}
-        <LiquidPill
-          proxy1={<SeamlessRow chunk={chunk1} speedClass="speed-25s" delayClass="delay-0" className="text-[11px] sm:text-[13px]" />}
-          proxy2={<SeamlessRow chunk={chunk2} speedClass="speed-33s" delayClass="delay-15" className="text-[11px] sm:text-[13px]" />}
-          proxy3={<SeamlessRow chunk={chunk3} speedClass="speed-40s" delayClass="delay-3" className="text-[11px] sm:text-[13px]" />}
-        >
+        <LiquidPill proxyRows={proxyRows}>
           {SOCIAL_LINKS.profiles.map((profile) => {
             const Icon = ICON_MAP[profile.name] || Github;
             return (
@@ -373,6 +253,7 @@ const Contact: React.FC = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={profile.name}
+                className="focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 focus-visible:ring-white rounded-full"
               >
                 <motion.div
                   whileHover={{ scale: 1.28 }}

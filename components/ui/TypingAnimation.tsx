@@ -10,7 +10,7 @@ interface TypingAnimationProps {
 }
 
 // FIX: Removed explicit `Variants` type as it was causing an error.
-// Type inference correctly handles the variant object.
+// Using `as const` ensures TypeScript infers literal types (e.g. 'linear' instead of string), satisfying the Variants type.
 const cursorVariants = {
   blinking: {
     opacity: [0, 0, 1, 1],
@@ -22,7 +22,7 @@ const cursorVariants = {
       times: [0, 0.5, 0.5, 1]
     }
   }
-};
+} as const;
 
 const TypingAnimation: React.FC<TypingAnimationProps> = ({ text, as: Component = 'span', className, delay = 0 }) => {
   const count = useMotionValue(0);

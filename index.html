@@ -32,6 +32,15 @@
         --glass-reflect-color-1: rgba(255,255,255,0.35);
         --glass-reflect-color-2: rgba(255,255,255,0.1);
         --glass-caustic-color: rgba(255,255,255,0.18);
+
+        /* --- Global glass tokens --- */
+        --glass-blur: 22px;
+        --glass-blur-low: 10px;
+        --glass-border: rgba(255,255,255,0.36);
+        --glass-bg: rgba(255,255,255,0.32);
+        --glass-shine-opacity: 0.88;
+        --liquid-displace-scale: 6;     /* tuned for high devices; JS may override */
+        --liquid-noise-opacity: 0.65;   /* optional */
       }
       
       html.dark {
@@ -102,28 +111,77 @@
         -ms-overflow-style: none;  /* IE and Edge */
         scrollbar-width: none;  /* Firefox */
       }
-
-      .liquid-pill {
-        background: rgba(255, 255, 255, 0.16);
-        border: 1px solid rgba(255, 255, 255, 0.28);
-        border-radius: 999px;
-        position: relative;
-        overflow: hidden;
-        isolation: isolate;
-        box-shadow:
-          0 4px 18px rgba(0,0,0,0.20),
-          inset 1px 1px 4px rgba(255,255,255,0.55),
-          inset -2px -2px 5px rgba(0,0,0,0.35);
-      }
       
-      html.dark .liquid-pill {
-        background: rgba(28, 28, 32, 0.7);
-        border-color: rgba(255, 255, 255, 0.15);
-        box-shadow:
-            0 4px 20px rgba(0,0,0,0.35),
-            inset 1px 1px 4px rgba(255,255,255,0.15),
-            inset -2px -2px 5px rgba(0,0,0,0.5);
+      /* Prefer low-power / small screens */
+      @media (max-width:520px), (prefers-reduced-motion:reduce) {
+        :root{ --glass-blur: var(--glass-blur-low); --liquid-displace-scale: 0; --glass-shine-opacity: 0.45;}
       }
+
+      /* Core pill (GPU friendly) */
+      .liquid-pill {
+        position: relative;
+        display:inline-flex;
+        align-items:center;
+        gap:1rem;
+        padding:10px 22px;
+        border-radius:9999px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.50), rgba(255,255,255,0.38));
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 8px 28px rgba(0,0,0,0.08), inset 0 2px 6px rgba(255,255,255,0.35);
+        /* GPU hint: avoid animating width; animate transform/opacity only */
+        will-change: transform, opacity;
+        -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+        backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+        overflow: clip;
+        isolation: isolate;
+        transform: translateZ(0); /* force compositor layer */
+      }
+
+      /* Proxy layer clipped beneath content — receives the SVG refraction filter */
+      .liquid-pill__proxy {
+        position:absolute; inset:0; z-index:0; pointer-events:none; border-radius:inherit; overflow:hidden;
+        /* must be GPU-layered */
+        will-change: transform;
+        transform: translateZ(0);
+      }
+
+      /* Inner proxy content: keep simple, centered, GPU compositing */
+      .liquid-pill__proxyInner {
+        position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+        transform: translateZ(0);
+      }
+
+      /* Shine/caustics above proxy but below content */
+      .liquid-pill__shine {
+        position:absolute; inset:0; z-index:1; pointer-events:none; border-radius:inherit;
+        background:
+          radial-gradient(160% 60% at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.56), rgba(255,255,255,0.12) 36%, rgba(255,255,255,0) 60%),
+          radial-gradient(60% 48% at 72% 34%, rgba(255,255,255,0.14), transparent 60%);
+        mix-blend-mode: screen;
+        opacity: var(--glass-shine-opacity);
+        transform: translateZ(0);
+        will-change: opacity;
+      }
+
+      /* Foreground content above everything */
+      .liquid-pill__content{ position:relative; z-index:2; display:flex; gap:1rem; align-items:center; }
+      
+      @keyframes xloop25 {
+        from { transform: translateX(0%); }
+        to   { transform: translateX(-25%); }
+      }
+      .ticker-rail { width:400%; display:flex; align-items:center; }
+      .ticker-chunk { padding-left:0.75rem; padding-right:0.75rem; }
+      .ticker-anim { animation-timing-function: linear; animation-iteration-count: infinite; will-change: transform; }
+      /* Different speeds */
+      .speed-25s { animation-duration: 25s; }
+      .speed-33s { animation-duration: 33s; }
+      .speed-40s { animation-duration: 40s; }
+      /* Optional delays */
+      .delay-0   { animation-delay: 0s; }
+      .delay-15  { animation-delay: 1.5s; }
+      .delay-3   { animation-delay: 3s; }
+      .run-anim  { animation-name: xloop25; }
 
     </style>
   <script type="importmap">

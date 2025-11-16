@@ -1,17 +1,13 @@
-
-
-
-
 import React, { Suspense, lazy, useEffect } from 'react';
-// FIX: Import LazyMotion and domAnimation to enable framer-motion features.
-// This resolves TypeScript errors across the app where motion props were not recognized.
 import { LazyMotion, domAnimation } from 'framer-motion';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Footer from './components/Footer';
 import Loader from './components/ui/Loader';
-import HeaderPillGlassFilter from './components/ui/HeaderPillGlassFilter';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { applyQuality } from './utils/quality';
+import LiquidFilters from './components/ui/LiquidFilters';
+import { QualityDebug } from './components/ui/QualityDebug';
 
 const Skills = lazy(() => import('./components/Skills'));
 const Projects = lazy(() => import('./components/Projects'));
@@ -22,19 +18,46 @@ const App: React.FC = () => {
 
   // Subtle pointer-driven highlight for more “liquid” feel
   useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      document.documentElement.style.setProperty("--mx", e.clientX + "px");
-      document.documentElement.style.setProperty("--my", e.clientY + "px");
+    let lastX = 0;
+    let lastY = 0;
+    let ticking = false;
+
+    const handleMove = (e: MouseEvent) => {
+      lastX = e.clientX;
+      lastY = e.clientY;
+
+      if (!ticking) {
+        ticking = true;
+
+        requestAnimationFrame(() => {
+          // Convert to % only once, no reflows, no expensive math
+          const px = (lastX / window.innerWidth) * 100;
+          const py = (lastY / window.innerHeight) * 100;
+
+          // Write to GPU-accelerated CSS variables
+          const root = document.documentElement;
+          root.style.setProperty("--mx", `${px}%`);
+          root.style.setProperty("--my", `${py}%`);
+
+          ticking = false;
+        });
+      }
     };
-    window.addEventListener("mousemove", onMove);
-    return () => window.removeEventListener("mousemove", onMove);
+
+    window.addEventListener("pointermove", handleMove, { passive: true });
+    return () => window.removeEventListener("pointermove", handleMove);
+  }, []);
+  
+  // Apply dynamic quality settings on mount
+  useEffect(() => {
+    applyQuality();
   }, []);
 
   return (
     <LazyMotion features={domAnimation}>
       <ThemeProvider>
         <div className="bg-[var(--bg-base)] text-[var(--text-main)] selection:bg-[var(--accent)]/30 min-h-screen">
-          <HeaderPillGlassFilter />
+          <LiquidFilters />
           <Header />
           <main className="container mx-auto px-6 md:px-8 pt-24 relative z-10">
             <Hero />
@@ -46,6 +69,7 @@ const App: React.FC = () => {
             </Suspense>
           </main>
           <Footer />
+          <QualityDebug />
         </div>
       </ThemeProvider>
     </LazyMotion>
