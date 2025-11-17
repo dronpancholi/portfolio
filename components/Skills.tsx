@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import GlassCard from './ui/GlassCard';
 import { SKILLS_DATA } from '../constants';
 import { Briefcase, Code, Database, BrainCircuit, Bot } from 'lucide-react';
 import TypingAnimation from './ui/TypingAnimation';
@@ -37,9 +36,9 @@ const Skills: React.FC = () => {
         {SKILLS_DATA.map((category, index) => {
           const Icon = icons[category.icon];
           return (
-            <GlassCard
+            <motion.div
               key={category.title}
-              className="h-full"
+              className="h-full bg-gray-50/80 dark:bg-gray-800/30 border border-black/5 dark:border-white/5 rounded-2xl shadow-md shadow-black/5"
               initial={{ opacity: 0, y: 40, scale: 0.98 }}
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true, amount: 0.3 }}
@@ -61,7 +60,7 @@ const Skills: React.FC = () => {
                   ))}
                 </ul>
               </div>
-            </GlassCard>
+            </motion.div>
           );
         })}
       </div>
