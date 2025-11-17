@@ -1,8 +1,10 @@
 
-const CACHE_NAME = 'dron-pancholi-portfolio-v4';
+const CACHE_NAME = 'dron-pancholi-portfolio-v5';
 const urlsToCache = [
   '/',
   '/index.html',
+  '/index.tsx',
+  'https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap',
 ];
 
 self.addEventListener('install', event => {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Mail,
@@ -14,16 +14,6 @@ import {
 import { SOCIAL_LINKS } from "../constants";
 import GlassCard from "./ui/GlassCard";
 import LiquidPill from "./ui/LiquidPill";
-
-/* -------------------- THEME: default to LIGHT -------------------- */
-function useForceLightTheme() {
-  useEffect(() => {
-    const r = document.documentElement;
-    r.classList.add("light");
-    r.classList.remove("dark");
-    r.setAttribute("data-theme", "light");
-  }, []);
-}
 
 /* ------------------------ ICON TYPING ------------------------ */
 type SocialProfileName = typeof SOCIAL_LINKS.profiles[number]["name"];
@@ -82,8 +72,7 @@ function Line3(email: string) {
 }
 
 /* ------------- Seamless row: 4 chunks, translate -25% ------------- */
-// FIX: Extracted props into a dedicated type alias. 
-// This allows TypeScript to correctly infer that SeamlessRow is a React component and can accept the special 'key' prop without errors.
+// FIX: Converted `SeamlessRow` to a `React.FC` to ensure it's correctly typed as a React component. This resolves errors where the special 'key' prop was not recognized on the component's props type.
 type SeamlessRowProps = {
   chunk: React.ReactNode;
   speedClass: "speed-25s" | "speed-33s" | "speed-40s";
@@ -91,12 +80,12 @@ type SeamlessRowProps = {
   className?: string;
 };
 
-function SeamlessRow({
+const SeamlessRow: React.FC<SeamlessRowProps> = ({
   chunk,
   speedClass,
   delayClass = "delay-0",
   className = "",
-}: SeamlessRowProps) {
+}) => {
   const rail = useMemo(
     () => Array.from({ length: 4 }).map((_, i) => <span key={i} className="ticker-chunk">{chunk}</span>),
     [chunk]
@@ -108,11 +97,10 @@ function SeamlessRow({
       </div>
     </div>
   );
-}
+};
 
 /* =============================== CONTACT =============================== */
 const Contact: React.FC = () => {
-  useForceLightTheme();
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -211,8 +199,10 @@ const Contact: React.FC = () => {
         <div
           aria-hidden
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
-                     w-[90vw] h-[90px] sm:w-[min(92vw,1100px)] sm:h-[120px] rounded-full pointer-events-none z-0"
-          style={{ background: "rgba(0,0,0,0.04)", filter: "blur(22px) saturate(140%)" }}
+                     w-[90vw] h-[90px] sm:w-[min(92vw,1100px)] sm:h-[120px] 
+                     rounded-full pointer-events-none z-0
+                     bg-black/5 dark:bg-white/5"
+          style={{ filter: "blur(22px) saturate(140%)" }}
         />
 
         {/* Foreground tikers (outer scene) — NO gradients, mixed tokens */}

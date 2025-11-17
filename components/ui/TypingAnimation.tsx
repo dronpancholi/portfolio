@@ -35,7 +35,7 @@ const TypingAnimation: React.FC<TypingAnimationProps> = ({ text, as: Component =
     const controls = animate(count, text.length, {
       type: "tween",
       delay: delay,
-      duration: text.length * 0.1, // Slower, more premium feel
+      duration: text.length * 0.04, // Faster, more engaging feel
       ease: "linear",
     });
     return controls.stop;
