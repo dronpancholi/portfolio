@@ -26,22 +26,16 @@
         --text-secondary: #374151;
         --accent: #15803d; /* Aesthetic Green */
         
-        --glass-bg: rgba(255,255,255,0.28);
-        --glass-border: rgba(255,255,255,0.45);
-        --glass-shadow: 0 12px 40px rgba(0,0,0,0.10);
+        /* --- NEW Apple-style Glass Tokens --- */
+        --glass-bg: rgba(255,255,255,0.45);
+        --glass-border: rgba(255,255,255,0.6);
+        --glass-shadow: 0 10px 30px rgba(0,0,0,0.07);
         --glass-blur: 28px;
-        --glass-reflect-color-1: rgba(255,255,255,0.35);
-        --glass-reflect-color-2: rgba(255,255,255,0.1);
-        --glass-caustic-color: rgba(255,255,255,0.18);
+        --glass-highlight: rgba(255,255,255,0.5);
 
-        /* --- Global glass tokens --- */
-        --glass-blur: 22px;
-        --glass-blur-low: 10px;
-        --glass-border: rgba(255,255,255,0.36);
-        --glass-bg: rgba(255,255,255,0.32);
-        --glass-shine-opacity: 0.88;
+        /* --- Global liquid tokens --- */
         --liquid-displace-scale: 6;     /* tuned for high devices; JS may override */
-        --liquid-noise-opacity: 0.65;   /* optional */
+        --glass-shine-opacity: 0.7;
       }
       
       html.dark {
@@ -50,12 +44,11 @@
         --text-secondary: #9ca3af;
         --accent: #22c55e; /* Aesthetic Green */
 
-        --glass-bg: rgba(28, 28, 32, 0.65);
-        --glass-border: rgba(255, 255, 255, 0.15);
-        --glass-shadow: 0 12px 40px rgba(0,0,0,0.25);
-        --glass-reflect-color-1: rgba(255,255,255,0.1);
-        --glass-reflect-color-2: rgba(255,255,255,0.05);
-        --glass-caustic-color: rgba(255,255,255,0.08);
+        /* --- NEW Apple-style Glass Tokens (Dark) --- */
+        --glass-bg: rgba(30, 30, 35, 0.45);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --glass-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        --glass-highlight: rgba(255,255,255,0.1);
       }
 
       html, body { 
@@ -72,7 +65,8 @@
         backdrop-filter: blur(var(--glass-blur)) saturate(180%);
         -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
         border: 1px solid var(--glass-border);
-        box-shadow: var(--glass-shadow);
+        /* NEW: Added inset shadow for top-edge highlight */
+        box-shadow: var(--glass-shadow), inset 0 1.5px 1px 0px var(--glass-highlight);
         overflow: clip;
         transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         transform: translateZ(0); /* Promote to own compositing layer */
@@ -83,23 +77,9 @@
         border-radius: 24px; 
       }
       
+      /* REMOVED .glass::before and .glass::after for a cleaner, static Apple-like look */
       .glass::before, .glass::after {
-        content:"";
-        position:absolute; 
-        inset:0; 
-        pointer-events:none;
-        will-change: background;
-      }
-
-      .glass::before {
-        background: radial-gradient(280px 200px at var(--mx,50%) var(--my,50%), var(--glass-reflect-color-1), var(--glass-reflect-color-2) 60%, transparent 75%);
-        mix-blend-mode: screen;
-        transition: opacity .25s ease;
-      }
-      
-      .glass::after { 
-        background: radial-gradient(60% 50% at 70% 30%, var(--glass-caustic-color), transparent 60%); 
-        mix-blend-mode: overlay; 
+        display: none;
       }
       
       .min-glow { 
@@ -117,10 +97,10 @@
       
       /* Prefer low-power / small screens */
       @media (max-width:520px), (prefers-reduced-motion:reduce) {
-        :root{ --glass-blur: var(--glass-blur-low); --liquid-displace-scale: 0; --glass-shine-opacity: 0.45;}
+        :root{ --glass-blur: 15px; --liquid-displace-scale: 0; --glass-shine-opacity: 0.45;}
       }
 
-      /* Core pill (GPU friendly) */
+      /* Core pill (GPU friendly) - REWORKED */
       .liquid-pill {
         position: relative;
         display:inline-flex;
@@ -128,9 +108,10 @@
         gap:1rem;
         padding:10px 22px;
         border-radius:9999px;
-        background: linear-gradient(180deg, rgba(255,255,255,0.50), rgba(255,255,255,0.38));
+        /* UPDATED: Using global glass variables for consistency */
+        background: var(--glass-bg);
         border: 1px solid var(--glass-border);
-        box-shadow: 0 8px 28px rgba(0,0,0,0.08), inset 0 2px 6px rgba(255,255,255,0.35);
+        box-shadow: var(--glass-shadow), inset 0 1.5px 1px 0px var(--glass-highlight);
         /* GPU hint: avoid animating width; animate transform/opacity only */
         will-change: transform, opacity;
         -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
@@ -154,13 +135,11 @@
         transform: translateZ(0);
       }
 
-      /* Shine/caustics above proxy but below content */
+      /* Shine/caustics above proxy but below content - REWORKED for subtle static shine */
       .liquid-pill__shine {
         position:absolute; inset:0; z-index:1; pointer-events:none; border-radius:inherit;
-        background:
-          radial-gradient(160% 60% at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.56), rgba(255,255,255,0.12) 36%, rgba(255,255,255,0) 60%),
-          radial-gradient(60% 48% at 72% 34%, rgba(255,255,255,0.14), transparent 60%);
-        mix-blend-mode: screen;
+        background: linear-gradient(115deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.05) 40%, transparent 60%);
+        mix-blend-mode: overlay; /* Changed from screen for a more subtle effect */
         opacity: var(--glass-shine-opacity);
         transform: translateZ(0);
         will-change: opacity;

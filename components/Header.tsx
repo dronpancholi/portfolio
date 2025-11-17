@@ -57,7 +57,8 @@ export default function Header(){
         ref={pillRef}
         onClick={onPillClick}
         layout
-        className="pointer-events-auto relative flex items-center justify-center cursor-pointer select-none whitespace-nowrap rounded-full backdrop-blur-2xl bg-white/18 dark:bg-black/20 border border-white/30 dark:border-white/10 shadow-[0_4px_20px_rgba(0,0,0,0.25)]"
+        // UPDATED: Replaced Tailwind classes with a single `.glass` class for a consistent, clear effect
+        className="glass pointer-events-auto relative flex items-center justify-center cursor-pointer select-none whitespace-nowrap rounded-full"
         variants={{
           top:       { 
             padding: "12px 22px", 
@@ -83,11 +84,10 @@ export default function Header(){
           style={{ filter: filterUrl }}
         />
 
-        {/* Depth Highlight Layer */}
-        <div className="absolute inset-0 rounded-full pointer-events-none shadow-[inset_1px_1px_4px_rgba(255,255,255,0.6),inset_-2px_-2px_6px_rgba(0,0,0,0.35)]" />
+        {/* REMOVED: Depth Highlight Layer. Now handled by the `.glass` class's inset shadow */}
 
-        {/* Liquid Shine Sweep Layer */}
-        <div className="absolute inset-0 rounded-full pointer-events-none bg-[linear-gradient(115deg,rgba(255,255,255,0.45)_0%,rgba(255,255,255,0.1)_33%,rgba(255,255,255,0)_66%)] opacity-35" />
+        {/* Liquid Shine Sweep Layer - UPDATED to be more subtle */}
+        <div className="absolute inset-0 rounded-full pointer-events-none bg-[linear-gradient(115deg,rgba(255,255,255,0.25)_0%,rgba(255,255,255,0.05)_40%,rgba(255,255,255,0)_65%)] opacity-70 dark:opacity-60 mix-blend-overlay" />
         
         {/* Content */}
         <div className="relative z-10 flex items-center justify-center gap-4">

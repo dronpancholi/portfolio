@@ -26,20 +26,22 @@ const HeaderPillGlassFilter: React.FC = () => {
           <feComposite in="final" in2="final" operator="over" />
         </filter>
         
-        {/* Stronger, more liquid filter for expanded state */}
+        {/* Stronger, more liquid filter for expanded state - REWORKED for magnification/lensing effect */}
         <filter id="header-pill-glass-expanded" x="-20%" y="-20%" width="140%" height="140%">
           <feTurbulence
             type="fractalNoise"
-            baseFrequency="0.005 0.009"
-            numOctaves="3"
+            baseFrequency="0.012 0.018"
+            numOctaves="1" /* Smoother, larger waves */
             seed="12"
             result="noise"
           />
-          <feGaussianBlur in="noise" stdDeviation="1.5" result="softNoise" />
+          {/* NEW: Morphology dilates the noise, creating a 'bubbly' or 'magnifying' look */}
+          <feMorphology operator="dilate" radius="2" in="noise" result="dilatedNoise" />
+          <feGaussianBlur in="dilatedNoise" stdDeviation="2.5" result="softNoise" />
           <feDisplacementMap
             in="SourceGraphic"
             in2="softNoise"
-            scale="120"
+            scale="40" /* Adjusted scale for the new morphology effect */
             xChannelSelector="R"
             yChannelSelector="G"
             result="distort"
