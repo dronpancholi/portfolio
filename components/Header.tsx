@@ -37,6 +37,10 @@ export default function Header(){
 
   const state = isAtTop ? "top" : expanded ? "expanded" : "collapsed";
 
+  const filterUrl = state === 'expanded'
+    ? 'url(#header-pill-glass-expanded)'
+    : 'url(#header-pill-glass)';
+
   // FIX: Using `as const` to ensure TypeScript infers the narrowest possible types
   // for the transition properties (e.g., 'spring' instead of string), resolving 
   // the 'is not assignable to type Transition' error.
@@ -76,7 +80,7 @@ export default function Header(){
         {/* Distortion Liquid Layer (inside only) */}
         <div
           className="absolute inset-0 rounded-full overflow-hidden pointer-events-none"
-          style={{ filter: "url(#header-pill-glass)" }}
+          style={{ filter: filterUrl }}
         />
 
         {/* Depth Highlight Layer */}

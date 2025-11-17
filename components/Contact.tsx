@@ -121,6 +121,35 @@ const Contact: React.FC = () => {
     <SeamlessRow key="p3" chunk={chunk3} speedClass="speed-40s" delayClass="delay-3" className="text-[11px] sm:text-[13px]" />
   ], [chunk1, chunk2, chunk3]);
 
+  // FIX: Extracted the social link mapping logic into a constant `socialLinksContent`. This improves readability and can help resolve complex TypeScript inference issues, addressing the error where the `children` prop was reported as missing on the `LiquidPill` component.
+  const socialLinksContent = SOCIAL_LINKS.profiles.map((profile) => {
+    const Icon = ICON_MAP[profile.name] || Github;
+    return (
+      <a
+        key={profile.name}
+        href={profile.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={profile.name}
+        className="focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 focus-visible:ring-white rounded-full"
+      >
+        <motion.div
+          whileHover={{ scale: 1.28 }}
+          transition={{ type: "spring", stiffness: 260, damping: 14 }}
+          className="transition-all"
+        >
+          <Icon
+            className="w-6 h-6 sm:w-7 sm:h-7 text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.85)] 
+                       dark:text-[#FFF7C5] dark:drop-shadow-[0_0_10px_rgba(255,247,200,0.75)]"
+            style={{
+              WebkitTextStroke: "1px rgba(0,0,0,0.45)", // visible in light mode
+            }}
+          />
+        </motion.div>
+      </a>
+    );
+  });
+
   return (
     <section id="contact" className="py-16 md:py-24 text-center scroll-mt-24">
       {/* Title */}
@@ -237,35 +266,7 @@ const Contact: React.FC = () => {
         </div>
 
         {/* LIQUID PILL — proxy backdrop inside for TRUE light-blend + refraction */}
-        <LiquidPill proxyRows={proxyRows}>
-          {SOCIAL_LINKS.profiles.map((profile) => {
-            const Icon = ICON_MAP[profile.name] || Github;
-            return (
-              <a
-                key={profile.name}
-                href={profile.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={profile.name}
-                className="focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 focus-visible:ring-white rounded-full"
-              >
-                <motion.div
-                  whileHover={{ scale: 1.28 }}
-                  transition={{ type: "spring", stiffness: 260, damping: 14 }}
-                  className="transition-all"
-                >
-                  <Icon
-                    className="w-6 h-6 sm:w-7 sm:h-7 text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.85)] 
-                               dark:text-[#FFF7C5] dark:drop-shadow-[0_0_10px_rgba(255,247,200,0.75)]"
-                    style={{
-                      WebkitTextStroke: "1px rgba(0,0,0,0.45)", // visible in light mode
-                    }}
-                  />
-                </motion.div>
-              </a>
-            );
-          })}
-        </LiquidPill>
+        <LiquidPill proxyRows={proxyRows} children={socialLinksContent} />
       </motion.div>
     </section>
   );

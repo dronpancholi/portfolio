@@ -7,6 +7,7 @@ import Loader from './components/ui/Loader';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { applyQuality } from './utils/quality';
 import LiquidFilters from './components/ui/LiquidFilters';
+import HeaderPillGlassFilter from './components/ui/HeaderPillGlassFilter';
 import { QualityDebug } from './components/ui/QualityDebug';
 
 const Skills = lazy(() => import('./components/Skills'));
@@ -58,6 +59,7 @@ const App: React.FC = () => {
       <ThemeProvider>
         <div className="bg-[var(--bg-base)] text-[var(--text-main)] selection:bg-[var(--accent)]/30 min-h-screen">
           <LiquidFilters />
+          <HeaderPillGlassFilter />
           <Header />
           <main className="container mx-auto px-6 md:px-8 pt-24 relative z-10">
             <Hero />
