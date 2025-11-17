@@ -26,9 +26,8 @@ const HeaderPillGlassFilter: React.FC = () => {
           <feComposite in="final" in2="final" operator="over" />
         </filter>
         
-        {/* UPDATED: Advanced filter for a powerful liquid glass lensing and magnification effect */}
+        {/* UPDATED: Increased scale and radius for maximum liquid magnification effect */}
         <filter id="header-pill-glass-expanded" x="-20%" y="-20%" width="140%" height="140%">
-          {/* Create larger, more fluid waves for a liquid feel */}
           <feTurbulence
             type="fractalNoise"
             baseFrequency="0.01 0.02" 
@@ -37,13 +36,13 @@ const HeaderPillGlassFilter: React.FC = () => {
             result="noise"
           />
           {/* Dilate the noise to create bubble-like magnification areas */}
-          <feMorphology operator="dilate" radius="2" in="noise" result="magnify" />
+          <feMorphology operator="dilate" radius="3" in="noise" result="magnify" />
           
           {/* Increase displacement for a powerful warping effect that magnifies */}
           <feDisplacementMap
             in="SourceGraphic"
             in2="magnify"
-            scale="70"
+            scale="80"
             xChannelSelector="R"
             yChannelSelector="G"
             result="distort"

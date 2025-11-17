@@ -5,10 +5,8 @@ import Hero from './components/Hero';
 import Footer from './components/Footer';
 import Loader from './components/ui/Loader';
 import { ThemeProvider } from './contexts/ThemeContext';
-import { applyQuality } from './utils/quality';
 import LiquidFilters from './components/ui/LiquidFilters';
 import HeaderPillGlassFilter from './components/ui/HeaderPillGlassFilter';
-import { QualityDebug } from './components/ui/QualityDebug';
 
 const Skills = lazy(() => import('./components/Skills'));
 const Projects = lazy(() => import('./components/Projects'));
@@ -48,11 +46,6 @@ const App: React.FC = () => {
     window.addEventListener("pointermove", handleMove, { passive: true });
     return () => window.removeEventListener("pointermove", handleMove);
   }, []);
-  
-  // Apply dynamic quality settings on mount
-  useEffect(() => {
-    applyQuality();
-  }, []);
 
   return (
     <LazyMotion features={domAnimation}>
@@ -71,7 +64,6 @@ const App: React.FC = () => {
             </Suspense>
           </main>
           <Footer />
-          <QualityDebug />
         </div>
       </ThemeProvider>
     </LazyMotion>
