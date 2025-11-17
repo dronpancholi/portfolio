@@ -26,27 +26,30 @@ const HeaderPillGlassFilter: React.FC = () => {
           <feComposite in="final" in2="final" operator="over" />
         </filter>
         
-        {/* Stronger, more liquid filter for expanded state - REWORKED for magnification/lensing effect */}
+        {/* UPDATED: Advanced filter for a powerful liquid glass lensing and magnification effect */}
         <filter id="header-pill-glass-expanded" x="-20%" y="-20%" width="140%" height="140%">
+          {/* Create larger, more fluid waves for a liquid feel */}
           <feTurbulence
             type="fractalNoise"
-            baseFrequency="0.012 0.018"
-            numOctaves="1" /* Smoother, larger waves */
+            baseFrequency="0.01 0.02" 
+            numOctaves="2" 
             seed="12"
             result="noise"
           />
-          {/* NEW: Morphology dilates the noise, creating a 'bubbly' or 'magnifying' look */}
-          <feMorphology operator="dilate" radius="2" in="noise" result="dilatedNoise" />
-          <feGaussianBlur in="dilatedNoise" stdDeviation="2.5" result="softNoise" />
+          {/* Dilate the noise to create bubble-like magnification areas */}
+          <feMorphology operator="dilate" radius="2" in="noise" result="magnify" />
+          
+          {/* Increase displacement for a powerful warping effect that magnifies */}
           <feDisplacementMap
             in="SourceGraphic"
-            in2="softNoise"
-            scale="40" /* Adjusted scale for the new morphology effect */
+            in2="magnify"
+            scale="70"
             xChannelSelector="R"
             yChannelSelector="G"
             result="distort"
           />
-          <feGaussianBlur in="distort" stdDeviation="1.0" result="final" />
+          {/* A final slight blur to smooth the distorted result */}
+          <feGaussianBlur in="distort" stdDeviation="1.5" result="final" />
           <feComposite in="final" in2="final" operator="over" />
         </filter>
       </defs>
