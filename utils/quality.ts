@@ -23,8 +23,8 @@ export function applyQuality() {
     document.documentElement.style.setProperty("--liquid-displace-scale", "3");
     document.documentElement.style.setProperty("--glass-blur", "16px");
     document.documentElement.style.setProperty("--glass-shine-opacity", "0.65");
-    // reduce filter cost by disabling heavy displacement
-    if (el) el.style.filter = "none";
+    // For medium devices, keep the liquid effect but with a reduced, less costly displacement.
+    if (el) el.style.filter = "url(#liquidRefraction)";
   } else {
     // low quality — no displacement, tiny blur, no noise overlay
     document.documentElement.style.setProperty("--liquid-displace-scale", "0");

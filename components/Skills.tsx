@@ -37,32 +37,31 @@ const Skills: React.FC = () => {
         {SKILLS_DATA.map((category, index) => {
           const Icon = icons[category.icon];
           return (
-            <motion.div
+            <GlassCard
               key={category.title}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              className="h-full"
+              initial={{ opacity: 0, y: 40, scale: 0.98 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.5, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.6, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
             >
-              <GlassCard className="h-full">
-                <div className="p-8">
-                  <div className="flex items-center mb-4">
-                    {Icon && <Icon className="w-8 h-8 mr-4 text-[var(--accent)]" />}
-                    <h3 className="text-xl font-bold text-[var(--text-main)]">{category.title}</h3>
-                  </div>
-                  <ul className="flex flex-wrap gap-2">
-                    {category.skills.map((skill) => (
-                      <li
-                        key={skill}
-                        className="bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] text-sm font-medium px-3 py-1 rounded-full"
-                      >
-                        {skill}
-                      </li>
-                    ))}
-                  </ul>
+              <div className="p-8">
+                <div className="flex items-center mb-4">
+                  {Icon && <Icon className="w-8 h-8 mr-4 text-[var(--accent)]" />}
+                  <h3 className="text-xl font-bold text-[var(--text-main)]">{category.title}</h3>
                 </div>
-              </GlassCard>
-            </motion.div>
+                <ul className="flex flex-wrap gap-2">
+                  {category.skills.map((skill) => (
+                    <li
+                      key={skill}
+                      className="bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] text-sm font-medium px-3 py-1 rounded-full"
+                    >
+                      {skill}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </GlassCard>
           );
         })}
       </div>

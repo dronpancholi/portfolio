@@ -82,17 +82,21 @@ function Line3(email: string) {
 }
 
 /* ------------- Seamless row: 4 chunks, translate -25% ------------- */
+// FIX: Extracted props into a dedicated type alias. 
+// This allows TypeScript to correctly infer that SeamlessRow is a React component and can accept the special 'key' prop without errors.
+type SeamlessRowProps = {
+  chunk: React.ReactNode;
+  speedClass: "speed-25s" | "speed-33s" | "speed-40s";
+  delayClass?: "delay-0" | "delay-15" | "delay-3";
+  className?: string;
+};
+
 function SeamlessRow({
   chunk,
   speedClass,
   delayClass = "delay-0",
   className = "",
-}: {
-  chunk: React.ReactNode;
-  speedClass: "speed-25s" | "speed-33s" | "speed-40s";
-  delayClass?: "delay-0" | "delay-15" | "delay-3";
-  className?: string;
-}) {
+}: SeamlessRowProps) {
   const rail = useMemo(
     () => Array.from({ length: 4 }).map((_, i) => <span key={i} className="ticker-chunk">{chunk}</span>),
     [chunk]
