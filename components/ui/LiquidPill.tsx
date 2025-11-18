@@ -27,6 +27,8 @@ export default function LiquidPill({ proxyRows, children }: Props) {
           </div>
         </div>
 
+        <div className="liquid-pill__readability-enhancer" aria-hidden />
+
         <div className="liquid-pill__shine" aria-hidden />
 
         <div className="liquid-pill__content">
