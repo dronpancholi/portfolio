@@ -1,6 +1,6 @@
 
-import React, { useRef } from 'react';
-import { motion, useMotionValue, useTransform, useScroll, useSpring } from 'framer-motion';
+import React from 'react';
+import { motion, useTransform, useScroll } from 'framer-motion';
 import TypingAnimation from './ui/TypingAnimation';
 import GlassCard from './ui/GlassCard';
 
@@ -26,32 +26,6 @@ const Hero: React.FC = () => {
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 800], [0, -100]);
   const opacity = useTransform(scrollY, [0, 600, 800], [1, 0.5, 0]);
-  
-  const ref = useRef<HTMLDivElement>(null);
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  const springConfig = { stiffness: 100, damping: 20, mass: 0.1 };
-  const mouseXSpring = useSpring(mouseX, springConfig);
-  const mouseYSpring = useSpring(mouseY, springConfig);
-
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['6deg', '-6deg']);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-6deg', '6deg']);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!ref.current) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
-    const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
-    mouseX.set(x);
-    mouseY.set(y);
-  };
-
-  const handleMouseLeave = () => {
-    mouseX.set(0);
-    mouseY.set(0);
-  };
-
 
   return (
     <motion.section 
@@ -60,20 +34,12 @@ const Hero: React.FC = () => {
       style={{ y, opacity }}
     >
       <motion.div
-        ref={ref}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
         style={{ perspective: '1200px' }}
         className="w-full"
       >
         <GlassCard
           className="w-full max-w-5xl mx-auto"
-          style={{
-            transformStyle: 'preserve-3d',
-            rotateX,
-            rotateY,
-          }}
-          transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+          style={{ transformStyle: 'preserve-3d' }}
         >
           <div className="p-10 md:p-16 flex flex-col items-center justify-center text-center">
             <motion.div
@@ -90,7 +56,7 @@ const Hero: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              style={{ transform: 'translateZ(100px)', transformStyle: 'preserve-3d' }}
+              style={{ transform: 'translateZ(100px)', transformStyle: 'preserve-d' }}
               className="w-full max-w-4xl"
             >
               <TypingAnimation 

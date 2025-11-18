@@ -37,11 +37,10 @@
         --liquid-displace-scale: 8; 
         --glass-shine-opacity: 0.9;
         
-        /* --- NEW: Particle background colors --- */
+        /* --- Colors for new performant background --- */
         --particle-color-1: #bae6fd; /* sky-200 */
         --particle-color-2: #bbf7d0; /* green-200 */
         --particle-color-3: #ddd6fe; /* purple-200 */
-        --particle-color-4: #fecdd3; /* rose-200 */
       }
       
       html.dark {
@@ -56,11 +55,10 @@
         --glass-shadow: 0 10px 30px rgba(0,0,0,0.15);
         --glass-highlight: rgba(255,255,255,0.1);
         
-        /* --- NEW: Particle background colors (Dark) --- */
+        /* --- Colors for new performant background (Dark) --- */
         --particle-color-1: #334155; /* slate-700 */
         --particle-color-2: #1e40af; /* blue-800 */
         --particle-color-3: #5b21b6; /* violet-800 */
-        --particle-color-4: #134e4a; /* teal-900 */
       }
 
       html, body { 
@@ -111,6 +109,7 @@
       @media (prefers-reduced-motion:reduce) {
         :root{ --glass-blur: 10px; --liquid-displace-scale: 0; --glass-shine-opacity: 0.45;}
         .ticker-anim { animation: none; }
+        .perf-bg__blob { animation: none !important; }
       }
 
       /* Core pill (GPU friendly) */
@@ -141,7 +140,7 @@
 
       /* Inner proxy content: keep simple, centered, GPU compositing */
       .liquid-pill__proxyInner {
-        position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+        position:absolute; inset:0; display:flex; align-items:center; justify:content:center;
         transform: translateZ(0);
       }
 
@@ -174,6 +173,78 @@
       .delay-15  { animation-delay: 1.5s; }
       .delay-3   { animation-delay: 3s; }
       .run-anim  { animation-name: xloop25; }
+
+      /* --- NEW: High-performance CSS background --- */
+      .perf-bg {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        overflow: hidden;
+      }
+
+      @keyframes move-blob-1 {
+        0% { transform: scale(1) translate(0px, 0px); }
+        33% { transform: scale(1.1) translate(80px, -100px); }
+        66% { transform: scale(0.9) translate(-50px, 70px); }
+        100% { transform: scale(1) translate(0px, 0px); }
+      }
+
+      @keyframes move-blob-2 {
+        0% { transform: scale(1) translate(0px, 0px); }
+        33% { transform: scale(0.9) translate(-100px, 60px); }
+        66% { transform: scale(1.2) translate(50px, -80px); }
+        100% { transform: scale(1) translate(0px, 0px); }
+      }
+
+      @keyframes move-blob-3 {
+        0% { transform: scale(1) translate(0px, 0px); }
+        33% { transform: scale(1.1) translate(-70px, -90px); }
+        66% { transform: scale(0.9) translate(60px, 110px); }
+        100% { transform: scale(1) translate(0px, 0px); }
+      }
+
+      .perf-bg__blob {
+        position: absolute;
+        will-change: transform;
+        border-radius: 9999px;
+        opacity: 0.35;
+        filter: blur(60px);
+      }
+
+      .perf-bg__blob--1 {
+        width: 500px;
+        height: 500px;
+        top: -10%;
+        left: -5%;
+        background-color: var(--particle-color-1);
+        animation: move-blob-1 25s ease-in-out infinite alternate;
+      }
+
+      .perf-bg__blob--2 {
+        width: 450px;
+        height: 450px;
+        top: 60%;
+        left: 15%;
+        background-color: var(--particle-color-2);
+        animation: move-blob-2 30s ease-in-out infinite alternate;
+      }
+
+      .perf-bg__blob--3 {
+        width: 400px;
+        height: 400px;
+        top: 20%;
+        right: -10%;
+        background-color: var(--particle-color-3);
+        animation: move-blob-3 28s ease-in-out infinite alternate;
+      }
+
+      html.dark .perf-bg__blob {
+        opacity: 0.25;
+        filter: blur(80px);
+      }
 
     </style>
   <script type="importmap">
