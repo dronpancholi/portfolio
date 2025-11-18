@@ -64,7 +64,8 @@ function Line2() {
     { t: `"Clarity"` }, ", ", { t: `"Depth"` }, ", ", { t: `"Intention"` }, "]", ";",
   ]);
 }
-function Line3(email: string) {
+// FIX: Converted `Line3` to a proper React functional component by destructuring the `email` prop from the props object. This aligns with its usage as a component (`<Line3 email={...} />`) and resolves the type error where an object was being passed to a parameter expecting a string.
+function Line3({ email }: { email: string }) {
   return Colorize([
     { t: "function" }, " ", { t: "contact" }, "(", { t: "email" }, ")", " ", "{", " ",
     { t: "return" }, " ", { t: `\`mailto:\${email}\``}, ";", " ", "}",
@@ -109,17 +110,6 @@ const Contact: React.FC = () => {
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
   };
-
-  // Prebuilt tokenised chunks (reused for outer rows and pill proxy rows)
-  const chunk1 = useMemo(() => <>{Line1()}</>, []);
-  const chunk2 = useMemo(() => <>{Line2()}</>, []);
-  const chunk3 = useMemo(() => <>{Line3(SOCIAL_LINKS.email)}</>, []);
-
-  const proxyRows = useMemo(() => [
-    <SeamlessRow key="p1" chunk={chunk1} speedClass="speed-25s" delayClass="delay-0" className="text-[11px] sm:text-[13px]" />,
-    <SeamlessRow key="p2" chunk={chunk2} speedClass="speed-33s" delayClass="delay-15" className="text-[11px] sm:text-[13px]" />,
-    <SeamlessRow key="p3" chunk={chunk3} speedClass="speed-40s" delayClass="delay-3" className="text-[11px] sm:text-[13px]" />
-  ], [chunk1, chunk2, chunk3]);
 
   // FIX: Extracted the social link mapping logic into a constant `socialLinksContent`. This improves readability and can help resolve complex TypeScript inference issues, addressing the error where the `children` prop was reported as missing on the `LiquidPill` component.
   const socialLinksContent = SOCIAL_LINKS.profiles.map((profile) => {
@@ -233,39 +223,15 @@ const Contact: React.FC = () => {
                      bg-black/5 dark:bg-white/10 opacity-50"
         />
 
-        {/* Foreground tikers (outer scene) — NO gradients, mixed tokens */}
+        {/* Foreground tickers (outer scene) — NO gradients, mixed tokens */}
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none z-[1] space-y-1 sm:space-y-[7px] select-none">
-          <div className="flex justify-center">
-            <div className="relative w-[min(100%,1100px)] overflow-hidden select-none" aria-hidden>
-              <div className={`ticker-rail run-anim ticker-anim speed-25s delay-0 text-[11px] sm:text-[13px]`}>
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <span key={i} className="ticker-chunk">{chunk1}</span>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="flex justify-center">
-            <div className="relative w-[min(100%,1100px)] overflow-hidden select-none" aria-hidden>
-              <div className={`ticker-rail run-anim ticker-anim speed-33s delay-15 text-[11px] sm:text-[13px]`}>
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <span key={i} className="ticker-chunk">{chunk2}</span>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="flex justify-center">
-            <div className="relative w-[min(100%,1100px)] overflow-hidden select-none" aria-hidden>
-              <div className={`ticker-rail run-anim ticker-anim speed-40s delay-3 text-[11px] sm:text-[13px]`}>
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <span key={i} className="ticker-chunk">{chunk3}</span>
-                ))}
-              </div>
-            </div>
-          </div>
+          <SeamlessRow chunk={<Line1 />} speedClass="speed-25s" className="text-[11px] sm:text-[13px]" />
+          <SeamlessRow chunk={<Line2 />} speedClass="speed-33s" delayClass="delay-15" className="text-[11px] sm:text-[13px]" />
+          <SeamlessRow chunk={<Line3 email={SOCIAL_LINKS.email} />} speedClass="speed-40s" delayClass="delay-3" className="text-[11px] sm:text-[13px]" />
         </div>
 
-        {/* LIQUID PILL — proxy backdrop inside for TRUE light-blend + refraction */}
-        <LiquidPill proxyRows={proxyRows} children={socialLinksContent} />
+        {/* LIQUID PILL — Now a pure lens, distorting the background tickers */}
+        <LiquidPill>{socialLinksContent}</LiquidPill>
       </motion.div>
     </section>
   );
