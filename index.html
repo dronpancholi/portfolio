@@ -125,8 +125,7 @@
         border: 1px solid var(--glass-border);
         box-shadow: var(--glass-shadow), inset 0 1.5px 1px 0 var(--glass-highlight);
         will-change: transform, opacity;
-        -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
-        backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+        /* REMOVED: backdrop-filter is now handled inside the SVG for stability */
         overflow: clip;
         isolation: isolate;
         transform: translateZ(0); /* force compositor layer */
