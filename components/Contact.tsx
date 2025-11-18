@@ -224,14 +224,13 @@ const Contact: React.FC = () => {
         transition={{ duration: 0.7 }}
         className="relative mt-24 flex justify-center"
       >
-        {/* Neutral substrate (helps refraction in light theme) */}
+        {/* UPDATED: Simplified substrate for better performance */}
         <div
           aria-hidden
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
                      w-[90vw] h-[90px] sm:w-[min(92vw,1100px)] sm:h-[120px] 
                      rounded-full pointer-events-none z-0
-                     bg-black/5 dark:bg-white/5"
-          style={{ filter: "blur(22px) saturate(140%)" }}
+                     bg-black/5 dark:bg-white/10 opacity-50"
         />
 
         {/* Foreground tikers (outer scene) — NO gradients, mixed tokens */}

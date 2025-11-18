@@ -14,10 +14,11 @@ export default function LiquidPill({ proxyRows, children }: Props) {
           <div
             className="liquid-pill__proxyInner"
             style={{
-              /* UPDATED: Permanently apply the most powerful filter */
+              /* UPDATED: Apply the most powerful filter for a premium effect */
               filter: "url(#liquidRefraction)",
               WebkitFilter: "url(#liquidRefraction)",
-              opacity: 0.95,
+              /* UPDATED: Set to 1 as parent handles glass opacity */
+              opacity: 1, 
               transform: "translateZ(0)"
             }}
           >
