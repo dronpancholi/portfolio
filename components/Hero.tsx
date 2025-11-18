@@ -2,6 +2,7 @@
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useTransform, useScroll, useSpring } from 'framer-motion';
 import TypingAnimation from './ui/TypingAnimation';
+import GlassCard from './ui/GlassCard';
 
 const InteractivePortrait: React.FC = () => {
   return (
@@ -23,19 +24,19 @@ const InteractivePortrait: React.FC = () => {
 
 const Hero: React.FC = () => {
   const { scrollY } = useScroll();
-  const y = useTransform(scrollY, [0, 800], [0, 200]);
+  const y = useTransform(scrollY, [0, 800], [0, -100]);
   const opacity = useTransform(scrollY, [0, 600, 800], [1, 0.5, 0]);
   
   const ref = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  const springConfig = { stiffness: 100, damping: 15, mass: 0.1 };
+  const springConfig = { stiffness: 100, damping: 20, mass: 0.1 };
   const mouseXSpring = useSpring(mouseX, springConfig);
   const mouseYSpring = useSpring(mouseY, springConfig);
 
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['3deg', '-3deg']);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-3deg', '3deg']);
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['6deg', '-6deg']);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-6deg', '6deg']);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!ref.current) return;
@@ -55,52 +56,61 @@ const Hero: React.FC = () => {
   return (
     <motion.section 
       id="home" 
-      className="min-h-[75vh] md:min-h-[80vh] flex flex-col items-center justify-center text-center py-24 sm:py-28 md:py-32 scroll-mt-24"
+      className="min-h-[80vh] md:min-h-[90vh] flex flex-col items-center justify-center py-24 sm:py-28 md:py-32 scroll-mt-24"
       style={{ y, opacity }}
     >
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-        className="mb-8"
-      >
-        <InteractivePortrait />
-      </motion.div>
-      
       <motion.div
         ref={ref}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        style={{
-          transformStyle: 'preserve-3d',
-          perspective: '1000px',
-        }}
-        className="w-full max-w-4xl"
+        style={{ perspective: '1200px' }}
+        className="w-full"
       >
-        <motion.div style={{ rotateX, rotateY }}>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            style={{ transform: 'translateZ(50px)', transformStyle: 'preserve-3d' }}
-          >
-            <TypingAnimation 
-              as="h1"
-              text="Systems, designed with depth. Interfaces, designed with clarity."
-              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tighter text-[var(--text-main)] mb-4"
-            />
-          </motion.div>
-          
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 3.5, ease: [0.22, 1, 0.36, 1] }}
-            className="max-w-2xl text-base sm:text-lg md:text-xl text-[var(--text-secondary)] font-light mx-auto"
-            style={{ transform: 'translateZ(25px)', transformStyle: 'preserve-3d' }}
-          >
-            I engineer intelligent systems and thoughtful digital experiences, focusing on the intersection of artificial intelligence, full-stack development, and design.
-          </motion.p>
-        </motion.div>
+        <GlassCard
+          className="w-full max-w-5xl mx-auto"
+          style={{
+            transformStyle: 'preserve-3d',
+            rotateX,
+            rotateY,
+          }}
+          transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+        >
+          <div className="p-10 md:p-16 flex flex-col items-center justify-center text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              className="mb-8"
+              style={{ transform: 'translateZ(75px)', transformStyle: 'preserve-3d' }}
+            >
+              <InteractivePortrait />
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              style={{ transform: 'translateZ(100px)', transformStyle: 'preserve-3d' }}
+              className="w-full max-w-4xl"
+            >
+              <TypingAnimation 
+                as="h1"
+                text="Systems, designed with depth. Interfaces, designed with clarity."
+                className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tighter text-[var(--text-main)] mb-4"
+              />
+            </motion.div>
+            
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 3.5, ease: [0.22, 1, 0.36, 1] }}
+              className="max-w-2xl text-base sm:text-lg md:text-xl text-[var(--text-secondary)] font-light mx-auto"
+              style={{ transform: 'translateZ(60px)', transformStyle: 'preserve-3d' }}
+            >
+              I engineer intelligent systems and thoughtful digital experiences, focusing on the intersection of artificial intelligence, full-stack development, and design.
+            </motion.p>
+          </div>
+        </GlassCard>
       </motion.div>
     </motion.section>
   );

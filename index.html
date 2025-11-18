@@ -36,6 +36,12 @@
         /* --- Global liquid tokens --- */
         --liquid-displace-scale: 8; 
         --glass-shine-opacity: 0.9;
+        
+        /* --- NEW: Particle background colors --- */
+        --particle-color-1: #bae6fd; /* sky-200 */
+        --particle-color-2: #bbf7d0; /* green-200 */
+        --particle-color-3: #ddd6fe; /* purple-200 */
+        --particle-color-4: #fecdd3; /* rose-200 */
       }
       
       html.dark {
@@ -49,14 +55,21 @@
         --glass-border: rgba(255, 255, 255, 0.1);
         --glass-shadow: 0 10px 30px rgba(0,0,0,0.15);
         --glass-highlight: rgba(255,255,255,0.1);
+        
+        /* --- NEW: Particle background colors (Dark) --- */
+        --particle-color-1: #334155; /* slate-700 */
+        --particle-color-2: #1e40af; /* blue-800 */
+        --particle-color-3: #5b21b6; /* violet-800 */
+        --particle-color-4: #134e4a; /* teal-900 */
       }
 
       html, body { 
-        background: var(--bg-base); 
+        /* UPDATED: Set to transparent to allow animated background to show through */
+        background: transparent;
         color: var(--text-main); 
         font-family: 'Inter', sans-serif;
         font-optical-sizing: auto;
-        transition: background-color 0.3s ease, color 0.3s ease;
+        transition: color 0.3s ease;
       }
       
       .glass {
@@ -97,6 +110,7 @@
       /* Keep a reduced motion state for accessibility */
       @media (prefers-reduced-motion:reduce) {
         :root{ --glass-blur: 10px; --liquid-displace-scale: 0; --glass-shine-opacity: 0.45;}
+        .ticker-anim { animation: none; }
       }
 
       /* Core pill (GPU friendly) */

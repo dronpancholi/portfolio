@@ -7,6 +7,7 @@ import Loader from './components/ui/Loader';
 import { ThemeProvider } from './contexts/ThemeContext';
 import LiquidFilters from './components/ui/LiquidFilters';
 import HeaderPillGlassFilter from './components/ui/HeaderPillGlassFilter';
+import DynamicParticleBackground from './components/ui/DynamicParticleBackground';
 
 const Skills = lazy(() => import('./components/Skills'));
 const Projects = lazy(() => import('./components/Projects'));
@@ -50,11 +51,12 @@ const App: React.FC = () => {
   return (
     <LazyMotion features={domAnimation}>
       <ThemeProvider>
-        <div className="bg-[var(--bg-base)] text-[var(--text-main)] selection:bg-[var(--accent)]/30 min-h-screen">
+        <DynamicParticleBackground />
+        <div className="relative isolate min-h-screen text-[var(--text-main)] selection:bg-[var(--accent)]/30">
           <LiquidFilters />
           <HeaderPillGlassFilter />
           <Header />
-          <main className="container mx-auto px-6 md:px-8 pt-24 relative z-10">
+          <main className="container mx-auto px-6 md:px-8 pt-24">
             <Hero />
             <Suspense fallback={<Loader />}>
               <About />

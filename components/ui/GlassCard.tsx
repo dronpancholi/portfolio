@@ -14,6 +14,7 @@ const GlassCard: React.FC<GlassCardProps> = ({ children, className = "", ...prop
   return (
     <motion.div
       className={`glass glass--panel min-glow ${className}`}
+      whileHover={{ y: -5, scale: 1.01 }}
       {...props}
     >
       {children}
