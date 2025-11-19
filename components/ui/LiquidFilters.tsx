@@ -5,38 +5,31 @@ const LiquidFilters: React.FC = () => {
     <svg style={{ display: "none" }} aria-hidden="true">
       <defs>
         {/* 
-           Advanced Liquid Lens Filter
-           1. Creates a low-frequency "wave" to act as a magnifying lens curve.
-           2. Adds high-frequency noise for the "liquid" edge distortion.
-           3. Combines them and increases contrast to create a steep displacement map.
+           Updated Liquid Lens Filter: "Magnified Center, Spreading Edges"
+           - Low frequency turbulence creates a large, smooth "lens" curve.
+           - High displacement scale pushes pixels outward (spread) and zooms the center (magnify).
+           - Gaussian blur smooths the map to prevent jagged noise, ensuring a clean glass look.
         */}
         <filter id="liquidRefraction" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
-          {/* Layer 1: Large, smooth wave for the "Magnification/Lens" effect */}
-          <feTurbulence type="fractalNoise" baseFrequency="0.001 0.002" numOctaves="3" seed="5" result="lensWave">
-             <animate attributeName="baseFrequency" dur="40s" values="0.001 0.002; 0.0015 0.0025; 0.001 0.002" repeatCount="indefinite" />
-          </feTurbulence>
+          {/* 1. Generate a smooth, large-scale noise map (The Lens Shape) */}
+          <feTurbulence type="fractalNoise" baseFrequency="0.002 0.004" numOctaves="2" seed="8" result="lensNoise" />
           
-          {/* Layer 2: Fine, sharp noise for "Edge Distortion/Liquid" detail */}
-          <feTurbulence type="fractalNoise" baseFrequency="0.03 0.06" numOctaves="2" seed="10" result="fineNoise">
-             <animate attributeName="baseFrequency" dur="25s" values="0.03 0.06; 0.035 0.07; 0.03 0.06" repeatCount="indefinite" />
-          </feTurbulence>
+          {/* 2. Smooth the noise to create clean gradients instead of jittery liquid */}
+          <feGaussianBlur in="lensNoise" stdDeviation="2" result="smoothLens" />
 
-          {/* Combine: Blend mostly the lens wave, with a touch of fine noise */}
-          <feComposite in="lensWave" in2="fineNoise" operator="arithmetic" k1="0" k2="0.85" k3="0.15" k4="0" result="combinedMap" />
-
-          {/* Contrast Boost: Steepen the slopes of the map to make the refraction sharper */}
-          <feColorMatrix in="combinedMap" type="matrix" 
-            values="4 0 0 0 -1.5
-                    0 4 0 0 -1.5
+          {/* 3. Increase contrast of the map to steepen the curve (Stronger refraction) */}
+          <feColorMatrix in="smoothLens" type="matrix" 
+            values="1 0 0 0 0
+                    0 1 0 0 0
                     0 0 1 0 0
-                    0 0 0 1 0" 
-            result="contrastMap" 
+                    0 0 0 18 -9" 
+            result="steepMap" 
           />
 
-          {/* Displacement: Use the Red and Green channels to shift pixels */}
-          <feDisplacementMap in="SourceGraphic" in2="contrastMap" scale="35" xChannelSelector="R" yChannelSelector="G" result="displaced" />
+          {/* 4. The Displacement: High scale for magnification and edge spreading */}
+          <feDisplacementMap in="SourceGraphic" in2="steepMap" scale="50" xChannelSelector="R" yChannelSelector="A" result="displaced" />
           
-          {/* Final Polish: Slight blur to soften the pixelated edges of the distortion */}
+          {/* 5. Slight final blur to soften the stretched pixels at the edges */}
           <feGaussianBlur in="displaced" stdDeviation="0.5" result="final" />
           
           <feComposite in="final" in2="SourceGraphic" operator="in" />

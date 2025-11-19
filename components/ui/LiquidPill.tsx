@@ -20,7 +20,10 @@ export default function LiquidPill({ proxyRows, children }: Props) {
               filter: "url(#liquidRefraction)",
               WebkitFilter: "url(#liquidRefraction)",
               opacity: 1, 
-              transform: "translateZ(0)"
+              transform: "translateZ(0)",
+              // Creates the "Fade" effect at the edges requested by the user
+              maskImage: "linear-gradient(to right, transparent 2%, black 25%, black 75%, transparent 98%)",
+              WebkitMaskImage: "linear-gradient(to right, transparent 2%, black 25%, black 75%, transparent 98%)"
             }}
           >
             {/* 
