@@ -5,34 +5,32 @@ const LiquidFilters: React.FC = () => {
     <svg style={{ display: "none" }} aria-hidden="true">
       <defs>
         {/* 
-           Updated Liquid Lens Filter: "Magnified Center, Spreading Edges"
-           - Low frequency turbulence creates a large, smooth "lens" curve.
-           - High displacement scale pushes pixels outward (spread) and zooms the center (magnify).
-           - Gaussian blur smooths the map to prevent jagged noise, ensuring a clean glass look.
+           Updated Liquid Lens Filter: "Crystal Clear"
+           - Removed final blur to ensure 100% sharpness.
+           - Tuned turbulence for a large central "lens" curve that magnifies.
+           - High displacement scale for distinct edge refraction.
         */}
         <filter id="liquidRefraction" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
-          {/* 1. Generate a smooth, large-scale noise map (The Lens Shape) */}
-          <feTurbulence type="fractalNoise" baseFrequency="0.002 0.004" numOctaves="2" seed="8" result="lensNoise" />
+          {/* 1. Large smooth waves for a solid glass block feel */}
+          <feTurbulence type="fractalNoise" baseFrequency="0.002 0.004" numOctaves="3" seed="5" result="lensNoise" />
           
-          {/* 2. Smooth the noise to create clean gradients instead of jittery liquid */}
-          <feGaussianBlur in="lensNoise" stdDeviation="2" result="smoothLens" />
+          {/* 2. Smooth the noise significantly to create a lens curvature */}
+          <feGaussianBlur in="lensNoise" stdDeviation="4" result="smoothLens" />
 
-          {/* 3. Increase contrast of the map to steepen the curve (Stronger refraction) */}
+          {/* 3. Contrast stretch to define the refraction angles */}
           <feColorMatrix in="smoothLens" type="matrix" 
             values="1 0 0 0 0
                     0 1 0 0 0
                     0 0 1 0 0
-                    0 0 0 18 -9" 
+                    0 0 0 25 -10" 
             result="steepMap" 
           />
 
-          {/* 4. The Displacement: High scale for magnification and edge spreading */}
-          <feDisplacementMap in="SourceGraphic" in2="steepMap" scale="50" xChannelSelector="R" yChannelSelector="A" result="displaced" />
+          {/* 4. The Displacement: High scale to pull text at edges and zoom center */}
+          <feDisplacementMap in="SourceGraphic" in2="steepMap" scale="60" xChannelSelector="R" yChannelSelector="G" result="distort" />
           
-          {/* 5. Slight final blur to soften the stretched pixels at the edges */}
-          <feGaussianBlur in="displaced" stdDeviation="0.5" result="final" />
-          
-          <feComposite in="final" in2="SourceGraphic" operator="in" />
+          {/* 5. Clip to original shape - NO BLUR applied to output for maximum clarity */}
+          <feComposite in="distort" in2="SourceGraphic" operator="in" />
         </filter>
       </defs>
     </svg>

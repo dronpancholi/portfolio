@@ -8,10 +8,19 @@ type Props = {
 export default function LiquidPill({ proxyRows, children }: Props) {
   return (
     <div className="relative flex justify-center w-full z-10">
-      <div className="liquid-pill mx-auto" role="group" aria-label="Social links">
+      <div 
+        className="liquid-pill mx-auto" 
+        role="group" 
+        aria-label="Social links"
+        style={{
+            // Override default glass bg to be fully transparent/crystalline as requested
+            background: 'rgba(255, 255, 255, 0.02)', 
+            boxShadow: '0 8px 32px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(255,255,255,0.15)'
+        }}
+      >
         {/* 
           Proxy Layer: Receives the SVG displacement filter.
-          This layer mimics the content BEHIND the glass but applies distortion to it.
+          This mimics the content BEHIND the glass.
         */}
         <div className="liquid-pill__proxy" aria-hidden>
           <div
@@ -21,15 +30,12 @@ export default function LiquidPill({ proxyRows, children }: Props) {
               WebkitFilter: "url(#liquidRefraction)",
               opacity: 1, 
               transform: "translateZ(0)",
-              // Creates the "Fade" effect at the edges requested by the user
-              maskImage: "linear-gradient(to right, transparent 2%, black 25%, black 75%, transparent 98%)",
-              WebkitMaskImage: "linear-gradient(to right, transparent 2%, black 25%, black 75%, transparent 98%)"
+              // REMOVED: maskImage (Was causing the "blur" on edges user disliked)
             }}
           >
             {/* 
               Container for the proxy rows.
-              We use absolute centering with a large fixed width that matches the outer container's 
-              max-width context (1100px approx) to ensure the text flows align optically.
+              Absolute centered with fixed width matching the outer context.
             */}
             <div 
               className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center gap-1 sm:gap-[7px]" 
@@ -40,11 +46,14 @@ export default function LiquidPill({ proxyRows, children }: Props) {
           </div>
         </div>
 
-        {/* Vignette to improve contrast of social icons against distorted text */}
-        <div className="liquid-pill__readability-enhancer" aria-hidden />
+        {/* Minimal readability vignette, kept very subtle to maintain transparency */}
+        <div 
+            className="absolute inset-0 z-1 pointer-events-none rounded-[inherit]" 
+            style={{ background: 'radial-gradient(circle at center, rgba(0,0,0,0) 40%, rgba(0,0,0,0.05) 100%)' }}
+        />
 
-        {/* Surface shine/caustics */}
-        <div className="liquid-pill__shine" aria-hidden />
+        {/* Surface shine/caustics - brightened for "Liquid Glass" feel */}
+        <div className="liquid-pill__shine" aria-hidden style={{ opacity: 0.7, mixBlendMode: 'overlay' }} />
 
         {/* Actual Interactive Content (Social Icons) */}
         <div className="liquid-pill__content">
