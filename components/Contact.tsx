@@ -66,6 +66,24 @@ const Line3 = (email: string) => Colorize([
   { t: "return" }, " ", { t: `\`mailto:${email}\``}, ";", " ", "}",
 ]);
 
+// TickerRow Component for code reuse
+interface TickerRowProps {
+  children: React.ReactNode;
+  speed?: string;
+  direction?: "normal" | "reverse";
+}
+
+const TickerRow: React.FC<TickerRowProps> = ({ children, speed = "speed-normal", direction = "normal" }) => (
+  <div className="ticker-wrap">
+    <div className={`ticker-move ${speed}`} style={{ animationDirection: direction }}>
+      {/* Repeat 3 times for smooth looping */}
+      <span className="inline-flex gap-8 pr-8">{children}</span>
+      <span className="inline-flex gap-8 pr-8">{children}</span>
+      <span className="inline-flex gap-8 pr-8">{children}</span>
+    </div>
+  </div>
+);
+
 const Contact: React.FC = () => {
   const [copied, setCopied] = useState(false);
 
@@ -77,29 +95,23 @@ const Contact: React.FC = () => {
   };
 
   // Memoized ticker rows passed into LiquidPill as "Proxy Rows"
-  // These are rendered strictly for the distortion effect
+  // Rendered with standard HTML/CSS animations for best performance
   const proxyRows = useMemo(() => [
-    <div key="row1" className="w-full overflow-hidden select-none whitespace-nowrap opacity-100">
-       <div className="ticker-anim speed-25s delay-0 text-[12px] sm:text-[14px] font-mono flex gap-8">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <span key={i} className="flex-shrink-0">{Line1()}</span>
-          ))}
+    <TickerRow key="row1" speed="speed-normal">
+       <div className="font-mono text-[12px] sm:text-[14px] flex gap-8 items-center">
+         {Line1()}
        </div>
-    </div>,
-    <div key="row2" className="w-full overflow-hidden select-none whitespace-nowrap opacity-100">
-        <div className="ticker-anim speed-33s delay-15 text-[12px] sm:text-[14px] font-mono flex gap-8">
-           {Array.from({ length: 6 }).map((_, i) => (
-            <span key={i} className="flex-shrink-0">{Line2()}</span>
-          ))}
+    </TickerRow>,
+    <TickerRow key="row2" speed="speed-slow" direction="reverse">
+       <div className="font-mono text-[12px] sm:text-[14px] flex gap-8 items-center">
+         {Line2()}
+       </div>
+    </TickerRow>,
+    <TickerRow key="row3" speed="speed-fast">
+        <div className="font-mono text-[12px] sm:text-[14px] flex gap-8 items-center">
+          {Line3(SOCIAL_LINKS.email)}
         </div>
-    </div>,
-    <div key="row3" className="w-full overflow-hidden select-none whitespace-nowrap opacity-100">
-         <div className="ticker-anim speed-40s delay-3 text-[12px] sm:text-[14px] font-mono flex gap-8">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <span key={i} className="flex-shrink-0">{Line3(SOCIAL_LINKS.email)}</span>
-            ))}
-        </div>
-    </div>
+    </TickerRow>
   ], []);
 
   const socialIcons = SOCIAL_LINKS.profiles.map((profile) => {
@@ -163,12 +175,12 @@ const Contact: React.FC = () => {
         viewport={{ once: true }}
         className="relative w-full flex justify-center"
       >
-        {/* Faded background tickers for depth */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-[1000px] opacity-20 blur-[1px] pointer-events-none select-none flex flex-col gap-4 items-center">
-             {/* We reuse the logic but render static here for performance if needed, or duplicate the anims */}
-             <div className="w-full overflow-hidden"><div className="ticker-anim speed-25s font-mono text-xs flex gap-8 text-[var(--text-secondary)]">{Array.from({length:4}).map((_,i)=><span key={i}>{Line1()}</span>)}</div></div>
-             <div className="w-full overflow-hidden"><div className="ticker-anim speed-33s font-mono text-xs flex gap-8 text-[var(--text-secondary)]">{Array.from({length:4}).map((_,i)=><span key={i}>{Line2()}</span>)}</div></div>
-             <div className="w-full overflow-hidden"><div className="ticker-anim speed-40s font-mono text-xs flex gap-8 text-[var(--text-secondary)]">{Array.from({length:4}).map((_,i)=><span key={i}>{Line3(SOCIAL_LINKS.email)}</span>)}</div></div>
+        {/* Faded background tickers for environmental depth */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-[1000px] opacity-10 blur-[2px] pointer-events-none select-none flex flex-col gap-6 items-center">
+            {/* Re-use the same structure for visual consistency in background */}
+            <div className="w-full opacity-50">{proxyRows[0]}</div>
+            <div className="w-full opacity-50">{proxyRows[1]}</div>
+            <div className="w-full opacity-50">{proxyRows[2]}</div>
         </div>
 
         <LiquidPill proxyRows={proxyRows} children={socialIcons} />

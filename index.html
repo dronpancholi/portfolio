@@ -26,6 +26,8 @@
       /* --- MASTER RENDER SETTINGS --- */
       :root {
         color-scheme: light;
+        
+        /* Base Colors */
         --bg-base: #f9fafb;
         --text-main: #1f2937;
         --text-secondary: #374151;
@@ -67,6 +69,7 @@
         text-rendering: optimizeLegibility;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+        overflow-x: hidden;
       }
 
       body {
@@ -74,6 +77,9 @@
         color: var(--text-main);
         font-family: 'Inter', sans-serif;
         overflow-x: hidden;
+        /* Fix layout shift */
+        width: 100%; 
+        position: relative;
       }
 
       /* --- GPU LAYERING UTILITY --- */
@@ -81,6 +87,7 @@
         transform: translateZ(0);
         will-change: transform, opacity;
         backface-visibility: hidden;
+        perspective: 1000px;
       }
 
       /* --- LIQUID GLASS ENGINE --- */
@@ -89,7 +96,7 @@
         background: var(--glass-bg);
         border: 1px solid var(--glass-border);
         box-shadow: var(--glass-shadow);
-        /* Browser-safe backdrop filter */
+        /* Browser-safe backdrop filter with WebKit prefix */
         -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
         backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
         /* Force hardware acceleration to prevent Safari flickering */
@@ -109,30 +116,41 @@
         justify-content: center;
         align-items: center;
         border-radius: 9999px;
-        /* Fix for Safari clipping bugs */
+        /* Fix for Safari clipping bugs with backdrop-filter */
         -webkit-mask-image: -webkit-radial-gradient(white, black); 
+        mask-image: radial-gradient(white, black);
         isolation: isolate;
         transform: translateZ(0);
       }
 
-      .ticker-anim {
+      /* --- TICKER ANIMATION ENGINE --- */
+      .ticker-wrap {
+        width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+      }
+
+      .ticker-move {
+        display: inline-block;
+        white-space: nowrap;
+        padding-right: 2rem; /* Spacing between loops */
         animation: ticker-slide linear infinite;
         will-change: transform;
+        /* Ensure GPU usage for the movement */
+        transform: translate3d(0,0,0); 
       }
 
       @keyframes ticker-slide {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(-25%); }
+        0% { transform: translate3d(0, 0, 0); }
+        100% { transform: translate3d(-100%, 0, 0); }
       }
 
-      .speed-25s { animation-duration: 35s; }
-      .speed-33s { animation-duration: 45s; }
-      .speed-40s { animation-duration: 55s; }
+      .speed-slow { animation-duration: 60s; }
+      .speed-normal { animation-duration: 45s; }
+      .speed-fast { animation-duration: 30s; }
       
-      .delay-0 { animation-delay: 0s; }
-      .delay-15 { animation-delay: -5s; }
-      .delay-3 { animation-delay: -10s; }
-
       /* --- BACKGROUND PERFORMANCE --- */
       .perf-bg {
         position: fixed;
@@ -141,6 +159,7 @@
         pointer-events: none;
         overflow: hidden;
         transform: translateZ(0);
+        background: var(--bg-base);
       }
 
       .perf-blob {
@@ -151,12 +170,17 @@
         will-change: transform;
         transform: translate3d(0,0,0);
       }
-
-      /* Reduced motion fallback */
-      @media (prefers-reduced-motion: reduce) {
-        .ticker-anim, .perf-blob { animation: none !important; }
-      }
       
+      /* Blob Definitions */
+      .perf-bg__blob--1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: var(--particle-1); animation: float 20s infinite alternate; }
+      .perf-bg__blob--2 { bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: var(--particle-2); animation: float 25s infinite alternate-reverse; }
+      .perf-bg__blob--3 { top: 40%; left: 40%; width: 40vw; height: 40vw; background: var(--particle-3); animation: float 30s infinite alternate; }
+
+      @keyframes float {
+        0% { transform: translate3d(0, 0, 0) scale(1); }
+        100% { transform: translate3d(5%, 10%, 0) scale(1.1); }
+      }
+
       /* Hide scrollbar */
       .scrollbar-none {
         -ms-overflow-style: none;
@@ -165,6 +189,12 @@
       .scrollbar-none::-webkit-scrollbar {
         display: none;
       }
+
+      /* Spacer normalization */
+      .spacer-12 { height: 12px; }
+      .spacer-24 { height: 24px; }
+      .spacer-32 { height: 32px; }
+      .spacer-48 { height: 48px; }
     </style>
     <script type="importmap">
     {

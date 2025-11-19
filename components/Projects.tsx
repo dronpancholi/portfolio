@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import GlassCard from './ui/GlassCard';
 import { PROJECTS_DATA } from '../constants';
@@ -6,27 +6,37 @@ import { ArrowUpRight, X, ExternalLink, Github } from 'lucide-react';
 
 type Project = (typeof PROJECTS_DATA)[number];
 
-// Optimized animation variants - purely transform/opacity based
+// High-performance variants: only opacity and transform
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2
+    }
+  }
+};
+
 const cardVariants = {
   hidden: { 
     opacity: 0, 
-    y: 30,
-    scale: 0.98 
+    y: 20,
+    transform: "translateZ(0)" 
   },
-  visible: (i: number) => ({ 
+  visible: { 
     opacity: 1, 
-    y: 0, 
-    scale: 1,
+    y: 0,
+    transform: "translateZ(0)", 
     transition: { 
-      delay: i * 0.1, 
-      duration: 0.5, 
+      duration: 0.6, 
       ease: [0.22, 1, 0.36, 1] 
     } 
-  })
+  }
 };
 
 const modalVariants = {
-  hidden: { opacity: 0, scale: 0.95, y: 20 },
+  hidden: { opacity: 0, scale: 0.9, y: 20 },
   visible: { 
     opacity: 1, 
     scale: 1, 
@@ -35,9 +45,9 @@ const modalVariants = {
   },
   exit: { 
     opacity: 0, 
-    scale: 0.95, 
+    scale: 0.9, 
     y: 20,
-    transition: { duration: 0.2 } 
+    transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } 
   }
 };
 
@@ -52,16 +62,19 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6" role="dialog" aria-modal="true">
+      {/* Backdrop */}
       <motion.div
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/40 backdrop-blur-md"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
+        style={{ willChange: "opacity" }}
       />
       
+      {/* Modal Content */}
       <GlassCard
-        className="relative w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col z-10 m-0"
+        className="relative w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col z-10 m-0 shadow-2xl"
         variants={modalVariants}
         initial="hidden"
         animate="visible"
@@ -147,25 +160,29 @@ const Projects: React.FC = () => {
 
   return (
     <section id="projects" className="py-16 md:py-24 scroll-mt-24">
-      <motion.h2 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="text-3xl md:text-4xl font-bold text-[var(--text-main)] mb-12 text-center tracking-tight"
+        viewport={{ once: true, margin: "-10%" }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="text-center mb-12"
       >
-        Selected Work
-      </motion.h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-[var(--text-main)] tracking-tight">
+          Selected Work
+        </h2>
+      </motion.div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+      <motion.div 
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-5%" }}
+      >
         {PROJECTS_DATA.map((project, index) => (
           <motion.div
             key={project.title}
-            custom={index}
             variants={cardVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
             onClick={() => setSelectedProject(project)}
             className="h-full"
           >
@@ -189,7 +206,7 @@ const Projects: React.FC = () => {
             </GlassCard>
           </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       <AnimatePresence>
         {selectedProject && (

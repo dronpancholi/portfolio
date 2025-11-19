@@ -7,24 +7,21 @@ type GlassCardProps = MotionProps & {
 };
 
 const GlassCard: React.FC<GlassCardProps> = ({ children, className = "", ...props }) => {
-  // We remove layoutId/layout props from the default spread to avoid
-  // heavy layout thrashing on scroll unless explicitly needed.
-  
   return (
     <motion.div
       className={`glass glass--panel ${className}`}
-      // GPU Optimization:
+      // Force GPU layer creation to prevent repaints on scroll
       style={{ 
-        transformStyle: 'preserve-3d', 
-        backfaceVisibility: 'hidden',
-        // Default hardware acceleration hint
-        transform: 'translateZ(0)', 
-        ...props.style
+        transform: "translateZ(0)",
+        backfaceVisibility: "hidden",
+        ...props.style 
       }}
-      // Using simplified variants for better performance on mobile
+      // Simplified hover effect to avoid layout thrashing (scale/width/height changes)
+      // Only animate transform and opacity
       whileHover={{ 
-        y: -4, 
-        transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } 
+        y: -4,
+        boxShadow: "0 20px 40px -10px rgba(0,0,0,0.15)",
+        transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } 
       }}
       {...props}
     >
