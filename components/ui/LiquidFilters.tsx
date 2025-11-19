@@ -2,55 +2,35 @@ import React from "react";
 
 const LiquidFilters: React.FC = () => {
   return (
-    <svg style={{ position: 'absolute', width: 0, height: 0, pointerEvents: 'none' }} aria-hidden="true">
+    <svg style={{ display: "none" }} aria-hidden="true">
       <defs>
         {/* 
-           MASTER LIQUID REFRACTION FILTER
-           - Uses filterUnits="objectBoundingBox" with ample padding (-50% to 200%)
-             to prevent Safari from clipping the displaced pixels at the element's edge.
-           - High scale displacement map for the signature "Liquid Glass" look.
-           - "Crystal Clear" tuning: minimal internal blur, high contrast noise.
+           Updated Liquid Lens Filter: "Crystal Clear"
+           - Removed final blur to ensure 100% sharpness.
+           - Tuned turbulence for a large central "lens" curve that magnifies.
+           - High displacement scale for distinct edge refraction.
         */}
-        <filter id="liquidRefraction" x="-50%" y="-50%" width="200%" height="200%" colorInterpolationFilters="sRGB">
+        <filter id="liquidRefraction" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+          {/* 1. Large smooth waves for a solid glass block feel */}
+          <feTurbulence type="fractalNoise" baseFrequency="0.001 0.002" numOctaves="3" seed="7" result="lensNoise" />
           
-          {/* Base Noise: Lower frequency for larger, smoother ripples */}
-          <feTurbulence 
-            type="fractalNoise" 
-            baseFrequency="0.002 0.004" 
-            numOctaves="3" 
-            seed="5" 
-            result="noise" 
-          />
-          
-          {/* Smoothing: Essential for "Glass" rather than "Water" look */}
-          <feGaussianBlur in="noise" stdDeviation="6" result="smoothNoise" />
-          
-          {/* Contrast: Hardens the edges of the refraction map */}
-          <feColorMatrix 
-            in="smoothNoise" 
-            type="matrix" 
+          {/* 2. Smooth the noise significantly to create a lens curvature */}
+          <feGaussianBlur in="lensNoise" stdDeviation="8" result="smoothLens" />
+
+          {/* 3. Contrast stretch to define the refraction angles cleanly */}
+          <feColorMatrix in="smoothLens" type="matrix" 
             values="1 0 0 0 0
                     0 1 0 0 0
                     0 0 1 0 0
-                    0 0 0 25 -9" 
-            result="contrastNoise" 
+                    0 0 0 18 -7" 
+            result="steepMap" 
           />
 
-          {/* Displacement: 
-             scale="40" provides the strong "lens" effect. 
-             Using xChannelSelector="R" and yChannelSelector="G" maps the noise colors to distortion.
-          */}
-          <feDisplacementMap 
-            in="SourceGraphic" 
-            in2="contrastNoise" 
-            scale="40" 
-            xChannelSelector="R" 
-            yChannelSelector="G" 
-            result="displaced" 
-          />
+          {/* 4. The Displacement: High scale to pull text at edges and zoom center */}
+          <feDisplacementMap in="SourceGraphic" in2="steepMap" scale="50" xChannelSelector="R" yChannelSelector="G" result="distort" />
           
-          {/* Composite: Ensures transparency is handled correctly */}
-          <feComposite in="displaced" in2="SourceGraphic" operator="in" />
+          {/* 5. NO final blur. Keep it sharp. Composite to ensure alpha handling. */}
+          <feComposite in="distort" in2="SourceGraphic" operator="in" />
         </filter>
       </defs>
     </svg>
