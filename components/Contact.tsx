@@ -24,14 +24,14 @@ const ICON_MAP: Partial<
   Discord: MessageSquare,
 };
 
-/* =================== TOKEN COLOUR MIX (per-line) =================== */
+/* =================== TOKEN COLOUR MIX =================== */
 const TOKENS = [
-  "text-[#AEEBFF]", // aqua
-  "text-[#C9B7FF]", // lavender
-  "text-[#A0FFC9]", // mint
-  "text-[#FFE6A3]", // pale gold
-  "text-[#FFBBD4]", // rose
-  "text-[#9ED0FF]", // sky
+  "text-[#0ea5e9]", // sky-500
+  "text-[#8b5cf6]", // violet-500
+  "text-[#10b981]", // emerald-500
+  "text-[#f59e0b]", // amber-500
+  "text-[#ec4899]", // pink-500
+  "text-[#6366f1]", // indigo-500
 ] as const;
 
 function Colorize(tokens: (string | { t: string; cls?: string })[]) {
@@ -39,7 +39,7 @@ function Colorize(tokens: (string | { t: string; cls?: string })[]) {
   return tokens.map((tok, idx) => {
     if (typeof tok === "string") {
       return (
-        <span key={idx} className="text-black/45 dark:text-white/35">
+        <span key={idx} className="text-black/40 dark:text-white/40">
           {tok}
         </span>
       );
@@ -49,27 +49,23 @@ function Colorize(tokens: (string | { t: string; cls?: string })[]) {
   });
 }
 
-function Line1() {
-  return Colorize([
-    { t: "const" }, " ", { t: "identity" }, " ", "=", " ", "{", " ",
-    { t: "name" }, ":", " ", { t: `"Dron Pancholi"` }, ", ", { t: "focus" }, ":", " ",
-    "[", { t: `"AI"` }, ",", " ", { t: `"Systems"` }, ",", " ", { t: `"Design"` }, "]", " ", "};",
-  ]);
-}
-function Line2() {
-  return Colorize([
-    { t: "const" }, " ", { t: "principles" }, " ", "=", " ", "[",
-    { t: `"Clarity"` }, ", ", { t: `"Depth"` }, ", ", { t: `"Intention"` }, "]", ";",
-  ]);
-}
-function Line3(email: string) {
-  return Colorize([
-    { t: "function" }, " ", { t: "contact" }, "(", { t: "email" }, ")", " ", "{", " ",
-    { t: "return" }, " ", { t: `\`mailto:\${email}\``}, ";", " ", "}",
-  ]);
-}
+/* --- Static Code Lines for Ticker --- */
+const Line1 = () => Colorize([
+  { t: "const" }, " ", { t: "identity" }, " ", "=", " ", "{", " ",
+  { t: "name" }, ":", " ", { t: `"Dron Pancholi"` }, ", ", { t: "focus" }, ":", " ",
+  "[", { t: `"AI"` }, ",", " ", { t: `"Systems"` }, ",", " ", { t: `"Design"` }, "]", " ", "};",
+]);
 
-/* =============================== CONTACT =============================== */
+const Line2 = () => Colorize([
+  { t: "const" }, " ", { t: "principles" }, " ", "=", " ", "[",
+  { t: `"Clarity"` }, ", ", { t: `"Depth"` }, ", ", { t: `"Intention"` }, "]", ";",
+]);
+
+const Line3 = (email: string) => Colorize([
+  { t: "function" }, " ", { t: "contact" }, "(", { t: "email" }, ")", " ", "{", " ",
+  { t: "return" }, " ", { t: `\`mailto:${email}\``}, ";", " ", "}",
+]);
+
 const Contact: React.FC = () => {
   const [copied, setCopied] = useState(false);
 
@@ -80,44 +76,33 @@ const Contact: React.FC = () => {
     setTimeout(() => setCopied(false), 2500);
   };
 
-  // Prebuilt tokenised chunks
-  const chunk1 = useMemo(() => <>{Line1()}</>, []);
-  const chunk2 = useMemo(() => <>{Line2()}</>, []);
-  const chunk3 = useMemo(() => <>{Line3(SOCIAL_LINKS.email)}</>, []);
-
-  // Construct the proxy rows for inside the glass.
-  // We use the EXACT same structure/classes as the outer rows to ensure optical alignment.
+  // Memoized ticker rows passed into LiquidPill as "Proxy Rows"
+  // These are rendered strictly for the distortion effect
   const proxyRows = useMemo(() => [
-    <div key="row1" className="flex justify-center w-full">
-        <div className="relative w-[min(100%,1100px)] overflow-hidden select-none">
-            <div className="ticker-rail run-anim ticker-anim speed-25s delay-0 text-[11px] sm:text-[13px]">
-                 {Array.from({ length: 4 }).map((_, i) => (
-                  <span key={i} className="ticker-chunk opacity-90 saturate-150">{chunk1}</span>
-                ))}
-            </div>
+    <div key="row1" className="w-full overflow-hidden select-none whitespace-nowrap opacity-100">
+       <div className="ticker-anim speed-25s delay-0 text-[12px] sm:text-[14px] font-mono flex gap-8">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <span key={i} className="flex-shrink-0">{Line1()}</span>
+          ))}
+       </div>
+    </div>,
+    <div key="row2" className="w-full overflow-hidden select-none whitespace-nowrap opacity-100">
+        <div className="ticker-anim speed-33s delay-15 text-[12px] sm:text-[14px] font-mono flex gap-8">
+           {Array.from({ length: 6 }).map((_, i) => (
+            <span key={i} className="flex-shrink-0">{Line2()}</span>
+          ))}
         </div>
     </div>,
-    <div key="row2" className="flex justify-center w-full">
-        <div className="relative w-[min(100%,1100px)] overflow-hidden select-none">
-            <div className="ticker-rail run-anim ticker-anim speed-33s delay-15 text-[11px] sm:text-[13px]">
-                 {Array.from({ length: 4 }).map((_, i) => (
-                  <span key={i} className="ticker-chunk opacity-90 saturate-150">{chunk2}</span>
-                ))}
-            </div>
-        </div>
-    </div>,
-    <div key="row3" className="flex justify-center w-full">
-        <div className="relative w-[min(100%,1100px)] overflow-hidden select-none">
-             <div className="ticker-rail run-anim ticker-anim speed-40s delay-3 text-[11px] sm:text-[13px]">
-                 {Array.from({ length: 4 }).map((_, i) => (
-                  <span key={i} className="ticker-chunk opacity-90 saturate-150">{chunk3}</span>
-                ))}
-            </div>
+    <div key="row3" className="w-full overflow-hidden select-none whitespace-nowrap opacity-100">
+         <div className="ticker-anim speed-40s delay-3 text-[12px] sm:text-[14px] font-mono flex gap-8">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <span key={i} className="flex-shrink-0">{Line3(SOCIAL_LINKS.email)}</span>
+            ))}
         </div>
     </div>
-  ], [chunk1, chunk2, chunk3]);
+  ], []);
 
-  const socialLinksContent = SOCIAL_LINKS.profiles.map((profile) => {
+  const socialIcons = SOCIAL_LINKS.profiles.map((profile) => {
     const Icon = ICON_MAP[profile.name] || Github;
     return (
       <a
@@ -126,141 +111,67 @@ const Contact: React.FC = () => {
         target="_blank"
         rel="noopener noreferrer"
         aria-label={profile.name}
-        className="focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 focus-visible:ring-white rounded-full"
+        className="group relative p-2 rounded-full focus:outline-none"
       >
-        <motion.div
-          whileHover={{ scale: 1.28 }}
-          transition={{ type: "spring", stiffness: 260, damping: 14 }}
-          className="transition-all"
-        >
-          <Icon
-            className="w-6 h-6 sm:w-7 sm:h-7 text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.85)] 
-                       dark:text-[#FFF7C5] dark:drop-shadow-[0_0_10px_rgba(255,247,200,0.75)]"
-            style={{
-              WebkitTextStroke: "1px rgba(0,0,0,0.45)",
-            }}
-          />
-        </motion.div>
+        <div className="absolute inset-0 bg-black/5 dark:bg-white/10 rounded-full scale-0 group-hover:scale-100 transition-transform duration-300" />
+        <Icon className="w-6 h-6 sm:w-7 sm:h-7 text-[var(--text-secondary)] group-hover:text-[var(--accent)] transition-colors relative z-10" />
       </a>
     );
   });
 
   return (
-    <section id="contact" className="py-16 md:py-24 text-center scroll-mt-24">
-      {/* Title */}
-      <motion.h2
-        initial={{ opacity: 0, y: 18 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="text-3xl md:text-4xl font-bold text-[var(--text-main)] mb-3"
-      >
-        Start a Conversation
-      </motion.h2>
-
-      {/* Lead */}
-      <motion.p
-        initial={{ opacity: 0, y: 18 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.1 }}
-        className="text-lg text-[var(--text-secondary)] mb-12 max-w-xl mx-auto"
-      >
-        I am open to new projects and collaborations. For inquiries, please reach out via email.
-      </motion.p>
-
-      {/* Email card */}
+    <section id="contact" className="py-16 md:py-24 text-center scroll-mt-24 relative">
       <motion.div
-        initial={{ opacity: 0, y: 45 }}
+        initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className="max-w-xl mx-auto"
+        className="mb-16"
       >
-        <GlassCard>
-          <div className="p-8 md:p-10 flex flex-col items-center justify-center text-center">
-            <Mail className="w-12 h-12 text-[var(--accent)] mb-4" />
-            <h3 className="text-xl md:text-2xl font-bold text-[var(--text-main)] mb-6">
-              Email me directly at
-            </h3>
+        <h2 className="text-3xl md:text-4xl font-bold text-[var(--text-main)] mb-4">Start a Conversation</h2>
+        <p className="text-lg text-[var(--text-secondary)] font-light max-w-xl mx-auto">
+          I am open to new projects and collaborations.
+        </p>
+      </motion.div>
 
-            <div className="w-full max-w-md flex items-center justify-between bg-black/5 dark:bg-white/5 rounded-xl p-3">
-              <span className="text-sm sm:text-base text-[var(--text-secondary)] font-mono truncate">
-                {SOCIAL_LINKS.email}
-              </span>
-
-              <button
-                onClick={handleCopy}
-                className="flex items-center justify-center gap-1 w-24 h-9 text-sm font-semibold bg-[var(--accent)] text-white dark:text-black rounded-lg hover:brightness-110 transition-all"
-                aria-label="Copy email address"
-              >
-                {copied ? (
-                  <motion.span key="copied-text" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-1">
-                    <Check size={16} />
-                    Copied
-                  </motion.span>
-                ) : (
-                  <span className="flex items-center gap-1">
-                    <Clipboard size={16} />
-                    Copy
-                  </span>
-                )}
-              </button>
-            </div>
+      {/* Email Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="max-w-xl mx-auto mb-20"
+      >
+        <GlassCard className="flex flex-col items-center p-10">
+          <Mail className="w-10 h-10 text-[var(--accent)] mb-6" />
+          <div className="flex items-center gap-3 bg-black/5 dark:bg-white/5 p-2 pl-4 rounded-xl w-full max-w-sm">
+            <span className="flex-grow text-left font-mono text-sm text-[var(--text-secondary)] truncate">
+              {SOCIAL_LINKS.email}
+            </span>
+            <button
+              onClick={handleCopy}
+              className="bg-[var(--accent)] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity flex items-center gap-2 min-w-[90px] justify-center"
+            >
+              {copied ? <><Check size={14} /> Copied</> : <><Clipboard size={14} /> Copy</>}
+            </button>
           </div>
         </GlassCard>
       </motion.div>
 
-      {/* ======= Social pill + continuous multi-line code background ======= */}
+      {/* Liquid Pill Section */}
       <motion.div
-        initial={{ opacity: 0, y: 22 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, scale: 0.95 }}
+        whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.7 }}
-        className="relative mt-24 flex justify-center w-full"
+        className="relative w-full flex justify-center"
       >
-        {/* Background substrate */}
-        <div
-          aria-hidden
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
-                     w-[90vw] h-[90px] sm:w-[min(92vw,1100px)] sm:h-[120px] 
-                     rounded-full pointer-events-none z-0
-                     bg-black/5 dark:bg-white/10 opacity-40"
-        />
-
-        {/* Background Tickers (Faded to let the Glass Effect pop) */}
-        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none z-[1] space-y-1 sm:space-y-[7px] select-none opacity-40 blur-[0.5px]">
-          <div className="flex justify-center">
-            <div className="relative w-[min(100%,1100px)] overflow-hidden select-none" aria-hidden>
-              <div className={`ticker-rail run-anim ticker-anim speed-25s delay-0 text-[11px] sm:text-[13px]`}>
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <span key={i} className="ticker-chunk">{chunk1}</span>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="flex justify-center">
-            <div className="relative w-[min(100%,1100px)] overflow-hidden select-none" aria-hidden>
-              <div className={`ticker-rail run-anim ticker-anim speed-33s delay-15 text-[11px] sm:text-[13px]`}>
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <span key={i} className="ticker-chunk">{chunk2}</span>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="flex justify-center">
-            <div className="relative w-[min(100%,1100px)] overflow-hidden select-none" aria-hidden>
-              <div className={`ticker-rail run-anim ticker-anim speed-40s delay-3 text-[11px] sm:text-[13px]`}>
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <span key={i} className="ticker-chunk">{chunk3}</span>
-                ))}
-              </div>
-            </div>
-          </div>
+        {/* Faded background tickers for depth */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-[1000px] opacity-20 blur-[1px] pointer-events-none select-none flex flex-col gap-4 items-center">
+             {/* We reuse the logic but render static here for performance if needed, or duplicate the anims */}
+             <div className="w-full overflow-hidden"><div className="ticker-anim speed-25s font-mono text-xs flex gap-8 text-[var(--text-secondary)]">{Array.from({length:4}).map((_,i)=><span key={i}>{Line1()}</span>)}</div></div>
+             <div className="w-full overflow-hidden"><div className="ticker-anim speed-33s font-mono text-xs flex gap-8 text-[var(--text-secondary)]">{Array.from({length:4}).map((_,i)=><span key={i}>{Line2()}</span>)}</div></div>
+             <div className="w-full overflow-hidden"><div className="ticker-anim speed-40s font-mono text-xs flex gap-8 text-[var(--text-secondary)]">{Array.from({length:4}).map((_,i)=><span key={i}>{Line3(SOCIAL_LINKS.email)}</span>)}</div></div>
         </div>
 
-        {/* LIQUID PILL — With internal proxy rows for the refraction effect */}
-        <LiquidPill proxyRows={proxyRows} children={socialLinksContent} />
+        <LiquidPill proxyRows={proxyRows} children={socialIcons} />
       </motion.div>
     </section>
   );
