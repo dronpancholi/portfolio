@@ -13,24 +13,30 @@ export default function LiquidPill({ proxyRows, children }: Props) {
         role="group" 
         aria-label="Social links"
         style={{
-            // Override default glass bg to be fully transparent/crystalline as requested
-            background: 'rgba(255, 255, 255, 0.02)', 
-            boxShadow: '0 8px 32px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(255,255,255,0.15)'
+            // Ultra-transparent background to rely entirely on refraction and border
+            background: 'rgba(255, 255, 255, 0.01)', 
+            // Stronger glass border and shadow for definition without opacity
+            boxShadow: '0 10px 40px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(255,255,255,0.2)',
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            backdropFilter: 'blur(8px)', // Reduced blur for clarity
+            WebkitBackdropFilter: 'blur(8px)',
         }}
       >
         {/* 
           Proxy Layer: Receives the SVG displacement filter.
           This mimics the content BEHIND the glass.
         */}
-        <div className="liquid-pill__proxy" aria-hidden>
+        <div className="liquid-pill__proxy" aria-hidden style={{ overflow: 'visible' }}> 
+          {/* Overflow visible ensures the distortion doesn't get clipped at the bounding box in Safari */}
           <div
             className="liquid-pill__proxyInner"
             style={{
               filter: "url(#liquidRefraction)",
               WebkitFilter: "url(#liquidRefraction)",
               opacity: 1, 
-              transform: "translateZ(0)",
-              // REMOVED: maskImage (Was causing the "blur" on edges user disliked)
+              // Force GPU to prevent browser from optimizing away the expensive filter
+              transform: "translate3d(0,0,0)", 
+              willChange: "transform",
             }}
           >
             {/* 
@@ -46,14 +52,16 @@ export default function LiquidPill({ proxyRows, children }: Props) {
           </div>
         </div>
 
-        {/* Minimal readability vignette, kept very subtle to maintain transparency */}
+        {/* Surface shine/caustics - Sharp overlay for crystal look */}
         <div 
-            className="absolute inset-0 z-1 pointer-events-none rounded-[inherit]" 
-            style={{ background: 'radial-gradient(circle at center, rgba(0,0,0,0) 40%, rgba(0,0,0,0.05) 100%)' }}
+          className="liquid-pill__shine" 
+          aria-hidden 
+          style={{ 
+            opacity: 0.8, 
+            mixBlendMode: 'soft-light',
+            background: 'linear-gradient(120deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0.1) 100%)'
+          }} 
         />
-
-        {/* Surface shine/caustics - brightened for "Liquid Glass" feel */}
-        <div className="liquid-pill__shine" aria-hidden style={{ opacity: 0.7, mixBlendMode: 'overlay' }} />
 
         {/* Actual Interactive Content (Social Icons) */}
         <div className="liquid-pill__content">
