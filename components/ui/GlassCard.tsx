@@ -1,10 +1,6 @@
 import React from "react";
 import { motion, MotionProps } from "framer-motion";
 
-// FIX: Changed from an interface extending MotionProps to a type intersection.
-// This ensures that all properties from Framer Motion's MotionProps are correctly
-// included in the GlassCardProps type, resolving errors where props like 'initial',
-// 'layoutId', and 'whileInView' were not recognized.
 type GlassCardProps = MotionProps & {
   children: React.ReactNode;
   className?: string;
@@ -13,8 +9,17 @@ type GlassCardProps = MotionProps & {
 const GlassCard: React.FC<GlassCardProps> = ({ children, className = "", ...props }) => {
   return (
     <motion.div
-      className={`glass glass--panel min-glow ${className}`}
-      whileHover={{ y: -5, scale: 1.01 }}
+      className={`glass ${className}`}
+      // PERFORMANCE OPTIMIZATION:
+      // Only animate transform and opacity. 
+      // Avoid animating box-shadow or backdrop-filter on hover as it triggers repaints.
+      whileHover={{ 
+        y: -4,
+        scale: 1.01,
+        transition: { duration: 0.2, ease: "easeOut" }
+      }}
+      // Force GPU layer creation
+      style={{ transform: "translateZ(0)", backfaceVisibility: "hidden" }}
       {...props}
     >
       {children}

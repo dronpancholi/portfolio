@@ -3,15 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Dron Pancholi | AI Portfolio</title>
     <link rel="preload" href="https://i.ibb.co/YFJdKdD1/picofme-9.png" as="image">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
-        darkMode: 'class', // Enable class-based dark mode
+        darkMode: 'class',
         theme: {
-          extend: {},
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+          },
         },
       }
     </script>
@@ -19,247 +23,248 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <style>
+      /* --- MASTER RENDER SETTINGS --- */
       :root {
         color-scheme: light;
+        /* Core colors */
         --bg-base: #f9fafb;
-        --text-main: #1f2937;
-        --text-secondary: #374151;
-        --accent: #15803d; /* Aesthetic Green */
+        --text-main: #111827;
+        --text-secondary: #4b5563;
+        --accent: #15803d;
         
-        /* --- UPDATED: Reduced blur for better readability and refined shadow --- */
-        --glass-bg: rgba(255,255,255,0.25);
-        --glass-border: rgba(255,255,255,0.6);
-        --glass-shadow: 0 8px 28px rgba(0,0,0,0.06);
-        --glass-blur: 14px;
-        --glass-highlight: rgba(255,255,255,0.5);
-
-        /* --- Global liquid tokens --- */
-        --liquid-displace-scale: 8; 
-        --glass-shine-opacity: 0.9;
+        /* Liquid Glass Tokens - High Fidelity */
+        --glass-border: rgba(255, 255, 255, 0.6);
+        --glass-surface: rgba(255, 255, 255, 0.25);
+        --glass-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+        --glass-blur: 16px;
+        --glass-saturate: 180%;
         
-        /* --- Colors for new performant background --- */
-        --particle-color-1: #bae6fd; /* sky-200 */
-        --particle-color-2: #bbf7d0; /* green-200 */
-        --particle-color-3: #ddd6fe; /* purple-200 */
+        /* Particle Tokens */
+        --particle-color-1: #bae6fd;
+        --particle-color-2: #bbf7d0;
+        --particle-color-3: #ddd6fe;
+        
+        /* Pointer Tracking */
+        --mx: 50%;
+        --my: 50%;
       }
       
       html.dark {
-        --bg-base: #111827;
+        --bg-base: #0f172a;
         --text-main: #f9fafb;
         --text-secondary: #9ca3af;
-        --accent: #22c55e; /* Aesthetic Green */
+        --accent: #22c55e;
 
-        /* --- UPDATED: Reduced blur for better readability and refined shadow (Dark) --- */
-        --glass-bg: rgba(30, 30, 35, 0.25);
-        --glass-border: rgba(255, 255, 255, 0.1);
-        --glass-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        --glass-highlight: rgba(255,255,255,0.1);
+        --glass-border: rgba(255, 255, 255, 0.12);
+        --glass-surface: rgba(20, 20, 25, 0.3);
+        --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
         
-        /* --- Colors for new performant background (Dark) --- */
-        --particle-color-1: #334155; /* slate-700 */
-        --particle-color-2: #1e40af; /* blue-800 */
-        --particle-color-3: #5b21b6; /* violet-800 */
+        --particle-color-1: #334155; 
+        --particle-color-2: #1e40af; 
+        --particle-color-3: #5b21b6; 
       }
 
-      html, body { 
-        /* UPDATED: Set to transparent to allow animated background to show through */
-        background: transparent;
-        color: var(--text-main); 
+      /* GLOBAL RESET & GPU ENFORCEMENT */
+      html, body {
+        background-color: transparent; /* Allow particle bg */
+        color: var(--text-main);
         font-family: 'Inter', sans-serif;
-        font-optical-sizing: auto;
-        transition: color 0.3s ease;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overflow-x: hidden;
+        /* Lock text size adjustment on mobile */
+        -webkit-text-size-adjust: 100%; 
       }
-      
+
+      /* 
+         THE GLASS ENGINE 
+         Browser-safe implementation of the liquid effect 
+      */
       .glass {
         position: relative;
-        background: var(--glass-bg);
-        /* --- UPDATED: Reduced saturate for a more natural distortion --- */
-        backdrop-filter: blur(var(--glass-blur)) saturate(150%);
-        -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+        background: var(--glass-surface);
         border: 1px solid var(--glass-border);
-        box-shadow: var(--glass-shadow), inset 0 1.5px 1px 0 var(--glass-highlight);
-        overflow: clip;
-        transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-        transform: translateZ(0); /* Promote to own compositing layer */
-        will-change: backdrop-filter; /* Hint for optimization */
-      }
-      
-      .glass--panel { 
-        border-radius: 24px; 
-      }
-      
-      .glass::before, .glass::after {
-        display: none;
-      }
-      
-      .min-glow { 
-        box-shadow: 0 8px 24px rgba(0,0,0,0.06); 
-      }
-
-      /* Hide scrollbars for specific elements */
-      .scrollbar-none::-webkit-scrollbar {
-        display: none;
-      }
-      .scrollbar-none {
-        -ms-overflow-style: none;  /* IE and Edge */
-        scrollbar-width: none;  /* Firefox */
-      }
-      
-      /* Keep a reduced motion state for accessibility */
-      @media (prefers-reduced-motion:reduce) {
-        :root{ --glass-blur: 10px; --liquid-displace-scale: 0; --glass-shine-opacity: 0.45;}
-        .ticker-anim { animation: none; }
-        .perf-bg__blob { animation: none !important; }
-      }
-
-      /* Core pill (GPU friendly) */
-      .liquid-pill {
-        position: relative;
-        display:inline-flex;
-        align-items:center;
-        gap:1rem;
-        padding:10px 22px;
-        border-radius:9999px;
-        background: var(--glass-bg);
-        border: 1px solid var(--glass-border);
-        box-shadow: var(--glass-shadow), inset 0 1.5px 1px 0 var(--glass-highlight);
-        will-change: transform, opacity;
-        -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
-        backdrop-filter: blur(var(--glass-blur)) saturate(150%);
-        overflow: clip;
+        box-shadow: var(--glass-shadow);
+        
+        /* Critical for WebKit/Blink consistency */
+        backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+        -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+        
+        /* GPU Hardware Acceleration */
+        transform: translateZ(0);
+        -webkit-transform: translateZ(0);
+        backface-visibility: hidden;
+        will-change: transform, backdrop-filter;
+        
+        /* Clipping fix */
+        overflow: hidden;
+        border-radius: 24px;
         isolation: isolate;
-        transform: translateZ(0); /* force compositor layer */
       }
 
-      /* Proxy layer clipped beneath content — receives the SVG refraction filter */
-      .liquid-pill__proxy {
-        position:absolute; inset:0; z-index:0; pointer-events:none; border-radius:inherit; overflow:hidden;
-        will-change: transform;
-        transform: translateZ(0);
-      }
-
-      /* Inner proxy content: keep simple, centered, GPU compositing */
-      .liquid-pill__proxyInner {
-        position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-        transform: translateZ(0);
-      }
-
-      /* --- NEW: Vignette for readability --- */
-      .liquid-pill__readability-enhancer {
+      /* Enhanced depth for cards */
+      .glass::before {
+        content: "";
         position: absolute;
         inset: 0;
         z-index: 1;
         pointer-events: none;
-        border-radius: inherit;
-        background: radial-gradient(ellipse at center, rgba(0,0,0,0.15) 0%, transparent 80%);
-      }
-
-      html.dark .liquid-pill__readability-enhancer {
-        background: radial-gradient(ellipse at center, rgba(255,255,255,0.1) 0%, transparent 80%);
-      }
-
-      /* Shine/caustics above proxy but below content */
-      .liquid-pill__shine {
-        position:absolute; inset:0; z-index:2; pointer-events:none; border-radius:inherit;
-        background: linear-gradient(115deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.05) 40%, transparent 60%);
+        background: linear-gradient(
+          125deg,
+          rgba(255, 255, 255, 0.3) 0%,
+          rgba(255, 255, 255, 0.05) 40%,
+          transparent 100%
+        );
         mix-blend-mode: overlay;
-        opacity: var(--glass-shine-opacity);
+      }
+
+      /* 
+         LIQUID PILL - ROBUST IMPLEMENTATION 
+         Rebuilt to handle Safari clipping and filter bounds
+      */
+      .liquid-pill {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 16px; /* Fixed pixel value */
+        padding: 10px 24px; /* Fixed pixel value */
+        border-radius: 9999px;
+        
+        /* Base Glass */
+        background: var(--glass-surface);
+        border: 1px solid var(--glass-border);
+        box-shadow: 
+          0 10px 30px rgba(0,0,0,0.1),
+          inset 0 1px 0 rgba(255,255,255,0.4);
+          
+        /* Filters */
+        backdrop-filter: blur(14px) saturate(160%);
+        -webkit-backdrop-filter: blur(14px) saturate(160%);
+        
+        /* GPU & Isolation */
         transform: translateZ(0);
-        will-change: opacity;
+        isolation: isolate;
+        overflow: hidden; /* Essential for filter containment */
       }
 
-      /* Foreground content above everything */
-      .liquid-pill__content{ position:relative; z-index:3; display:flex; gap:1rem; align-items:center; }
+      /* The Proxy layer that receives the SVG Refraction */
+      .liquid-pill__proxy {
+        position: absolute;
+        inset: -10px; /* Extend bounds to prevent edge clipping */
+        z-index: 0;
+        pointer-events: none;
+        border-radius: inherit;
+        overflow: hidden;
+        /* Safari masking fix */
+        -webkit-mask-image: -webkit-radial-gradient(white, black);
+      }
+
+      .liquid-pill__proxyInner {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transform: translateZ(0);
+        will-change: transform;
+        /* The Filter is applied inline via React to allow quality toggling */
+      }
+
+      .liquid-pill__content {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      /* Vignette & Noise Overlay */
+      .liquid-pill__overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 5;
+        pointer-events: none;
+        background: radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,0.15), transparent 70%);
+        mix-blend-mode: overlay;
+      }
+
+      /* TICKER ANIMATION - CSS OPTIMIZED */
+      @keyframes ticker-slide {
+        0% { transform: translate3d(0, 0, 0); }
+        100% { transform: translate3d(-25%, 0, 0); }
+      }
+
+      .ticker-rail {
+        display: flex;
+        width: 400%; /* Ensure enough length */
+        will-change: transform;
+        transform: translateZ(0);
+      }
+
+      .run-anim {
+        animation-name: ticker-slide;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+      }
       
-      @keyframes xloop25 {
-        from { transform: translateX(0%); }
-        to   { transform: translateX(-25%); }
-      }
-      .ticker-rail { width:400%; display:flex; align-items:center; }
-      .ticker-chunk { padding-left:0.75rem; padding-right:0.75rem; }
-      .ticker-anim { animation-timing-function: linear; animation-iteration-count: infinite; will-change: transform; }
-      /* Different speeds */
-      .speed-25s { animation-duration: 25s; }
-      .speed-33s { animation-duration: 33s; }
-      .speed-40s { animation-duration: 40s; }
-      /* Optional delays */
-      .delay-0   { animation-delay: 0s; }
-      .delay-15  { animation-delay: 1.5s; }
-      .delay-3   { animation-delay: 3s; }
-      .run-anim  { animation-name: xloop25; }
+      .speed-25s { animation-duration: 30s; }
+      .speed-33s { animation-duration: 38s; }
+      .speed-40s { animation-duration: 45s; }
 
-      /* --- NEW: High-performance CSS background --- */
+      .ticker-chunk {
+        flex: 0 0 25%; /* 4 chunks = 100% of 400% width */
+        padding: 0 12px;
+        white-space: nowrap;
+      }
+
+      /* SCROLLBAR HIDING */
+      .scrollbar-none::-webkit-scrollbar { display: none; }
+      .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+
+      /* BACKGROUND BLOB ANIMATIONS */
       .perf-bg {
         position: fixed;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
+        top: 0; left: 0; width: 100%; height: 100%;
         z-index: -1;
+        pointer-events: none;
         overflow: hidden;
       }
-
-      @keyframes move-blob-1 {
-        0% { transform: scale(1) translate(0px, 0px); }
-        33% { transform: scale(1.1) translate(80px, -100px); }
-        66% { transform: scale(0.9) translate(-50px, 70px); }
-        100% { transform: scale(1) translate(0px, 0px); }
-      }
-
-      @keyframes move-blob-2 {
-        0% { transform: scale(1) translate(0px, 0px); }
-        33% { transform: scale(0.9) translate(-100px, 60px); }
-        66% { transform: scale(1.2) translate(50px, -80px); }
-        100% { transform: scale(1) translate(0px, 0px); }
-      }
-
-      @keyframes move-blob-3 {
-        0% { transform: scale(1) translate(0px, 0px); }
-        33% { transform: scale(1.1) translate(-70px, -90px); }
-        66% { transform: scale(0.9) translate(60px, 110px); }
-        100% { transform: scale(1) translate(0px, 0px); }
-      }
-
       .perf-bg__blob {
         position: absolute;
+        border-radius: 50%;
+        filter: blur(70px);
+        opacity: 0.4;
         will-change: transform;
-        border-radius: 9999px;
-        opacity: 0.35;
-        filter: blur(60px);
+        transform: translateZ(0);
       }
-
+      
+      @keyframes blob-float {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        33% { transform: translate(30px, -50px) scale(1.1); }
+        66% { transform: translate(-20px, 20px) scale(0.9); }
+      }
+      
       .perf-bg__blob--1 {
-        width: 500px;
-        height: 500px;
-        top: -10%;
-        left: -5%;
-        background-color: var(--particle-color-1);
-        animation: move-blob-1 25s ease-in-out infinite alternate;
+        width: 60vw; height: 60vw; top: -10%; left: -10%;
+        background: var(--particle-color-1);
+        animation: blob-float 20s ease-in-out infinite;
       }
-
       .perf-bg__blob--2 {
-        width: 450px;
-        height: 450px;
-        top: 60%;
-        left: 15%;
-        background-color: var(--particle-color-2);
-        animation: move-blob-2 30s ease-in-out infinite alternate;
+        width: 50vw; height: 50vw; bottom: -10%; right: -10%;
+        background: var(--particle-color-2);
+        animation: blob-float 25s ease-in-out infinite reverse;
       }
-
       .perf-bg__blob--3 {
-        width: 400px;
-        height: 400px;
-        top: 20%;
-        right: -10%;
-        background-color: var(--particle-color-3);
-        animation: move-blob-3 28s ease-in-out infinite alternate;
+        width: 40vw; height: 40vw; top: 40%; left: 30%;
+        background: var(--particle-color-3);
+        animation: blob-float 22s ease-in-out infinite 5s;
       }
 
-      html.dark .perf-bg__blob {
-        opacity: 0.25;
-        filter: blur(80px);
+      /* REDUCED MOTION */
+      @media (prefers-reduced-motion: reduce) {
+        * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+        .run-anim { animation: none !important; transform: translateX(0) !important; }
       }
-
     </style>
   <script type="importmap">
 {
