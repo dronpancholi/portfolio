@@ -5,10 +5,9 @@ const LiquidFilters: React.FC = () => {
     <svg style={{ display: "none" }} aria-hidden="true">
       <defs>
         {/* 
-           Updated Liquid Lens Filter: "Crystal Clear"
-           - Removed final blur to ensure 100% sharpness.
-           - Tuned turbulence for a large central "lens" curve that magnifies.
-           - High displacement scale for distinct edge refraction.
+           Preview Match Liquid Lens Filter
+           - Base Frequency tuned for high-DPI displays
+           - Displacement scale set to match the visual weight in preview
         */}
         <filter id="liquidRefraction" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
           {/* 1. Large smooth waves for a solid glass block feel */}
@@ -26,10 +25,10 @@ const LiquidFilters: React.FC = () => {
             result="steepMap" 
           />
 
-          {/* 4. The Displacement: High scale to pull text at edges and zoom center */}
+          {/* 4. The Displacement: Scale=50 is the sweet spot for "Preview" look */}
           <feDisplacementMap in="SourceGraphic" in2="steepMap" scale="50" xChannelSelector="R" yChannelSelector="G" result="distort" />
           
-          {/* 5. NO final blur. Keep it sharp. Composite to ensure alpha handling. */}
+          {/* 5. Composite to ensure alpha handling is crisp */}
           <feComposite in="distort" in2="SourceGraphic" operator="in" />
         </filter>
       </defs>
