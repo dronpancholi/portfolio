@@ -80,12 +80,43 @@ const Contact: React.FC = () => {
     setTimeout(() => setCopied(false), 2500);
   };
 
-  // Prebuilt tokenised chunks (reused for outer rows)
+  // Prebuilt tokenised chunks
   const chunk1 = useMemo(() => <>{Line1()}</>, []);
   const chunk2 = useMemo(() => <>{Line2()}</>, []);
   const chunk3 = useMemo(() => <>{Line3(SOCIAL_LINKS.email)}</>, []);
 
-  // FIX: Extracted the social link mapping logic into a constant `socialLinksContent`.
+  // Construct the proxy rows for inside the glass.
+  // We use the EXACT same structure/classes as the outer rows to ensure optical alignment.
+  const proxyRows = useMemo(() => [
+    <div key="row1" className="flex justify-center w-full">
+        <div className="relative w-[min(100%,1100px)] overflow-hidden select-none">
+            <div className="ticker-rail run-anim ticker-anim speed-25s delay-0 text-[11px] sm:text-[13px]">
+                 {Array.from({ length: 4 }).map((_, i) => (
+                  <span key={i} className="ticker-chunk opacity-90 saturate-150">{chunk1}</span>
+                ))}
+            </div>
+        </div>
+    </div>,
+    <div key="row2" className="flex justify-center w-full">
+        <div className="relative w-[min(100%,1100px)] overflow-hidden select-none">
+            <div className="ticker-rail run-anim ticker-anim speed-33s delay-15 text-[11px] sm:text-[13px]">
+                 {Array.from({ length: 4 }).map((_, i) => (
+                  <span key={i} className="ticker-chunk opacity-90 saturate-150">{chunk2}</span>
+                ))}
+            </div>
+        </div>
+    </div>,
+    <div key="row3" className="flex justify-center w-full">
+        <div className="relative w-[min(100%,1100px)] overflow-hidden select-none">
+             <div className="ticker-rail run-anim ticker-anim speed-40s delay-3 text-[11px] sm:text-[13px]">
+                 {Array.from({ length: 4 }).map((_, i) => (
+                  <span key={i} className="ticker-chunk opacity-90 saturate-150">{chunk3}</span>
+                ))}
+            </div>
+        </div>
+    </div>
+  ], [chunk1, chunk2, chunk3]);
+
   const socialLinksContent = SOCIAL_LINKS.profiles.map((profile) => {
     const Icon = ICON_MAP[profile.name] || Github;
     return (
@@ -106,7 +137,7 @@ const Contact: React.FC = () => {
             className="w-6 h-6 sm:w-7 sm:h-7 text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.85)] 
                        dark:text-[#FFF7C5] dark:drop-shadow-[0_0_10px_rgba(255,247,200,0.75)]"
             style={{
-              WebkitTextStroke: "1px rgba(0,0,0,0.45)", // visible in light mode
+              WebkitTextStroke: "1px rgba(0,0,0,0.45)",
             }}
           />
         </motion.div>
@@ -186,19 +217,19 @@ const Contact: React.FC = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.7 }}
-        className="relative mt-24 flex justify-center"
+        className="relative mt-24 flex justify-center w-full"
       >
-        {/* UPDATED: Simplified substrate for better performance */}
+        {/* Background substrate */}
         <div
           aria-hidden
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
                      w-[90vw] h-[90px] sm:w-[min(92vw,1100px)] sm:h-[120px] 
                      rounded-full pointer-events-none z-0
-                     bg-black/5 dark:bg-white/10 opacity-50"
+                     bg-black/5 dark:bg-white/10 opacity-40"
         />
 
-        {/* Foreground tikers (outer scene) — NO gradients, mixed tokens */}
-        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none z-[1] space-y-1 sm:space-y-[7px] select-none">
+        {/* Background Tickers (Faded to let the Glass Effect pop) */}
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none z-[1] space-y-1 sm:space-y-[7px] select-none opacity-40 blur-[0.5px]">
           <div className="flex justify-center">
             <div className="relative w-[min(100%,1100px)] overflow-hidden select-none" aria-hidden>
               <div className={`ticker-rail run-anim ticker-anim speed-25s delay-0 text-[11px] sm:text-[13px]`}>
@@ -228,8 +259,8 @@ const Contact: React.FC = () => {
           </div>
         </div>
 
-        {/* LIQUID PILL — proxy backdrop inside for TRUE light-blend + refraction */}
-        <LiquidPill proxyRows={[]} children={socialLinksContent} />
+        {/* LIQUID PILL — With internal proxy rows for the refraction effect */}
+        <LiquidPill proxyRows={proxyRows} children={socialLinksContent} />
       </motion.div>
     </section>
   );
