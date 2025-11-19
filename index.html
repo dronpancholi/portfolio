@@ -120,12 +120,12 @@
         gap:1rem;
         padding:10px 22px;
         border-radius:9999px;
-        /* UPDATED: Set to transparent for a pure "lens" effect */
-        background: transparent;
+        background: var(--glass-bg);
         border: 1px solid var(--glass-border);
         box-shadow: var(--glass-shadow), inset 0 1.5px 1px 0 var(--glass-highlight);
         will-change: transform, opacity;
-        /* REMOVED: backdrop-filter is now handled inside the SVG for stability */
+        -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+        backdrop-filter: blur(var(--glass-blur)) saturate(150%);
         overflow: clip;
         isolation: isolate;
         transform: translateZ(0); /* force compositor layer */

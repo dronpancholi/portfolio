@@ -1,5 +1,5 @@
+
 import React, { useEffect } from 'react';
-// FIX: Removed `Variants` from import as it was causing a module resolution error.
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 
 interface TypingAnimationProps {
@@ -9,8 +9,6 @@ interface TypingAnimationProps {
   delay?: number;
 }
 
-// FIX: Removed explicit `Variants` type as it was causing an error.
-// Using `as const` ensures TypeScript infers literal types (e.g. 'linear' instead of string), satisfying the Variants type.
 const cursorVariants = {
   blinking: {
     opacity: [0, 0, 1, 1],
@@ -18,17 +16,15 @@ const cursorVariants = {
       duration: 1,
       repeat: Infinity,
       repeatDelay: 0,
-      ease: "linear",
+      ease: "linear" as const,
       times: [0, 0.5, 0.5, 1]
     }
   }
-} as const;
+};
 
 const TypingAnimation: React.FC<TypingAnimationProps> = ({ text, as: Component = 'span', className, delay = 0 }) => {
   const count = useMotionValue(0);
-  // FIX: Explicitly type `latest` as `number` to resolve `unknown` type error.
   const rounded = useTransform(count, (latest: number) => Math.round(latest));
-  // FIX: Explicitly type `latest` as `number` to resolve `unknown` type error.
   const displayText = useTransform(rounded, (latest: number) => text.slice(0, latest));
 
   useEffect(() => {

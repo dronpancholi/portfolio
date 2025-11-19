@@ -4,43 +4,43 @@ export default function LiquidFilters(){
   return (
     <svg style={{display:"none"}} aria-hidden>
       <defs>
-        {/*
-          REBUILT & UNIFIED SVG FILTER for maximum cross-browser compatibility.
-          This filter combines the blur and distortion into a single operation
-          to prevent conflicts between CSS `backdrop-filter` and SVG `filter`.
-          It operates on the `BackgroundImage` to create a true "lens" effect.
+        {/* 
+          REBUILT & POLISHED SVG FILTER FOR A PREMIUM "CAUSTIC LENS" EFFECT
+          - Combines multiple stages for a sophisticated look: animated turbulence, a high-contrast magnification map, and an edge-aware pinch effect.
+          - Creates powerful magnification in the center with beautiful warping distortion towards the edges.
+          - Calibrated for maximum visual impact while preserving the readability of the text underneath.
         */}
         <filter id="liquidRefraction" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
-            {/* STAGE 1: Generate the animated, watery displacement map. This part is unchanged. */}
-            <feTurbulence type="fractalNoise" baseFrequency="0.015 0.025" numOctaves="2" seed="30" result="turbulence">
+            {/* 1. Base turbulence for a watery feel. Animate it gently. */}
+            <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="2" seed="10" result="turbulence">
                 <animate 
-                    attributeName="baseFrequency" 
-                    dur="40s" 
-                    keyTimes="0;0.5;1" 
-                    values="0.015 0.025;0.025 0.035;0.015 0.025" 
-                    repeatCount="indefinite"
+                  attributeName="baseFrequency" 
+                  dur="30s" 
+                  keyTimes="0;0.5;1" 
+                  values="0.012;0.018;0.012" 
+                  repeatCount="indefinite"
                 />
             </feTurbulence>
-            <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="softPillShape" />
-            <feColorMatrix in="softPillShape" type="matrix"
+
+            {/* 2. Create larger, smoother "blobs" from the turbulence for a magnification map. */}
+            <feGaussianBlur in="turbulence" stdDeviation="3" result="blurredTurbulence" />
+            {/* This color matrix dramatically increases the contrast of the noise, creating defined blobs for magnification. */}
+            <feColorMatrix in="blurredTurbulence" type="matrix"
                 values="1 0 0 0 0
                         0 1 0 0 0
                         0 0 1 0 0
-                        0 0 0 6 -1.5" result="magnificationMap" />
-            <feMorphology in="SourceAlpha" operator="erode" radius="4" result="erodedShape" />
-            <feGaussianBlur in="erodedShape" stdDeviation="6" result="softErodedShape" />
-            <feComposite in="softPillShape" in2="softErodedShape" operator="out" result="edgeMap" />
-            <feComposite in="turbulence" in2="magnificationMap" operator="arithmetic" k1="0" k2="0.7" k3="0.3" k4="0" result="texturedMagnification"/>
-            <feComposite in="texturedMagnification" in2="edgeMap" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="finalDisplacementMap"/>
-            
-            {/* STAGE 2: Get the background and apply the glass blur.
-                This replaces the CSS `backdrop-filter: blur()` for better stability.
-                A stdDeviation of 7 is roughly equivalent to a 14px CSS blur. */}
-            <feGaussianBlur in="BackgroundImage" stdDeviation="7" result="blurredBackground" />
+                        0 0 0 18 -7" result="magnifyAlpha" />
 
-            {/* STAGE 3: Apply the displacement map to the blurred background.
-                This is the final step that creates the distorted glass effect. */}
-            <feDisplacementMap in="blurredBackground" in2="finalDisplacementMap" scale="80" xChannelSelector="R" yChannelSelector="A"/>
+            {/* 3. Create an edge pinch effect from the shape's alpha channel to pull the distortion inward. */}
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="edgeBlur"/>
+            <feDisplacementMap in="magnifyAlpha" in2="edgeBlur" scale="15" xChannelSelector="R" yChannelSelector="G" result="edgePinchedMagnifyMap" />
+            
+            {/* 4. Apply the final, powerful displacement to the source graphic. */}
+            <feDisplacementMap in="SourceGraphic" in2="edgePinchedMagnifyMap" scale="85" xChannelSelector="R" yChannelSelector="A" result="finalDistort"/>
+
+            {/* 5. Final polish with a minimal blur to smooth any hard edges from the distortion. */}
+            <feGaussianBlur in="finalDistort" stdDeviation="1" result="final"/>
+            <feComposite in="final" in2="SourceGraphic" operator="over"/>
         </filter>
       </defs>
     </svg>

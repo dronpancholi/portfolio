@@ -1,10 +1,11 @@
 import React from "react";
 
 type Props = {
+  proxyRows: React.ReactNode[];
   children: React.ReactNode;
 };
 
-export default function LiquidPill({ children }: Props) {
+export default function LiquidPill({ proxyRows, children }: Props) {
   return (
     <div className="relative flex justify-center w-full">
       <div className="liquid-pill mx-auto" role="group" aria-label="Social links">
@@ -19,7 +20,10 @@ export default function LiquidPill({ children }: Props) {
               transform: "translateZ(0)"
             }}
           >
-            {/* This div is now intentionally empty. The SVG filter uses `BackgroundImage` to distort what's behind it. */}
+            {/* UPDATED: Flex container with scaling to prevent text overlap and fit rows within the pill. */}
+            <div className="flex flex-col items-center justify-center gap-1 sm:gap-1.5" style={{ width: "min(100%,1100px)", transform: 'scale(0.8)' }}>
+              {proxyRows}
+            </div>
           </div>
         </div>
 

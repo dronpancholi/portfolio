@@ -34,7 +34,7 @@ const Hero: React.FC = () => {
       style={{ y, opacity }}
     >
       <motion.div
-        style={{ perspective: '1200px' }}
+        style={{ perspective: 1200 }}
         className="w-full"
       >
         <GlassCard
@@ -56,7 +56,7 @@ const Hero: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              style={{ transform: 'translateZ(100px)', transformStyle: 'preserve-d' }}
+              style={{ transform: 'translateZ(100px)', transformStyle: 'preserve-3d' }}
               className="w-full max-w-4xl"
             >
               <TypingAnimation 

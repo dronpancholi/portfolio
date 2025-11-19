@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -64,41 +62,12 @@ function Line2() {
     { t: `"Clarity"` }, ", ", { t: `"Depth"` }, ", ", { t: `"Intention"` }, "]", ";",
   ]);
 }
-// FIX: Converted `Line3` to a proper React functional component by destructuring the `email` prop from the props object. This aligns with its usage as a component (`<Line3 email={...} />`) and resolves the type error where an object was being passed to a parameter expecting a string.
-function Line3({ email }: { email: string }) {
+function Line3(email: string) {
   return Colorize([
     { t: "function" }, " ", { t: "contact" }, "(", { t: "email" }, ")", " ", "{", " ",
     { t: "return" }, " ", { t: `\`mailto:\${email}\``}, ";", " ", "}",
   ]);
 }
-
-/* ------------- Seamless row: 4 chunks, translate -25% ------------- */
-// FIX: Converted `SeamlessRow` to a `React.FC` to ensure it's correctly typed as a React component. This resolves errors where the special 'key' prop was not recognized on the component's props type.
-type SeamlessRowProps = {
-  chunk: React.ReactNode;
-  speedClass: "speed-25s" | "speed-33s" | "speed-40s";
-  delayClass?: "delay-0" | "delay-15" | "delay-3";
-  className?: string;
-};
-
-const SeamlessRow: React.FC<SeamlessRowProps> = ({
-  chunk,
-  speedClass,
-  delayClass = "delay-0",
-  className = "",
-}) => {
-  const rail = useMemo(
-    () => Array.from({ length: 4 }).map((_, i) => <span key={i} className="ticker-chunk">{chunk}</span>),
-    [chunk]
-  );
-  return (
-    <div className={`relative w-[min(100%,1100px)] overflow-hidden select-none ${className}`} aria-hidden>
-      <div className={`ticker-rail run-anim ticker-anim ${speedClass} ${delayClass}`}>
-        {rail}
-      </div>
-    </div>
-  );
-};
 
 /* =============================== CONTACT =============================== */
 const Contact: React.FC = () => {
@@ -111,7 +80,12 @@ const Contact: React.FC = () => {
     setTimeout(() => setCopied(false), 2500);
   };
 
-  // FIX: Extracted the social link mapping logic into a constant `socialLinksContent`. This improves readability and can help resolve complex TypeScript inference issues, addressing the error where the `children` prop was reported as missing on the `LiquidPill` component.
+  // Prebuilt tokenised chunks (reused for outer rows)
+  const chunk1 = useMemo(() => <>{Line1()}</>, []);
+  const chunk2 = useMemo(() => <>{Line2()}</>, []);
+  const chunk3 = useMemo(() => <>{Line3(SOCIAL_LINKS.email)}</>, []);
+
+  // FIX: Extracted the social link mapping logic into a constant `socialLinksContent`.
   const socialLinksContent = SOCIAL_LINKS.profiles.map((profile) => {
     const Icon = ICON_MAP[profile.name] || Github;
     return (
@@ -223,15 +197,39 @@ const Contact: React.FC = () => {
                      bg-black/5 dark:bg-white/10 opacity-50"
         />
 
-        {/* Foreground tickers (outer scene) — NO gradients, mixed tokens */}
+        {/* Foreground tikers (outer scene) — NO gradients, mixed tokens */}
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none z-[1] space-y-1 sm:space-y-[7px] select-none">
-          <SeamlessRow chunk={<Line1 />} speedClass="speed-25s" className="text-[11px] sm:text-[13px]" />
-          <SeamlessRow chunk={<Line2 />} speedClass="speed-33s" delayClass="delay-15" className="text-[11px] sm:text-[13px]" />
-          <SeamlessRow chunk={<Line3 email={SOCIAL_LINKS.email} />} speedClass="speed-40s" delayClass="delay-3" className="text-[11px] sm:text-[13px]" />
+          <div className="flex justify-center">
+            <div className="relative w-[min(100%,1100px)] overflow-hidden select-none" aria-hidden>
+              <div className={`ticker-rail run-anim ticker-anim speed-25s delay-0 text-[11px] sm:text-[13px]`}>
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <span key={i} className="ticker-chunk">{chunk1}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="flex justify-center">
+            <div className="relative w-[min(100%,1100px)] overflow-hidden select-none" aria-hidden>
+              <div className={`ticker-rail run-anim ticker-anim speed-33s delay-15 text-[11px] sm:text-[13px]`}>
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <span key={i} className="ticker-chunk">{chunk2}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="flex justify-center">
+            <div className="relative w-[min(100%,1100px)] overflow-hidden select-none" aria-hidden>
+              <div className={`ticker-rail run-anim ticker-anim speed-40s delay-3 text-[11px] sm:text-[13px]`}>
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <span key={i} className="ticker-chunk">{chunk3}</span>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* LIQUID PILL — Now a pure lens, distorting the background tickers */}
-        <LiquidPill>{socialLinksContent}</LiquidPill>
+        {/* LIQUID PILL — proxy backdrop inside for TRUE light-blend + refraction */}
+        <LiquidPill proxyRows={[]} children={socialLinksContent} />
       </motion.div>
     </section>
   );

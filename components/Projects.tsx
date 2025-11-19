@@ -1,6 +1,5 @@
+
 import React, { useState, useEffect, useRef } from 'react';
-// FIX: Removed `Variants` import as it was causing a module resolution error.
-// Type inference is sufficient for variant objects.
 import { motion, AnimatePresence } from 'framer-motion';
 import GlassCard from './ui/GlassCard';
 import { PROJECTS_DATA } from '../constants';
@@ -19,20 +18,18 @@ const contentContainerVariants = {
   },
 };
 
-// FIX: Added `as const` to ensure TypeScript infers the narrowest possible types
-// for the variant properties (e.g. 'easeOut'), resolving the 'is not assignable to type Variants' error.
 const contentItemVariants = {
   hidden: { opacity: 0, y: 12 },
   visible: { 
     opacity: 1, 
     y: 0,
-    transition: { duration: 0.3, ease: 'easeOut' }
+    transition: { duration: 0.3, ease: 'easeOut' as const }
   },
   exit: {
     opacity: 0,
     transition: { duration: 0.15 }
   }
-} as const;
+};
 
 
 const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => void; }) => {
@@ -132,8 +129,6 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
   );
 };
 
-// FIX: Added `as const` to ensure TypeScript infers specific tuple and literal types
-// for properties like `ease` and `type`, which resolves assignment errors with Framer Motion's `Variants` type.
 const projectCardVariants = {
   offscreen: {
     opacity: 0,
@@ -145,15 +140,15 @@ const projectCardVariants = {
     transition: {
       delay: i * 0.1,
       duration: 0.5,
-      ease: [0.22, 1, 0.36, 1],
+      ease: [0.22, 1, 0.36, 1] as const,
     },
   }),
   hover: {
     y: -8,
     scale: 1.03,
-    transition: { type: 'spring', stiffness: 300, damping: 15 },
+    transition: { type: 'spring' as const, stiffness: 300, damping: 15 },
   },
-} as const;
+};
 
 const Projects: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);

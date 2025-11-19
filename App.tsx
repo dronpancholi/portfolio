@@ -1,5 +1,5 @@
+
 import React, { Suspense, lazy, useEffect } from 'react';
-import { LazyMotion, domAnimation } from 'framer-motion';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Footer from './components/Footer';
@@ -49,26 +49,24 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <LazyMotion features={domAnimation}>
-      <ThemeProvider>
-        <PerformanceOptimizedBackground />
-        <div className="relative isolate min-h-screen text-[var(--text-main)] selection:bg-[var(--accent)]/30">
-          <LiquidFilters />
-          <HeaderPillGlassFilter />
-          <Header />
-          <main className="container mx-auto px-6 md:px-8 pt-24">
-            <Hero />
-            <Suspense fallback={<Loader />}>
-              <About />
-              <Skills />
-              <Projects />
-              <Contact />
-            </Suspense>
-          </main>
-          <Footer />
-        </div>
-      </ThemeProvider>
-    </LazyMotion>
+    <ThemeProvider>
+      <PerformanceOptimizedBackground />
+      <div className="relative isolate min-h-screen text-[var(--text-main)] selection:bg-[var(--accent)]/30">
+        <LiquidFilters />
+        <HeaderPillGlassFilter />
+        <Header />
+        <main className="container mx-auto px-6 md:px-8 pt-24">
+          <Hero />
+          <Suspense fallback={<Loader />}>
+            <About />
+            <Skills />
+            <Projects />
+            <Contact />
+          </Suspense>
+        </main>
+        <Footer />
+      </div>
+    </ThemeProvider>
   );
 };
 
