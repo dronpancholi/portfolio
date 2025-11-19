@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import GlassCard from './ui/GlassCard';
 import { PROJECTS_DATA } from '../constants';
@@ -6,211 +7,241 @@ import { ArrowUpRight, X, ExternalLink, Github } from 'lucide-react';
 
 type Project = (typeof PROJECTS_DATA)[number];
 
-// High-performance variants: only opacity and transform
-const containerVariants = {
+const contentContainerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2
-    }
-  }
+      staggerChildren: 0.07,
+      delayChildren: 0.16,
+    },
+  },
 };
 
-const cardVariants = {
-  hidden: { 
-    opacity: 0, 
-    y: 20,
-    transform: "translateZ(0)" 
-  },
+const contentItemVariants = {
+  hidden: { opacity: 0, y: 12 },
   visible: { 
     opacity: 1, 
     y: 0,
-    transform: "translateZ(0)", 
-    transition: { 
-      duration: 0.6, 
-      ease: [0.22, 1, 0.36, 1] 
-    } 
+    transition: { duration: 0.3, ease: 'easeOut' as const }
+  },
+  exit: {
+    opacity: 0,
+    transition: { duration: 0.15 }
   }
 };
 
-const modalVariants = {
-  hidden: { opacity: 0, scale: 0.9, y: 20 },
-  visible: { 
-    opacity: 1, 
-    scale: 1, 
-    y: 0,
-    transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } 
-  },
-  exit: { 
-    opacity: 0, 
-    scale: 0.9, 
-    y: 20,
-    transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } 
-  }
-};
 
 const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => void; }) => {
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose();
+      if (event.key === 'Escape') {
+        onClose();
+      }
     };
     window.addEventListener('keydown', handleEsc);
-    return () => window.removeEventListener('keydown', handleEsc);
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+    };
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6" role="dialog" aria-modal="true">
-      {/* Backdrop */}
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+      aria-modal="true"
+      role="dialog"
+      aria-labelledby={`modal-title-${project.title}`}
+      aria-describedby={`modal-desc-${project.title}`}
+    >
       <motion.div
-        className="absolute inset-0 bg-black/40 backdrop-blur-md"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
+        className="absolute inset-0 bg-black/20 dark:bg-black/40"
+        initial={{ opacity:0 }}
+        animate={{ opacity:1 }}
+        exit={{ opacity:0 }}
+        transition={{ duration:0.25, ease:"easeOut" }}
         onClick={onClose}
-        style={{ willChange: "opacity" }}
       />
       
-      {/* Modal Content */}
       <GlassCard
-        className="relative w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col z-10 m-0 shadow-2xl"
-        variants={modalVariants}
-        initial="hidden"
-        animate="visible"
-        exit="exit"
+        layoutId={`project-card-${project.title}`}
+        transition={{ type:"spring", stiffness:360, damping:32, mass:1 }}
+        className="relative w-full max-w-3xl z-10"
+        style={{ backfaceVisibility: 'hidden' }}
       >
-        <div className="p-6 md:p-10 overflow-y-auto scrollbar-none overscroll-contain">
-          <button
+        <div className="p-8 md:p-12 relative max-h-[90vh] overflow-y-auto scrollbar-none">
+          <motion.button
             onClick={onClose}
-            className="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 transition-colors"
-            aria-label="Close"
+            className="absolute top-4 right-4 z-20 text-[var(--text-secondary)] p-2 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+            aria-label="Close modal"
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1, transition: { delay: 0.3 } }}
+            exit={{ opacity: 0, scale: 0.5 }}
           >
-            <X size={20} />
-          </button>
+            <X size={24} />
+          </motion.button>
           
-          <div className="mt-2">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-              <h3 className="text-2xl md:text-3xl font-bold text-[var(--text-main)]">{project.title}</h3>
-              <span className={`text-xs font-semibold px-3 py-1 rounded-full self-start ${
-                project.status === 'Coming Soon' 
-                  ? 'bg-[var(--accent)]/20 text-[var(--accent)]' 
-                  : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)]'
-              }`}>
-                {project.status}
-              </span>
+          <motion.div variants={contentContainerVariants} initial="hidden" animate="visible">
+            <div className="flex justify-between items-start mb-4">
+              <motion.h3 layoutId={`project-title-${project.title}`} id={`modal-title-${project.title}`} className="text-2xl md:text-3xl font-bold text-[var(--text-main)] pr-12">{project.title}</motion.h3>
+              <motion.div variants={contentItemVariants}>
+                <span className={`text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap self-start ${
+                  project.status === 'Coming Soon' ? 'bg-[var(--accent)]/20 text-[var(--accent)] animate-pulse' : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)]'
+                }`}>
+                  {project.status}
+                </span>
+              </motion.div>
             </div>
             
-            <p className="text-[var(--text-secondary)] text-base md:text-lg leading-relaxed mb-8 font-light">
-              {project.longDescription}
-            </p>
+            <motion.p layoutId={`project-description-${project.title}`} id={`modal-desc-${project.title}`} className="text-[var(--text-secondary)] font-light text-base md:text-lg leading-relaxed mb-6">{project.longDescription}</motion.p>
 
-            <div className="grid md:grid-cols-2 gap-8 mb-8">
-              <div>
-                <h4 className="text-sm font-bold uppercase tracking-wider text-[var(--text-main)] mb-3 opacity-70">Features</h4>
-                <ul className="space-y-2 text-[var(--text-secondary)] font-light">
-                  {project.features.map(feature => (
-                    <li key={feature} className="flex items-start gap-2">
-                      <span className="block w-1.5 h-1.5 mt-2 rounded-full bg-[var(--accent)] flex-shrink-0" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
+            <motion.div variants={contentItemVariants} className="mb-6">
+              <h4 className="text-lg font-semibold text-[var(--text-main)] mb-3">Key Features</h4>
+              <ul className="list-disc list-inside space-y-1 text-[var(--text-secondary)] font-light">
+                {project.features.map(feature => <li key={feature}>{feature}</li>)}
+              </ul>
+            </motion.div>
+            
+            <motion.div variants={contentItemVariants} className="mb-8">
+              <h4 className="text-lg font-semibold text-[var(--text-main)] mb-3">Tech Stack</h4>
+              <div className="flex flex-wrap gap-2">
+                {project.techStack.map(tech => (
+                  <span key={tech} className="bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] text-sm font-medium px-3 py-1 rounded-full">{tech}</span>
+                ))}
               </div>
-              
-              <div>
-                <h4 className="text-sm font-bold uppercase tracking-wider text-[var(--text-main)] mb-3 opacity-70">Technology</h4>
-                <div className="flex flex-wrap gap-2">
-                  {project.techStack.map(tech => (
-                    <span key={tech} className="bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] text-sm px-3 py-1 rounded-md">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
+            </motion.div>
 
-            <div className="flex items-center gap-4 pt-4 border-t border-[var(--glass-border)]">
+            <motion.div variants={contentItemVariants} className="flex items-center space-x-4">
               {project.liveUrl && (
-                <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center font-medium text-[var(--text-main)] hover:text-[var(--accent)] transition-colors">
-                  View Live Demo <ExternalLink className="w-4 h-4 ml-2" />
+                <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors">
+                  View Live Demo <ExternalLink className="w-4 h-4 ml-1.5" />
                 </a>
               )}
               {project.repoUrl && (
-                <a href={project.repoUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center font-medium text-[var(--text-main)] hover:text-[var(--accent)] transition-colors">
-                  Source Code <Github className="w-4 h-4 ml-2" />
+                <a href={project.repoUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors">
+                  Source Code <Github className="w-4 h-4 ml-1.5" />
                 </a>
               )}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </GlassCard>
     </div>
   );
 };
 
+const projectCardVariants = {
+  offscreen: {
+    opacity: 0,
+    y: 50,
+  },
+  onscreen: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.1,
+      duration: 0.5,
+      ease: [0.22, 1, 0.36, 1] as const,
+    },
+  }),
+  hover: {
+    y: -8,
+    scale: 1.03,
+    transition: { type: 'spring' as const, stiffness: 300, damping: 15 },
+  },
+};
+
 const Projects: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const originRef = useRef<HTMLButtonElement | HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (selectedProject) document.body.style.overflow = 'hidden';
-    else document.body.style.overflow = '';
-    return () => { document.body.style.overflow = ''; };
+    if (selectedProject) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
   }, [selectedProject]);
+
+  const handleClose = () => {
+    setSelectedProject(null);
+    originRef.current?.focus();
+  }
 
   return (
     <section id="projects" className="py-16 md:py-24 scroll-mt-24">
-      <motion.div
+      <motion.h2 
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-10%" }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="text-center mb-12"
+        viewport={{ once: true, amount: 0.5 }}
+        transition={{ duration: 0.5 }}
+        className="text-3xl md:text-4xl font-bold text-[var(--text-main)] mb-12 text-center tracking-tight"
       >
-        <h2 className="text-3xl md:text-4xl font-bold text-[var(--text-main)] tracking-tight">
-          Selected Work
-        </h2>
-      </motion.div>
-      
-      <motion.div 
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-5%" }}
-      >
+        Selected Work
+      </motion.h2>
+      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ${selectedProject ? 'pointer-events-none' : ''}`}>
         {PROJECTS_DATA.map((project, index) => (
           <motion.div
             key={project.title}
-            variants={cardVariants}
-            onClick={() => setSelectedProject(project)}
-            className="h-full"
+            custom={index}
+            variants={projectCardVariants}
+            initial="offscreen"
+            whileInView="onscreen"
+            whileHover="hover"
+            viewport={{ once: true, amount: 0.3 }}
+            whileTap={{ y: -2, scale: 0.99 }}
+            onClick={(e) => {
+              originRef.current = e.currentTarget;
+              setSelectedProject(project);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                originRef.current = e.currentTarget;
+                setSelectedProject(project);
+              }
+            }}
+            className="cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] rounded-[24px]"
+            role="button"
+            tabIndex={0}
+            aria-label={`Learn more about ${project.title}`}
           >
-            <GlassCard className="h-full flex flex-col cursor-pointer group hover:border-[var(--accent)]/30 transition-colors duration-300">
+            <GlassCard 
+              layoutId={`project-card-${project.title}`}
+              className="h-full group"
+            >
               <div className="p-8 flex flex-col h-full">
-                <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-xl font-bold text-[var(--text-main)] group-hover:text-[var(--accent)] transition-colors">{project.title}</h3>
-                  {project.status === 'Coming Soon' && (
-                    <span className="w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse" />
-                  )}
+                <div className="flex-grow">
+                  <div className="flex justify-between items-start mb-4">
+                    <motion.h3 layoutId={`project-title-${project.title}`} className="text-xl font-bold text-[var(--text-main)]">{project.title}</motion.h3>
+                    <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
+                      project.status === 'Coming Soon' ? 'bg-[var(--accent)]/20 text-[var(--accent)] animate-pulse' : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)]'
+                    }`}>
+                      {project.status}
+                    </span>
+                  </div>
+                  <motion.p layoutId={`project-description-${project.title}`} className="text-[var(--text-secondary)] font-light mb-4">{project.description}</motion.p>
                 </div>
                 
-                <p className="text-[var(--text-secondary)] font-light mb-6 flex-grow leading-relaxed">
-                  {project.description}
-                </p>
-                
-                <div className="mt-auto pt-4 flex items-center text-sm font-medium text-[var(--text-secondary)] opacity-70 group-hover:opacity-100 transition-opacity">
-                  View Details <ArrowUpRight className="w-4 h-4 ml-1 transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                <div className="mt-auto pt-4">
+                  <div 
+                    className="inline-flex items-center text-sm font-semibold text-[var(--text-secondary)] group-hover:text-[var(--accent)] transition-colors group -ml-2 p-2 rounded-md"
+                    aria-hidden="true"
+                  >
+                    Learn More <ArrowUpRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                  </div>
                 </div>
               </div>
             </GlassCard>
           </motion.div>
         ))}
-      </motion.div>
+      </div>
 
       <AnimatePresence>
         {selectedProject && (
-          <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
+          <ProjectModal project={selectedProject} onClose={handleClose} />
         )}
       </AnimatePresence>
     </section>

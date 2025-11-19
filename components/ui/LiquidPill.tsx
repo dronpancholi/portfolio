@@ -1,87 +1,73 @@
-import React, { ReactNode } from "react";
+import React from "react";
 
-interface LiquidPillProps {
-  proxyRows?: ReactNode[];
-  children?: ReactNode;
-}
+type Props = {
+  proxyRows: React.ReactNode[];
+  children: React.ReactNode;
+};
 
-const LiquidPill: React.FC<LiquidPillProps> = ({ proxyRows = [], children }) => {
+export default function LiquidPill({ proxyRows, children }: Props) {
   return (
-    <div className="relative flex justify-center w-full z-10 p-4">
+    <div className="relative flex justify-center w-full z-10">
       <div 
-        className="liquid-pill-container"
+        className="liquid-pill mx-auto" 
+        role="group" 
+        aria-label="Social links"
         style={{
-          border: '1px solid var(--glass-border)',
-          boxShadow: '0 12px 40px -12px rgba(0,0,0,0.15)',
-          background: 'rgba(255, 255, 255, 0.01)', 
+            // Ultra-transparent background to rely entirely on refraction and border
+            background: 'rgba(255, 255, 255, 0.01)', 
+            // Stronger glass border and shadow for definition without opacity
+            boxShadow: '0 10px 40px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(255,255,255,0.2)',
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            backdropFilter: 'blur(8px)', // Reduced blur for clarity
+            WebkitBackdropFilter: 'blur(8px)',
         }}
       >
-        {/* --- LAYER 1: REFRACTION ENGINE --- 
-            This layer holds the "tickers" or content that gets distorted.
-            It is rendered conceptually "behind" the glass surface but inside the clipping mask.
+        {/* 
+          Proxy Layer: Receives the SVG displacement filter.
+          This mimics the content BEHIND the glass.
         */}
-        <div 
-          className="absolute inset-0 rounded-full overflow-hidden pointer-events-none z-0"
-          style={{ 
-             filter: "url(#liquidRefraction)",
-             WebkitFilter: "url(#liquidRefraction)",
-             opacity: 0.85,
-             transform: "translateZ(0)", // Force GPU
-          }}
-        >
-          {/* 
-            Absolute centering for the proxy content.
-            Using fixed dimension strategies to avoid layout thrashing.
-          */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 opacity-60">
-            {proxyRows}
+        <div className="liquid-pill__proxy" aria-hidden style={{ overflow: 'visible' }}> 
+          {/* Overflow visible ensures the distortion doesn't get clipped at the bounding box in Safari */}
+          <div
+            className="liquid-pill__proxyInner"
+            style={{
+              filter: "url(#liquidRefraction)",
+              WebkitFilter: "url(#liquidRefraction)",
+              opacity: 1, 
+              // Force GPU to prevent browser from optimizing away the expensive filter
+              transform: "translate3d(0,0,0)", 
+              willChange: "transform",
+            }}
+          >
+            {/* 
+              Container for the proxy rows.
+              Absolute centered with fixed width matching the outer context.
+            */}
+            <div 
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center gap-1 sm:gap-[7px]" 
+              style={{ width: "min(100vw, 1100px)" }}
+            >
+              {proxyRows}
+            </div>
           </div>
         </div>
 
-        {/* --- LAYER 2: FROSTED GLASS SURFACE --- 
-            Standard browser-safe backdrop blur.
-        */}
+        {/* Surface shine/caustics - Sharp overlay for crystal look */}
         <div 
-          className="absolute inset-0 rounded-full z-10 pointer-events-none"
-          style={{
-            backdropFilter: "blur(16px) saturate(180%)",
-            WebkitBackdropFilter: "blur(16px) saturate(180%)",
-            backgroundColor: "rgba(255, 255, 255, 0.08)",
-            mixBlendMode: "overlay" // Blend nicely with the distorted content below
-          }}
+          className="liquid-pill__shine" 
+          aria-hidden 
+          style={{ 
+            opacity: 0.8, 
+            mixBlendMode: 'soft-light',
+            background: 'linear-gradient(120deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0.1) 100%)'
+          }} 
         />
 
-        {/* --- LAYER 3: CAUSTICS & NOISE --- 
-            Subtle texture overlay to simulate physical glass imperfections.
-        */}
-        <div 
-          className="absolute inset-0 rounded-full z-20 pointer-events-none opacity-30"
-          style={{
-             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E")`,
-             mixBlendMode: "soft-light"
-          }}
-        />
-
-        {/* --- LAYER 4: SPECULAR HIGHLIGHTS --- 
-            Simulates light reflection on the curved surface.
-        */}
-        <div 
-          className="absolute inset-0 rounded-full z-30 pointer-events-none"
-          style={{
-            background: "linear-gradient(145deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0.1) 100%)",
-            mixBlendMode: "overlay"
-          }}
-        />
-
-        {/* --- LAYER 5: CONTENT --- 
-            Interactive elements sitting clearly on top.
-        */}
-        <div className="relative z-40 px-8 py-4 flex items-center gap-6">
+        {/* Actual Interactive Content (Social Icons) */}
+        <div className="liquid-pill__content">
           {children}
         </div>
       </div>
     </div>
   );
-};
-
-export default LiquidPill;
+}
