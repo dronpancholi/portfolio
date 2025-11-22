@@ -7,22 +7,29 @@ interface TypingAnimationProps {
   as?: React.ElementType;
   className?: string;
   delay?: number;
+  speed?: number;
 }
 
 const cursorVariants = {
   blinking: {
-    opacity: [0, 0, 1, 1],
+    opacity: [1, 1, 0, 0],
     transition: {
-      duration: 1,
+      duration: 0.95,
       repeat: Infinity,
       repeatDelay: 0,
-      ease: "linear" as const,
-      times: [0, 0.5, 0.5, 1]
+      ease: "linear",
+      times: [0, 0.6, 0.6, 1]
     }
   }
 };
 
-const TypingAnimation: React.FC<TypingAnimationProps> = ({ text, as: Component = 'span', className, delay = 0 }) => {
+const TypingAnimation: React.FC<TypingAnimationProps> = ({ 
+  text, 
+  as: Component = 'span', 
+  className, 
+  delay = 0,
+  speed = 0.03 
+}) => {
   const count = useMotionValue(0);
   const rounded = useTransform(count, (latest: number) => Math.round(latest));
   const displayText = useTransform(rounded, (latest: number) => text.slice(0, latest));
@@ -31,11 +38,11 @@ const TypingAnimation: React.FC<TypingAnimationProps> = ({ text, as: Component =
     const controls = animate(count, text.length, {
       type: "tween",
       delay: delay,
-      duration: text.length * 0.04, // Faster, more engaging feel
+      duration: text.length * speed,
       ease: "linear",
     });
     return controls.stop;
-  }, [text, delay, count]);
+  }, [text, delay, count, speed]);
 
 
   return (
