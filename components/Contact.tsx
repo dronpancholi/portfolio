@@ -1,3 +1,4 @@
+
 import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -129,8 +130,9 @@ const Contact: React.FC = () => {
         className="focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 focus-visible:ring-white rounded-full"
       >
         <motion.div
-          whileHover={{ scale: 1.28 }}
-          transition={{ type: "spring", stiffness: 260, damping: 14 }}
+          whileHover={{ scale: 1.3 }}
+          whileTap={{ scale: 0.9 }}
+          transition={{ type: "spring", stiffness: 400, damping: 10 }}
           className="transition-all"
         >
           <Icon
@@ -152,7 +154,7 @@ const Contact: React.FC = () => {
         initial={{ opacity: 0, y: 18 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
+        transition={{ type: "spring", stiffness: 100, damping: 20 }}
         className="text-3xl md:text-4xl font-bold text-[var(--text-main)] mb-3"
       >
         Start a Conversation
@@ -163,7 +165,7 @@ const Contact: React.FC = () => {
         initial={{ opacity: 0, y: 18 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.1 }}
+        transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.1 }}
         className="text-lg text-[var(--text-secondary)] mb-12 max-w-xl mx-auto"
       >
         I am open to new projects and collaborations. For inquiries, please reach out via email.
@@ -174,7 +176,7 @@ const Contact: React.FC = () => {
         initial={{ opacity: 0, y: 45 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ type: "spring", stiffness: 100, damping: 18, delay: 0.2 }}
         className="max-w-xl mx-auto"
       >
         <GlassCard>
@@ -195,7 +197,7 @@ const Contact: React.FC = () => {
                 aria-label="Copy email address"
               >
                 {copied ? (
-                  <motion.span key="copied-text" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-1">
+                  <motion.span key="copied-text" initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} className="flex items-center gap-1">
                     <Check size={16} />
                     Copied
                   </motion.span>
@@ -213,10 +215,10 @@ const Contact: React.FC = () => {
 
       {/* ======= Social pill + continuous multi-line code background ======= */}
       <motion.div
-        initial={{ opacity: 0, y: 22 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 30, scale: 0.95 }}
+        whileInView={{ opacity: 1, y: 0, scale: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.7 }}
+        transition={{ type: "spring", stiffness: 120, damping: 15, delay: 0.3 }}
         className="relative mt-24 flex justify-center w-full"
       >
         {/* Background substrate */}
@@ -228,7 +230,7 @@ const Contact: React.FC = () => {
                      bg-black/5 dark:bg-white/10 opacity-40"
         />
 
-        {/* Background Tickers (Faded to let the Glass Effect pop) */}
+        {/* Background Tickers */}
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none z-[1] space-y-1 sm:space-y-[7px] select-none opacity-40 blur-[0.5px]">
           <div className="flex justify-center">
             <div className="relative w-[min(100%,1100px)] overflow-hidden select-none" aria-hidden>
@@ -259,7 +261,7 @@ const Contact: React.FC = () => {
           </div>
         </div>
 
-        {/* LIQUID PILL — With internal proxy rows for the refraction effect */}
+        {/* LIQUID PILL */}
         <LiquidPill proxyRows={proxyRows} children={socialLinksContent} />
       </motion.div>
     </section>

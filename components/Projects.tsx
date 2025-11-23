@@ -12,21 +12,22 @@ const contentContainerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.07,
-      delayChildren: 0.16,
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
     },
   },
 };
 
 const contentItemVariants = {
-  hidden: { opacity: 0, y: 12 },
+  hidden: { opacity: 0, y: 15 },
   visible: { 
     opacity: 1, 
     y: 0,
-    transition: { duration: 0.3, ease: 'easeOut' as const }
+    transition: { type: 'spring' as const, stiffness: 200, damping: 16 }
   },
   exit: {
     opacity: 0,
+    y: -10,
     transition: { duration: 0.15 }
   }
 };
@@ -54,17 +55,17 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
       aria-describedby={`modal-desc-${project.title}`}
     >
       <motion.div
-        className="absolute inset-0 bg-black/20 dark:bg-black/40"
+        className="absolute inset-0 bg-black/20 dark:bg-black/40 backdrop-blur-sm"
         initial={{ opacity:0 }}
         animate={{ opacity:1 }}
         exit={{ opacity:0 }}
-        transition={{ duration:0.25, ease:"easeOut" }}
+        transition={{ duration:0.3 }}
         onClick={onClose}
       />
       
       <GlassCard
         layoutId={`project-card-${project.title}`}
-        transition={{ type:"spring", stiffness:360, damping:32, mass:1 }}
+        transition={{ type:"spring", stiffness:350, damping:25, mass:0.8 }}
         className="relative w-full max-w-3xl z-10"
         style={{ backfaceVisibility: 'hidden' }}
       >
@@ -73,9 +74,10 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
             onClick={onClose}
             className="absolute top-4 right-4 z-20 text-[var(--text-secondary)] p-2 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
             aria-label="Close modal"
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1, transition: { delay: 0.3 } }}
+            initial={{ opacity: 0, scale: 0.5, rotate: -90 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0, transition: { type: 'spring', stiffness: 300, damping: 15, delay: 0.2 } }}
             exit={{ opacity: 0, scale: 0.5 }}
+            whileHover={{ scale: 1.1, rotate: 90 }}
           >
             <X size={24} />
           </motion.button>
@@ -133,20 +135,23 @@ const projectCardVariants = {
   offscreen: {
     opacity: 0,
     y: 50,
+    scale: 0.95,
   },
   onscreen: (i: number) => ({
     opacity: 1,
     y: 0,
+    scale: 1,
     transition: {
       delay: i * 0.1,
-      duration: 0.5,
-      ease: [0.22, 1, 0.36, 1] as const,
+      type: "spring" as const,
+      stiffness: 100,
+      damping: 15,
     },
   }),
   hover: {
-    y: -8,
+    y: -10,
     scale: 1.03,
-    transition: { type: 'spring' as const, stiffness: 300, damping: 15 },
+    transition: { type: 'spring' as const, stiffness: 350, damping: 15 },
   },
 };
 
@@ -176,7 +181,7 @@ const Projects: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.5 }}
-        transition={{ duration: 0.5 }}
+        transition={{ type: "spring", stiffness: 100, damping: 20 }}
         className="text-3xl md:text-4xl font-bold text-[var(--text-main)] mb-12 text-center tracking-tight"
       >
         Selected Work
@@ -190,8 +195,8 @@ const Projects: React.FC = () => {
             initial="offscreen"
             whileInView="onscreen"
             whileHover="hover"
-            viewport={{ once: true, amount: 0.3 }}
-            whileTap={{ y: -2, scale: 0.99 }}
+            viewport={{ once: true, amount: 0.2 }}
+            whileTap={{ y: 0, scale: 0.98 }}
             onClick={(e) => {
               originRef.current = e.currentTarget;
               setSelectedProject(project);
@@ -228,7 +233,7 @@ const Projects: React.FC = () => {
                 <div className="mt-auto pt-4">
                   <div 
                     className="inline-flex items-center text-sm font-semibold text-[var(--text-secondary)] group-hover:text-[var(--accent)] transition-colors group -ml-2 p-2 rounded-md"
-                    aria-hidden="true"
+                    aria-label="Learn more about this project"
                   >
                     Learn More <ArrowUpRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                   </div>

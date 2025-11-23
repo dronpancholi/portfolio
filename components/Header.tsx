@@ -41,14 +41,12 @@ export default function Header(){
     ? 'url(#header-pill-glass-expanded)'
     : 'url(#header-pill-glass)';
 
-  // FIX: Using `as const` to ensure TypeScript infers the narrowest possible types
-  // for the transition properties (e.g., 'spring' instead of string), resolving 
-  // the 'is not assignable to type Transition' error.
+  // UPDATED: Bouncier, elastic spring physics
   const spring = {
     type: "spring",
-    stiffness: 72,
-    damping: 16,
-    mass: 1.1
+    stiffness: 180,
+    damping: 14,
+    mass: 0.9
   } as const;
 
   return (
@@ -57,7 +55,6 @@ export default function Header(){
         ref={pillRef}
         onClick={onPillClick}
         layout
-        // UPDATED: Replaced Tailwind classes with a single `.glass` class for a consistent, clear effect
         className="glass pointer-events-auto relative flex items-center justify-center cursor-pointer select-none whitespace-nowrap rounded-full"
         variants={{
           top:       { 
@@ -84,9 +81,7 @@ export default function Header(){
           style={{ filter: filterUrl }}
         />
 
-        {/* REMOVED: Depth Highlight Layer. Now handled by the `.glass` class's inset shadow */}
-
-        {/* Liquid Shine Sweep Layer - UPDATED to be more subtle */}
+        {/* Liquid Shine Sweep Layer */}
         <div className="absolute inset-0 rounded-full pointer-events-none bg-[linear-gradient(115deg,rgba(255,255,255,0.25)_0%,rgba(255,255,255,0.05)_40%,rgba(255,255,255,0)_65%)] opacity-70 dark:opacity-60 mix-blend-overlay" />
         
         {/* Content */}
@@ -105,10 +100,10 @@ export default function Header(){
               <motion.div 
                 key="theme-toggle"
                 layout="position"
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10, transition: { duration: 0.18 } }}
-                transition={{ duration: 0.32, ease:[0.22,1,0.36,1], delay: 0.1 }}
+                initial={{ opacity: 0, x: -10, scale: 0.8 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, x: -5, scale: 0.8, transition: { duration: 0.15 } }}
+                transition={spring}
                 onClick={(e) => e.stopPropagation()}
                 className="ml-auto"
               >
@@ -123,10 +118,10 @@ export default function Header(){
                 key="nav"
                 layout="position"
                 onClick={(e)=>e.stopPropagation()}
-                initial={{ opacity: 0, x: 6 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 6, transition: { duration: 0.18 } }}
-                transition={{ duration: 0.32, ease:[0.22,1,0.36,1] }}
+                initial={{ opacity: 0, x: 10, scale: 0.9 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, x: 10, scale: 0.9, transition: { duration: 0.1 } }}
+                transition={spring}
                 className="
                   flex items-center font-medium text-[var(--text-secondary)] 
                   overflow-hidden

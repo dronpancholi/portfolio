@@ -17,7 +17,7 @@ const cursorVariants = {
       duration: 0.95,
       repeat: Infinity,
       repeatDelay: 0,
-      ease: "linear",
+      ease: "linear" as const,
       times: [0, 0.6, 0.6, 1]
     }
   }

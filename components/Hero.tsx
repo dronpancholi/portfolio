@@ -9,8 +9,9 @@ const InteractivePortrait: React.FC = () => {
     <motion.div
       className="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden cursor-pointer shadow-2xl shadow-black/10"
       style={{ transformStyle: 'preserve-3d' }}
-      whileHover={{ scale: 1.05 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+      whileHover={{ scale: 1.1, rotate: 3 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 15 }}
     >
       <img
         src="https://i.ibb.co/YFJdKdD1/picofme-9.png"
@@ -26,6 +27,14 @@ const Hero: React.FC = () => {
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 800], [0, -100]);
   const opacity = useTransform(scrollY, [0, 600, 800], [1, 0.5, 0]);
+
+  // Elastic entrance transition
+  const entranceTransition = {
+    type: "spring",
+    stiffness: 70,
+    damping: 14,
+    mass: 1.2
+  } as const;
 
   return (
     <motion.section 
@@ -43,9 +52,9 @@ const Hero: React.FC = () => {
         >
           <div className="p-10 md:p-16 flex flex-col items-center justify-center text-center">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              initial={{ opacity: 0, y: 40, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ ...entranceTransition, delay: 0.1 }}
               className="mb-8"
               style={{ transform: 'translateZ(75px)', transformStyle: 'preserve-3d' }}
             >
@@ -53,9 +62,9 @@ const Hero: React.FC = () => {
             </motion.div>
             
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ ...entranceTransition, delay: 0.3 }}
               style={{ transform: 'translateZ(100px)', transformStyle: 'preserve-3d' }}
               className="w-full max-w-4xl"
             >
@@ -69,7 +78,7 @@ const Hero: React.FC = () => {
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 3.5, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ ...entranceTransition, delay: 3.2 }}
               className="max-w-2xl text-base sm:text-lg md:text-xl text-[var(--text-secondary)] font-light mx-auto"
               style={{ transform: 'translateZ(60px)', transformStyle: 'preserve-3d' }}
             >
