@@ -10,7 +10,7 @@ export default function Header(){
 
   useEffect(() => {
     const onScroll = () => {
-      const atTop = window.scrollY < 8;
+      const atTop = window.scrollY < 20; // Increased threshold slightly
       setIsAtTop(atTop);
       if (!atTop && expanded) return;
       if (!atTop) setExpanded(false);
@@ -36,70 +36,88 @@ export default function Header(){
 
   const state = isAtTop ? "top" : expanded ? "expanded" : "collapsed";
 
-  const filterUrl = state === 'expanded'
-    ? 'url(#header-pill-glass-expanded)'
-    : 'url(#header-pill-glass)';
-
-  // OPTIMIZED PHYSICS
-  // Reduced mass and increased damping for faster settling
+  // BUTTERY SMOOTH PHYSICS
+  // Overdamped spring to prevent "jitter" at the end of the movement.
   const fluidSpring = {
     type: "spring",
-    stiffness: 160,
-    damping: 25,
-    mass: 1,
-    restDelta: 0.01
+    stiffness: 120,
+    damping: 22,
+    mass: 1
   } as const;
 
   return (
-    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full flex justify-center pointer-events-none">
+    <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full flex justify-center pointer-events-none">
       <motion.header
         ref={pillRef}
         onClick={onPillClick}
         layout
-        className="glass pointer-events-auto relative flex items-center justify-center cursor-pointer select-none whitespace-nowrap rounded-full"
-        variants={{
-          top:       { 
-            padding: "12px 24px", 
-            scale: 1,
-            borderRadius: "9999px" 
-          },
-          expanded:  { 
-            padding: "10px 20px", 
-            scale: 0.98,
-            borderRadius: "24px" 
-          },
-          collapsed: { 
-            padding: "8px 16px" , 
-            scale: 0.90,
-            borderRadius: "9999px"
-          }
-        }}
         initial={false}
         animate={state}
         transition={fluidSpring}
-        aria-label="Primary navigation"
-        style={{ transform: "translateZ(0)" }} // Force GPU layer
+        className="relative flex items-center justify-center cursor-pointer select-none overflow-hidden pointer-events-auto"
+        variants={{
+          top: { 
+            width: "auto",
+            height: "54px", // Fixed height for consistency
+            paddingLeft: "28px",
+            paddingRight: "28px",
+            borderRadius: "9999px",
+            y: 0 
+          },
+          expanded: { 
+            width: "380px", // Fixed width to prevent layout fighting
+            height: "auto",
+            paddingLeft: "24px",
+            paddingRight: "24px",
+            paddingTop: "16px",
+            paddingBottom: "16px",
+            borderRadius: "28px",
+            y: 0
+          },
+          collapsed: { 
+            width: "auto",
+            height: "44px",
+            paddingLeft: "20px",
+            paddingRight: "20px",
+            borderRadius: "9999px",
+            y: 0
+          }
+        }}
+        style={{
+          // HIGH PERFORMANCE LIQUID GLASS STYLES
+          // Uses pure CSS to mimic the water effect without expensive SVG filters
+          backgroundColor: "rgba(255, 255, 255, 0.65)", // Light mode base
+          backdropFilter: "blur(16px) saturate(180%)",
+          WebkitBackdropFilter: "blur(16px) saturate(180%)",
+          boxShadow: `
+            0 4px 6px -1px rgba(0, 0, 0, 0.05),
+            0 10px 15px -3px rgba(0, 0, 0, 0.05),
+            inset 0 1px 1px rgba(255, 255, 255, 0.8),   /* Top highlight (surface tension) */
+            inset 0 -1px 1px rgba(0, 0, 0, 0.05)        /* Bottom shadow (depth) */
+          `,
+          border: "1px solid rgba(255, 255, 255, 0.4)",
+          transform: "translateZ(0)" // Force GPU
+        }}
       >
-        {/* Distortion Liquid Layer (inside only) */}
-        <motion.div
-          className="absolute inset-0 rounded-[inherit] overflow-hidden pointer-events-none"
-          style={{ filter: filterUrl, opacity: 0.5 }}
-          layout
-        />
-
-        {/* Liquid Shine Sweep Layer */}
-        <motion.div 
-            layout
-            className="absolute inset-0 rounded-[inherit] pointer-events-none bg-[linear-gradient(115deg,rgba(255,255,255,0.25)_0%,rgba(255,255,255,0.05)_40%,rgba(255,255,255,0)_65%)] opacity-70 dark:opacity-60 mix-blend-overlay" 
-        />
+        {/* Dark Mode Overrides via CSS class injection logic would be complex with inline styles, 
+            so we use a pseudo-element or just rely on global CSS variables if possible.
+            However, since we are in a motion component, we can use a simpler approach:
+            We will use a class for the dynamic colors.
+        */}
+        <div className="absolute inset-0 bg-white/50 dark:bg-[#0f141e]/60 transition-colors duration-300" />
         
+        {/* Liquid Surface Shine (Gradient Overlay) */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/40 to-transparent opacity-100 pointer-events-none" />
+
         {/* Content */}
         <div className="relative z-10 flex items-center justify-center gap-4">
           <motion.p
             layout="position"
-            animate={{ fontSize: state==="collapsed" ? "0.85rem" : "1.05rem" }}
-            transition={fluidSpring}
-            className="font-semibold tracking-tight text-[var(--text-main)]"
+            animate={{ 
+              fontSize: state==="collapsed" ? "0.9rem" : "1rem",
+              fontWeight: state==="collapsed" ? 600 : 700
+            }}
+            className="tracking-tight text-gray-900 dark:text-white"
           >
             Dron Pancholi
           </motion.p>
@@ -109,10 +127,10 @@ export default function Header(){
               <motion.div 
                 key="theme-toggle"
                 layout="position"
-                initial={{ opacity: 0, scale: 0.8, x: -5 }}
+                initial={{ opacity: 0, scale: 0.8, x: -10 }}
                 animate={{ opacity: 1, scale: 1, x: 0 }}
-                exit={{ opacity: 0, scale: 0.8, x: -5, transition: { duration: 0.2 } }}
-                transition={fluidSpring}
+                exit={{ opacity: 0, scale: 0.8, x: -10 }}
+                transition={{ duration: 0.2 }}
                 onClick={(e) => e.stopPropagation()}
                 className="ml-auto"
               >
@@ -121,26 +139,32 @@ export default function Header(){
             )}
           </AnimatePresence>
 
-          <AnimatePresence initial={false} mode="popLayout">
+          <AnimatePresence mode="popLayout">
             {(state==="top" || state==="expanded") && (
               <motion.nav
                 key="nav"
                 layout="position"
+                initial={{ opacity: 0, width: 0, marginLeft: 0 }}
+                animate={{ 
+                  opacity: 1, 
+                  width: 'auto', 
+                  marginLeft: 8,
+                  transition: { delay: 0.05, duration: 0.3 }
+                }}
+                exit={{ 
+                  opacity: 0, 
+                  width: 0, 
+                  marginLeft: 0,
+                  transition: { duration: 0.1 } 
+                }}
                 onClick={(e)=>e.stopPropagation()}
-                initial={{ opacity: 0, width: 0, overflow: 'hidden' }}
-                animate={{ opacity: 1, width: 'auto', overflow: 'visible' }}
-                exit={{ opacity: 0, width: 0, overflow: 'hidden' }}
-                transition={{ ...fluidSpring, opacity: { duration: 0.15 } }}
-                className="
-                  flex items-center font-medium text-[var(--text-secondary)] 
-                  sm:flex-nowrap flex-wrap
-                  sm:gap-0 gap-1
-                "
+                className="flex items-center gap-1 sm:gap-2 overflow-hidden"
               >
-                <a href="#about"    className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">About</a>
-                <a href="#projects" className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">Projects</a>
-                <a href="#skills"   className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">Skills</a>
-                <a href="#contact"  className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">Contact</a>
+                <div className="w-[1px] h-4 bg-black/10 dark:bg-white/20 mx-1" />
+                <a href="#about"    className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white px-2 py-1 transition-colors">About</a>
+                <a href="#projects" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white px-2 py-1 transition-colors">Projects</a>
+                <a href="#skills"   className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white px-2 py-1 transition-colors">Skills</a>
+                <a href="#contact"  className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white px-2 py-1 transition-colors">Contact</a>
               </motion.nav>
             )}
           </AnimatePresence>
