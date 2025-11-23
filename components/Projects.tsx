@@ -7,118 +7,152 @@ import { ArrowUpRight, X, ExternalLink, Github } from 'lucide-react';
 
 type Project = (typeof PROJECTS_DATA)[number];
 
+// Tuned for "MacBook-like" snappy yet fluid feel
+const springTransition = {
+  type: "spring",
+  stiffness: 300,
+  damping: 30,
+  mass: 1
+};
+
 const contentContainerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.07,
-      delayChildren: 0.16,
+      staggerChildren: 0.05,
+      delayChildren: 0.1, // Slight delay to let the card expand first
     },
-  },
-};
-
-const contentItemVariants = {
-  hidden: { opacity: 0, y: 12 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { duration: 0.3, ease: 'easeOut' as const }
   },
   exit: {
     opacity: 0,
-    transition: { duration: 0.15 }
+    transition: {
+      duration: 0.1, // Fast exit to clear content before card collapses
+    }
   }
 };
 
+const contentItemVariants = {
+  hidden: { opacity: 0, y: 10, filter: 'blur(4px)' },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    filter: 'blur(0px)',
+    transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] }
+  },
+  exit: {
+    opacity: 0,
+    y: -10,
+    transition: { duration: 0.1 }
+  }
+};
 
 const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => void; }) => {
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
+      if (event.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', handleEsc);
-    return () => {
-      window.removeEventListener('keydown', handleEsc);
-    };
+    return () => window.removeEventListener('keydown', handleEsc);
   }, [onClose]);
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
       aria-modal="true"
       role="dialog"
-      aria-labelledby={`modal-title-${project.title}`}
-      aria-describedby={`modal-desc-${project.title}`}
     >
       <motion.div
-        className="absolute inset-0 bg-black/20 dark:bg-black/40"
-        initial={{ opacity:0 }}
-        animate={{ opacity:1 }}
-        exit={{ opacity:0 }}
-        transition={{ duration:0.25, ease:"easeOut" }}
+        className="absolute inset-0 bg-black/20 dark:bg-black/40 backdrop-blur-sm"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3 }}
         onClick={onClose}
       />
       
+      {/* 
+         NOTE: layoutId matches the grid card. 
+         We DO NOT put layoutId on internal text elements to avoid morphing glitches.
+      */}
       <GlassCard
         layoutId={`project-card-${project.title}`}
-        transition={{ type:"spring", stiffness:360, damping:32, mass:1 }}
-        className="relative w-full max-w-3xl z-10"
-        style={{ backfaceVisibility: 'hidden' }}
+        transition={springTransition}
+        className="relative w-full max-w-3xl z-10 overflow-hidden shadow-2xl"
       >
-        <div className="p-8 md:p-12 relative max-h-[90vh] overflow-y-auto scrollbar-none">
+        <div className="p-8 md:p-12 relative max-h-[85vh] overflow-y-auto scrollbar-none">
           <motion.button
-            onClick={onClose}
-            className="absolute top-4 right-4 z-20 text-[var(--text-secondary)] p-2 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
-            aria-label="Close modal"
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1, transition: { delay: 0.3 } }}
-            exit={{ opacity: 0, scale: 0.5 }}
+            onClick={(e) => { e.stopPropagation(); onClose(); }}
+            className="absolute top-4 right-4 z-20 text-[var(--text-secondary)] p-2 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition-colors focus:outline-none"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ delay: 0.2, duration: 0.2 }}
           >
             <X size={24} />
           </motion.button>
           
-          <motion.div variants={contentContainerVariants} initial="hidden" animate="visible">
-            <div className="flex justify-between items-start mb-4">
-              <motion.h3 layoutId={`project-title-${project.title}`} id={`modal-title-${project.title}`} className="text-2xl md:text-3xl font-bold text-[var(--text-main)] pr-12">{project.title}</motion.h3>
+          <motion.div 
+            variants={contentContainerVariants} 
+            initial="hidden" 
+            animate="visible"
+            exit="exit"
+          >
+            <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-6 gap-4">
+              <motion.h3 
+                variants={contentItemVariants}
+                className="text-3xl md:text-4xl font-bold text-[var(--text-main)]"
+              >
+                {project.title}
+              </motion.h3>
+              
               <motion.div variants={contentItemVariants}>
-                <span className={`text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap self-start ${
-                  project.status === 'Coming Soon' ? 'bg-[var(--accent)]/20 text-[var(--accent)] animate-pulse' : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)]'
+                <span className={`inline-block text-xs font-semibold px-3 py-1.5 rounded-full whitespace-nowrap ${
+                  project.status === 'Coming Soon' 
+                    ? 'bg-[var(--accent)]/15 text-[var(--accent)]' 
+                    : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)]'
                 }`}>
                   {project.status}
                 </span>
               </motion.div>
             </div>
             
-            <motion.p layoutId={`project-description-${project.title}`} id={`modal-desc-${project.title}`} className="text-[var(--text-secondary)] font-light text-base md:text-lg leading-relaxed mb-6">{project.longDescription}</motion.p>
+            <motion.p variants={contentItemVariants} className="text-[var(--text-secondary)] font-light text-lg leading-relaxed mb-8">
+              {project.longDescription}
+            </motion.p>
 
-            <motion.div variants={contentItemVariants} className="mb-6">
-              <h4 className="text-lg font-semibold text-[var(--text-main)] mb-3">Key Features</h4>
-              <ul className="list-disc list-inside space-y-1 text-[var(--text-secondary)] font-light">
-                {project.features.map(feature => <li key={feature}>{feature}</li>)}
+            <motion.div variants={contentItemVariants} className="mb-8 p-6 bg-black/5 dark:bg-white/5 rounded-2xl">
+              <h4 className="text-sm font-bold uppercase tracking-wider text-[var(--text-main)] mb-4 opacity-70">Key Features</h4>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {project.features.map(feature => (
+                  <li key={feature} className="flex items-start text-[var(--text-secondary)] font-light">
+                    <span className="mr-2 mt-1.5 w-1.5 h-1.5 rounded-full bg-[var(--accent)] shrink-0" />
+                    {feature}
+                  </li>
+                ))}
               </ul>
             </motion.div>
             
             <motion.div variants={contentItemVariants} className="mb-8">
-              <h4 className="text-lg font-semibold text-[var(--text-main)] mb-3">Tech Stack</h4>
+              <h4 className="text-sm font-bold uppercase tracking-wider text-[var(--text-main)] mb-3 opacity-70">Tech Stack</h4>
               <div className="flex flex-wrap gap-2">
                 {project.techStack.map(tech => (
-                  <span key={tech} className="bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] text-sm font-medium px-3 py-1 rounded-full">{tech}</span>
+                  <span key={tech} className="bg-white/50 dark:bg-black/20 border border-black/5 dark:border-white/10 text-[var(--text-secondary)] text-sm font-medium px-3 py-1.5 rounded-lg">
+                    {tech}
+                  </span>
                 ))}
               </div>
             </motion.div>
 
-            <motion.div variants={contentItemVariants} className="flex items-center space-x-4">
+            <motion.div variants={contentItemVariants} className="flex flex-wrap gap-4 pt-4 border-t border-black/5 dark:border-white/5">
               {project.liveUrl && (
-                <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors">
-                  View Live Demo <ExternalLink className="w-4 h-4 ml-1.5" />
+                <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-5 py-2.5 bg-[var(--text-main)] text-[var(--bg-base)] rounded-xl font-semibold hover:opacity-90 transition-opacity">
+                  View Live <ExternalLink size={16} />
                 </a>
               )}
               {project.repoUrl && (
-                <a href={project.repoUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors">
-                  Source Code <Github className="w-4 h-4 ml-1.5" />
+                <a href={project.repoUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-5 py-2.5 bg-black/5 dark:bg-white/10 text-[var(--text-main)] rounded-xl font-semibold hover:bg-black/10 dark:hover:bg-white/20 transition-colors">
+                  Source Code <Github size={16} />
                 </a>
               )}
             </motion.div>
@@ -129,46 +163,23 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
   );
 };
 
-const projectCardVariants = {
-  offscreen: {
-    opacity: 0,
-    y: 50,
-  },
-  onscreen: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: i * 0.1,
-      duration: 0.5,
-      ease: [0.22, 1, 0.36, 1] as const,
-    },
-  }),
-  hover: {
-    y: -8,
-    scale: 1.03,
-    transition: { type: 'spring' as const, stiffness: 300, damping: 15 },
-  },
-};
-
 const Projects: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const originRef = useRef<HTMLButtonElement | HTMLDivElement | null>(null);
+  const originRef = useRef<HTMLDivElement | null>(null);
 
+  // Lock body scroll when modal is open
   useEffect(() => {
     if (selectedProject) {
       document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = '';
     }
-    return () => {
-      document.body.style.overflow = 'auto';
-    };
+    return () => { document.body.style.overflow = ''; };
   }, [selectedProject]);
 
   const handleClose = () => {
     setSelectedProject(null);
-    originRef.current?.focus();
-  }
+  };
 
   return (
     <section id="projects" className="py-16 md:py-24 scroll-mt-24">
@@ -181,58 +192,42 @@ const Projects: React.FC = () => {
       >
         Selected Work
       </motion.h2>
-      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ${selectedProject ? 'pointer-events-none' : ''}`}>
+
+      {/* Grid of Projects */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-2">
         {PROJECTS_DATA.map((project, index) => (
           <motion.div
             key={project.title}
-            custom={index}
-            variants={projectCardVariants}
-            initial="offscreen"
-            whileInView="onscreen"
-            whileHover="hover"
-            viewport={{ once: true, amount: 0.3 }}
-            whileTap={{ y: -2, scale: 0.99 }}
-            onClick={(e) => {
-              originRef.current = e.currentTarget;
-              setSelectedProject(project);
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                originRef.current = e.currentTarget;
-                setSelectedProject(project);
-              }
-            }}
-            className="cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] rounded-[24px]"
-            role="button"
-            tabIndex={0}
-            aria-label={`Learn more about ${project.title}`}
+            layoutId={`project-card-${project.title}`}
+            onClick={() => setSelectedProject(project)}
+            whileHover={{ y: -8, scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ ...springTransition, delay: index * 0.1 }}
+            className={`cursor-pointer group rounded-[24px] ${selectedProject?.title === project.title ? 'opacity-0' : 'opacity-100'}`}
           >
-            <GlassCard 
-              layoutId={`project-card-${project.title}`}
-              className="h-full group"
-            >
-              <div className="p-8 flex flex-col h-full">
-                <div className="flex-grow">
-                  <div className="flex justify-between items-start mb-4">
-                    <motion.h3 layoutId={`project-title-${project.title}`} className="text-xl font-bold text-[var(--text-main)]">{project.title}</motion.h3>
-                    <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
-                      project.status === 'Coming Soon' ? 'bg-[var(--accent)]/20 text-[var(--accent)] animate-pulse' : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)]'
-                    }`}>
-                      {project.status}
-                    </span>
-                  </div>
-                  <motion.p layoutId={`project-description-${project.title}`} className="text-[var(--text-secondary)] font-light mb-4">{project.description}</motion.p>
+            <GlassCard className="h-full flex flex-col p-8">
+              <div className="flex-grow">
+                <div className="flex justify-between items-start mb-4">
+                  {/* No layoutId on text to prevent jitter */}
+                  <h3 className="text-xl font-bold text-[var(--text-main)] group-hover:text-[var(--accent)] transition-colors duration-300">
+                    {project.title}
+                  </h3>
+                  <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full ${
+                    project.status === 'Coming Soon' ? 'bg-[var(--accent)]/10 text-[var(--accent)]' : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)]'
+                  }`}>
+                    {project.status}
+                  </span>
                 </div>
-                
-                <div className="mt-auto pt-4">
-                  <div 
-                    className="inline-flex items-center text-sm font-semibold text-[var(--text-secondary)] group-hover:text-[var(--accent)] transition-colors group -ml-2 p-2 rounded-md"
-                    aria-hidden="true"
-                  >
-                    Learn More <ArrowUpRight className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
-                  </div>
-                </div>
+                <p className="text-[var(--text-secondary)] font-light text-sm leading-relaxed mb-6 line-clamp-3">
+                  {project.description}
+                </p>
+              </div>
+              
+              <div className="mt-auto pt-4 border-t border-black/5 dark:border-white/5 flex items-center text-sm font-semibold text-[var(--text-secondary)] group-hover:text-[var(--accent)] transition-colors">
+                Learn More <ArrowUpRight className="w-4 h-4 ml-1.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </div>
             </GlassCard>
           </motion.div>
