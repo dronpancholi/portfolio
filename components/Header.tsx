@@ -40,15 +40,14 @@ export default function Header(){
     ? 'url(#header-pill-glass-expanded)'
     : 'url(#header-pill-glass)';
 
-  // FLUID PHYSICS ENGINE
-  // Stiffness 140 / Damping 18 / Mass 1.2 creates a heavy, viscous fluid feel.
-  // It overshoots slightly (like a water drop settling) but settles smoothly.
+  // OPTIMIZED PHYSICS
+  // Reduced mass and increased damping for faster settling
   const fluidSpring = {
     type: "spring",
-    stiffness: 140,
-    damping: 18,
-    mass: 1.2,
-    restDelta: 0.001 
+    stiffness: 160,
+    damping: 25,
+    mass: 1,
+    restDelta: 0.01
   } as const;
 
   return (
@@ -67,7 +66,7 @@ export default function Header(){
           expanded:  { 
             padding: "10px 20px", 
             scale: 0.98,
-            borderRadius: "24px" // Slightly less rounded when expanded content shows
+            borderRadius: "24px" 
           },
           collapsed: { 
             padding: "8px 16px" , 
@@ -79,11 +78,12 @@ export default function Header(){
         animate={state}
         transition={fluidSpring}
         aria-label="Primary navigation"
+        style={{ transform: "translateZ(0)" }} // Force GPU layer
       >
         {/* Distortion Liquid Layer (inside only) */}
         <motion.div
           className="absolute inset-0 rounded-[inherit] overflow-hidden pointer-events-none"
-          style={{ filter: filterUrl }}
+          style={{ filter: filterUrl, opacity: 0.5 }}
           layout
         />
 
@@ -130,7 +130,7 @@ export default function Header(){
                 initial={{ opacity: 0, width: 0, overflow: 'hidden' }}
                 animate={{ opacity: 1, width: 'auto', overflow: 'visible' }}
                 exit={{ opacity: 0, width: 0, overflow: 'hidden' }}
-                transition={{ ...fluidSpring, opacity: { duration: 0.2 } }}
+                transition={{ ...fluidSpring, opacity: { duration: 0.15 } }}
                 className="
                   flex items-center font-medium text-[var(--text-secondary)] 
                   sm:flex-nowrap flex-wrap
