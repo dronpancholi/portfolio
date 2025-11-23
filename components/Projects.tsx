@@ -12,25 +12,41 @@ const contentContainerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.07,
-      delayChildren: 0.16,
+      staggerChildren: 0.05,
+      delayChildren: 0.2,
     },
   },
 };
 
 const contentItemVariants = {
-  hidden: { opacity: 0, y: 12 },
+  hidden: { opacity: 0, y: 15, filter: "blur(4px)" },
   visible: { 
     opacity: 1, 
-    y: 0,
-    transition: { duration: 0.3, ease: 'easeOut' as const }
+    y: 0, 
+    filter: "blur(0px)",
+    transition: { 
+      type: "spring",
+      stiffness: 100,
+      damping: 15,
+      mass: 0.8
+    }
   },
   exit: {
     opacity: 0,
-    transition: { duration: 0.15 }
+    y: -10,
+    filter: "blur(4px)",
+    transition: { duration: 0.2 }
   }
 };
 
+// Fluid Spring for the card expansion (Water Drop Feel)
+const fluidModalSpring = {
+  type: "spring",
+  stiffness: 180, 
+  damping: 24,
+  mass: 1.1,
+  restDelta: 0.001
+};
 
 const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => void; }) => {
   useEffect(() => {
@@ -54,18 +70,18 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
       aria-describedby={`modal-desc-${project.title}`}
     >
       <motion.div
-        className="absolute inset-0 bg-black/20 dark:bg-black/40"
+        className="absolute inset-0 bg-black/20 dark:bg-black/40 backdrop-blur-sm"
         initial={{ opacity:0 }}
         animate={{ opacity:1 }}
         exit={{ opacity:0 }}
-        transition={{ duration:0.25, ease:"easeOut" }}
+        transition={{ duration:0.4, ease:"easeOut" }}
         onClick={onClose}
       />
       
       <GlassCard
         layoutId={`project-card-${project.title}`}
-        transition={{ type:"spring", stiffness:360, damping:32, mass:1 }}
-        className="relative w-full max-w-3xl z-10"
+        transition={fluidModalSpring}
+        className="relative w-full max-w-3xl z-10 overflow-hidden"
         style={{ backfaceVisibility: 'hidden' }}
       >
         <div className="p-8 md:p-12 relative max-h-[90vh] overflow-y-auto scrollbar-none">
@@ -73,16 +89,17 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
             onClick={onClose}
             className="absolute top-4 right-4 z-20 text-[var(--text-secondary)] p-2 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
             aria-label="Close modal"
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1, transition: { delay: 0.3 } }}
+            initial={{ opacity: 0, scale: 0.5, rotate: -45 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0, transition: { delay: 0.3, ...fluidModalSpring } }}
             exit={{ opacity: 0, scale: 0.5 }}
           >
             <X size={24} />
           </motion.button>
           
-          <motion.div variants={contentContainerVariants} initial="hidden" animate="visible">
+          <motion.div variants={contentContainerVariants} initial="hidden" animate="visible" exit="exit">
             <div className="flex justify-between items-start mb-4">
-              <motion.h3 layoutId={`project-title-${project.title}`} id={`modal-title-${project.title}`} className="text-2xl md:text-3xl font-bold text-[var(--text-main)] pr-12">{project.title}</motion.h3>
+              {/* Note: We keep layoutId on the container (GlassCard) but NOT on the text to avoid text-warping jank. */}
+              <motion.h3 variants={contentItemVariants} id={`modal-title-${project.title}`} className="text-2xl md:text-3xl font-bold text-[var(--text-main)] pr-12">{project.title}</motion.h3>
               <motion.div variants={contentItemVariants}>
                 <span className={`text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap self-start ${
                   project.status === 'Coming Soon' ? 'bg-[var(--accent)]/20 text-[var(--accent)] animate-pulse' : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)]'
@@ -92,7 +109,7 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
               </motion.div>
             </div>
             
-            <motion.p layoutId={`project-description-${project.title}`} id={`modal-desc-${project.title}`} className="text-[var(--text-secondary)] font-light text-base md:text-lg leading-relaxed mb-6">{project.longDescription}</motion.p>
+            <motion.p variants={contentItemVariants} id={`modal-desc-${project.title}`} className="text-[var(--text-secondary)] font-light text-base md:text-lg leading-relaxed mb-6">{project.longDescription}</motion.p>
 
             <motion.div variants={contentItemVariants} className="mb-6">
               <h4 className="text-lg font-semibold text-[var(--text-main)] mb-3">Key Features</h4>
@@ -145,8 +162,12 @@ const projectCardVariants = {
   }),
   hover: {
     y: -8,
-    scale: 1.03,
-    transition: { type: 'spring' as const, stiffness: 300, damping: 15 },
+    scale: 1.02,
+    transition: { 
+      type: 'spring' as const, 
+      stiffness: 300, 
+      damping: 20 
+    },
   },
 };
 
@@ -181,7 +202,7 @@ const Projects: React.FC = () => {
       >
         Selected Work
       </motion.h2>
-      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ${selectedProject ? 'pointer-events-none' : ''}`}>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {PROJECTS_DATA.map((project, index) => (
           <motion.div
             key={project.title}
@@ -208,6 +229,7 @@ const Projects: React.FC = () => {
             tabIndex={0}
             aria-label={`Learn more about ${project.title}`}
           >
+            {/* The Layout ID is here to start the shared element transition */}
             <GlassCard 
               layoutId={`project-card-${project.title}`}
               className="h-full group"
@@ -215,14 +237,14 @@ const Projects: React.FC = () => {
               <div className="p-8 flex flex-col h-full">
                 <div className="flex-grow">
                   <div className="flex justify-between items-start mb-4">
-                    <motion.h3 layoutId={`project-title-${project.title}`} className="text-xl font-bold text-[var(--text-main)]">{project.title}</motion.h3>
+                    <motion.h3 className="text-xl font-bold text-[var(--text-main)]">{project.title}</motion.h3>
                     <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
                       project.status === 'Coming Soon' ? 'bg-[var(--accent)]/20 text-[var(--accent)] animate-pulse' : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)]'
                     }`}>
                       {project.status}
                     </span>
                   </div>
-                  <motion.p layoutId={`project-description-${project.title}`} className="text-[var(--text-secondary)] font-light mb-4">{project.description}</motion.p>
+                  <motion.p className="text-[var(--text-secondary)] font-light mb-4">{project.description}</motion.p>
                 </div>
                 
                 <div className="mt-auto pt-4">

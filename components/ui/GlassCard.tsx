@@ -1,3 +1,4 @@
+
 import React from "react";
 import { motion, MotionProps } from "framer-motion";
 
@@ -10,9 +11,10 @@ const GlassCard: React.FC<GlassCardProps> = ({ children, className = "", ...prop
   return (
     <motion.div
       className={`glass glass--panel min-glow ${className}`}
-      whileHover={{ y: -5, scale: 1.01 }}
+      // Updated to a softer, more fluid hover state
+      whileHover={{ y: -6, scale: 1.015 }}
+      transition={{ type: "spring", stiffness: 200, damping: 20, mass: 1 }}
       style={{ 
-        // PREVIEW MATCH: Enforce own layer to prevent repaints affecting neighbors
         transform: 'translate3d(0,0,0)',
         ...props.style 
       }}

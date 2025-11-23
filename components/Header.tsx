@@ -1,6 +1,5 @@
+
 import React, { useEffect, useRef, useState, useCallback } from "react";
-// FIX: Removed `Transition` import which was causing a module resolution error.
-// The `spring` object's type is correctly inferred by TypeScript without explicit annotation.
 import { motion, AnimatePresence } from "framer-motion";
 import ThemeToggle from "./ui/ThemeToggle";
 
@@ -41,14 +40,15 @@ export default function Header(){
     ? 'url(#header-pill-glass-expanded)'
     : 'url(#header-pill-glass)';
 
-  // FIX: Using `as const` to ensure TypeScript infers the narrowest possible types
-  // for the transition properties (e.g., 'spring' instead of string), resolving 
-  // the 'is not assignable to type Transition' error.
-  const spring = {
+  // FLUID PHYSICS ENGINE
+  // Stiffness 140 / Damping 18 / Mass 1.2 creates a heavy, viscous fluid feel.
+  // It overshoots slightly (like a water drop settling) but settles smoothly.
+  const fluidSpring = {
     type: "spring",
-    stiffness: 72,
-    damping: 16,
-    mass: 1.1
+    stiffness: 140,
+    damping: 18,
+    mass: 1.2,
+    restDelta: 0.001 
   } as const;
 
   return (
@@ -57,58 +57,62 @@ export default function Header(){
         ref={pillRef}
         onClick={onPillClick}
         layout
-        // UPDATED: Replaced Tailwind classes with a single `.glass` class for a consistent, clear effect
         className="glass pointer-events-auto relative flex items-center justify-center cursor-pointer select-none whitespace-nowrap rounded-full"
         variants={{
           top:       { 
-            padding: "12px 22px", 
+            padding: "12px 24px", 
             scale: 1,
+            borderRadius: "9999px" 
           },
           expanded:  { 
-            padding: "10px 18px", 
-            scale: 0.97,
+            padding: "10px 20px", 
+            scale: 0.98,
+            borderRadius: "24px" // Slightly less rounded when expanded content shows
           },
           collapsed: { 
-            padding: "6px 12px" , 
+            padding: "8px 16px" , 
             scale: 0.90,
+            borderRadius: "9999px"
           }
         }}
         initial={false}
         animate={state}
-        transition={spring}
+        transition={fluidSpring}
         aria-label="Primary navigation"
       >
         {/* Distortion Liquid Layer (inside only) */}
-        <div
-          className="absolute inset-0 rounded-full overflow-hidden pointer-events-none"
+        <motion.div
+          className="absolute inset-0 rounded-[inherit] overflow-hidden pointer-events-none"
           style={{ filter: filterUrl }}
+          layout
         />
 
-        {/* REMOVED: Depth Highlight Layer. Now handled by the `.glass` class's inset shadow */}
-
-        {/* Liquid Shine Sweep Layer - UPDATED to be more subtle */}
-        <div className="absolute inset-0 rounded-full pointer-events-none bg-[linear-gradient(115deg,rgba(255,255,255,0.25)_0%,rgba(255,255,255,0.05)_40%,rgba(255,255,255,0)_65%)] opacity-70 dark:opacity-60 mix-blend-overlay" />
+        {/* Liquid Shine Sweep Layer */}
+        <motion.div 
+            layout
+            className="absolute inset-0 rounded-[inherit] pointer-events-none bg-[linear-gradient(115deg,rgba(255,255,255,0.25)_0%,rgba(255,255,255,0.05)_40%,rgba(255,255,255,0)_65%)] opacity-70 dark:opacity-60 mix-blend-overlay" 
+        />
         
         {/* Content */}
         <div className="relative z-10 flex items-center justify-center gap-4">
           <motion.p
-            layout
-            animate={{ fontSize: state==="collapsed" ? "0.74rem" : "1.05rem" }}
-            transition={spring}
+            layout="position"
+            animate={{ fontSize: state==="collapsed" ? "0.85rem" : "1.05rem" }}
+            transition={fluidSpring}
             className="font-semibold tracking-tight text-[var(--text-main)]"
           >
             Dron Pancholi
           </motion.p>
           
-          <AnimatePresence>
+          <AnimatePresence mode="popLayout">
             {(state==="top") && (
               <motion.div 
                 key="theme-toggle"
                 layout="position"
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10, transition: { duration: 0.18 } }}
-                transition={{ duration: 0.32, ease:[0.22,1,0.36,1], delay: 0.1 }}
+                initial={{ opacity: 0, scale: 0.8, x: -5 }}
+                animate={{ opacity: 1, scale: 1, x: 0 }}
+                exit={{ opacity: 0, scale: 0.8, x: -5, transition: { duration: 0.2 } }}
+                transition={fluidSpring}
                 onClick={(e) => e.stopPropagation()}
                 className="ml-auto"
               >
@@ -123,13 +127,12 @@ export default function Header(){
                 key="nav"
                 layout="position"
                 onClick={(e)=>e.stopPropagation()}
-                initial={{ opacity: 0, x: 6 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 6, transition: { duration: 0.18 } }}
-                transition={{ duration: 0.32, ease:[0.22,1,0.36,1] }}
+                initial={{ opacity: 0, width: 0, overflow: 'hidden' }}
+                animate={{ opacity: 1, width: 'auto', overflow: 'visible' }}
+                exit={{ opacity: 0, width: 0, overflow: 'hidden' }}
+                transition={{ ...fluidSpring, opacity: { duration: 0.2 } }}
                 className="
                   flex items-center font-medium text-[var(--text-secondary)] 
-                  overflow-hidden
                   sm:flex-nowrap flex-wrap
                   sm:gap-0 gap-1
                 "
