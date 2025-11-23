@@ -5,29 +5,30 @@ const LiquidFilters: React.FC = () => {
     <svg style={{ display: "none" }} aria-hidden="true">
       <defs>
         {/* 
-           Performance Optimized Liquid Lens Filter
-           - Reduced octaves to 1 for high frame rate
-           - Tuned baseFrequency to maintain visual depth without heavy computation
+           Preview Match Liquid Lens Filter
+           - Base Frequency tuned for high-DPI displays
+           - Displacement scale set to match the visual weight in preview
         */}
         <filter id="liquidRefraction" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
-          {/* 1. Single octave noise is much faster and cleaner for "smooth" glass */}
-          <feTurbulence type="fractalNoise" baseFrequency="0.002 0.004" numOctaves="1" seed="7" result="lensNoise" />
+          {/* 1. Large smooth waves for a solid glass block feel */}
+          <feTurbulence type="fractalNoise" baseFrequency="0.001 0.002" numOctaves="3" seed="7" result="lensNoise" />
           
-          {/* 2. Gaussian blur smoothes the single octave to look like liquid */}
-          <feGaussianBlur in="lensNoise" stdDeviation="5" result="smoothLens" />
+          {/* 2. Smooth the noise significantly to create a lens curvature */}
+          <feGaussianBlur in="lensNoise" stdDeviation="8" result="smoothLens" />
 
-          {/* 3. Contrast stretch */}
+          {/* 3. Contrast stretch to define the refraction angles cleanly */}
           <feColorMatrix in="smoothLens" type="matrix" 
             values="1 0 0 0 0
                     0 1 0 0 0
                     0 0 1 0 0
-                    0 0 0 20 -9" 
+                    0 0 0 18 -7" 
             result="steepMap" 
           />
 
-          {/* 4. Reduced displacement scale to prevent tearing during movement */}
-          <feDisplacementMap in="SourceGraphic" in2="steepMap" scale="30" xChannelSelector="R" yChannelSelector="G" result="distort" />
+          {/* 4. The Displacement: Scale=50 is the sweet spot for "Preview" look */}
+          <feDisplacementMap in="SourceGraphic" in2="steepMap" scale="50" xChannelSelector="R" yChannelSelector="G" result="distort" />
           
+          {/* 5. Composite to ensure alpha handling is crisp */}
           <feComposite in="distort" in2="SourceGraphic" operator="in" />
         </filter>
       </defs>
