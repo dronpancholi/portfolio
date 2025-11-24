@@ -150,7 +150,7 @@ const projectCardVariants = {
   }),
   hover: {
     y: -10,
-    scale: 1.05,
+    scale: 1.03,
     transition: { type: 'spring' as const, stiffness: 350, damping: 15 },
   },
 };

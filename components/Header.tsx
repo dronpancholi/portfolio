@@ -1,5 +1,6 @@
-
 import React, { useEffect, useRef, useState, useCallback } from "react";
+// FIX: Removed `Transition` import which was causing a module resolution error.
+// The `spring` object's type is correctly inferred by TypeScript without explicit annotation.
 import { motion, AnimatePresence } from "framer-motion";
 import ThemeToggle from "./ui/ThemeToggle";
 
@@ -36,99 +37,102 @@ export default function Header(){
 
   const state = isAtTop ? "top" : expanded ? "expanded" : "collapsed";
 
-  // High-performance bouncy spring physics
+  const filterUrl = state === 'expanded'
+    ? 'url(#header-pill-glass-expanded)'
+    : 'url(#header-pill-glass)';
+
+  // UPDATED: Bouncier, elastic spring physics
   const spring = {
     type: "spring",
-    stiffness: 260,
-    damping: 20,
-    mass: 1
+    stiffness: 180,
+    damping: 14,
+    mass: 0.9
   } as const;
 
   return (
-    <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full flex justify-center pointer-events-none">
+    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full flex justify-center pointer-events-none">
       <motion.header
         ref={pillRef}
         onClick={onPillClick}
         layout
-        className="
-          pointer-events-auto relative flex items-center justify-center 
-          cursor-pointer select-none overflow-hidden
-          bg-white/60 dark:bg-black/60
-          backdrop-blur-xl saturate-150
-          border border-white/40 dark:border-white/10
-        "
-        // CSS-based liquid effect (Inset shadows mimic volume/refraction without SVG cost)
-        style={{
-          boxShadow: '0 8px 32px -4px rgba(0,0,0,0.1), inset 0 1px 0 0 rgba(255,255,255,0.3), inset 0 -1px 0 0 rgba(0,0,0,0.05)',
-        }}
+        className="glass pointer-events-auto relative flex items-center justify-center cursor-pointer select-none whitespace-nowrap rounded-full"
         variants={{
-          top:       { padding: "12px 24px", borderRadius: "9999px", scale: 1 },
-          expanded:  { padding: "12px 24px", borderRadius: "24px", scale: 1 },
-          collapsed: { padding: "8px 16px", borderRadius: "9999px", scale: 0.95 }
+          top:       { 
+            padding: "12px 22px", 
+            scale: 1,
+          },
+          expanded:  { 
+            padding: "10px 18px", 
+            scale: 0.97,
+          },
+          collapsed: { 
+            padding: "6px 12px" , 
+            scale: 0.90,
+          }
         }}
         initial={false}
         animate={state}
         transition={spring}
+        aria-label="Primary navigation"
       >
-        {/* Shine Layer */}
-        <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(115deg,rgba(255,255,255,0.4)_0%,transparent_40%)] mix-blend-overlay" />
+        {/* Distortion Liquid Layer (inside only) */}
+        <div
+          className="absolute inset-0 rounded-full overflow-hidden pointer-events-none"
+          style={{ filter: filterUrl }}
+        />
+
+        {/* Liquid Shine Sweep Layer */}
+        <div className="absolute inset-0 rounded-full pointer-events-none bg-[linear-gradient(115deg,rgba(255,255,255,0.25)_0%,rgba(255,255,255,0.05)_40%,rgba(255,255,255,0)_65%)] opacity-70 dark:opacity-60 mix-blend-overlay" />
         
+        {/* Content */}
         <div className="relative z-10 flex items-center justify-center gap-4">
           <motion.p
             layout
-            animate={{ 
-              fontSize: state === "collapsed" ? "0.875rem" : "1rem",
-              fontWeight: state === "collapsed" ? 600 : 700
-            }}
+            animate={{ fontSize: state==="collapsed" ? "0.74rem" : "1.05rem" }}
             transition={spring}
-            className="tracking-tight text-[var(--text-main)] whitespace-nowrap"
+            className="font-semibold tracking-tight text-[var(--text-main)]"
           >
             Dron Pancholi
           </motion.p>
           
-          <AnimatePresence mode="popLayout">
-            {(state === "top") && (
+          <AnimatePresence>
+            {(state==="top") && (
               <motion.div 
                 key="theme-toggle"
-                initial={{ opacity: 0, scale: 0.5, filter: "blur(4px)" }}
-                animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                exit={{ opacity: 0, scale: 0.5, filter: "blur(4px)" }}
+                layout="position"
+                initial={{ opacity: 0, x: -10, scale: 0.8 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, x: -5, scale: 0.8, transition: { duration: 0.15 } }}
                 transition={spring}
                 onClick={(e) => e.stopPropagation()}
-                className="ml-2"
+                className="ml-auto"
               >
                 <ThemeToggle />
               </motion.div>
             )}
           </AnimatePresence>
 
-          <AnimatePresence mode="popLayout">
-            {(state === "top" || state === "expanded") && (
+          <AnimatePresence initial={false} mode="popLayout">
+            {(state==="top" || state==="expanded") && (
               <motion.nav
                 key="nav"
-                initial={{ opacity: 0, x: 20, filter: "blur(4px)" }}
-                animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-                exit={{ opacity: 0, x: 20, filter: "blur(4px)" }}
-                transition={{
-                  ...spring,
-                  staggerChildren: 0.05
-                }}
-                className="flex items-center gap-1 sm:gap-2"
+                layout="position"
+                onClick={(e)=>e.stopPropagation()}
+                initial={{ opacity: 0, x: 10, scale: 0.9 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, x: 10, scale: 0.9, transition: { duration: 0.1 } }}
+                transition={spring}
+                className="
+                  flex items-center font-medium text-[var(--text-secondary)] 
+                  overflow-hidden
+                  sm:flex-nowrap flex-wrap
+                  sm:gap-0 gap-1
+                "
               >
-                {[
-                  { href: "#about", label: "About" },
-                  { href: "#projects", label: "Projects" },
-                  { href: "#skills", label: "Skills" },
-                  { href: "#contact", label: "Contact" }
-                ].map((link) => (
-                  <motion.a
-                    key={link.href}
-                    href={link.href}
-                    className="px-3 py-1.5 text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-main)] hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-colors"
-                  >
-                    {link.label}
-                  </motion.a>
-                ))}
+                <a href="#about"    className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">About</a>
+                <a href="#projects" className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">Projects</a>
+                <a href="#skills"   className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">Skills</a>
+                <a href="#contact"  className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">Contact</a>
               </motion.nav>
             )}
           </AnimatePresence>

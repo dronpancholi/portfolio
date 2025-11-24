@@ -130,7 +130,7 @@ const Contact: React.FC = () => {
         className="focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 focus-visible:ring-white rounded-full"
       >
         <motion.div
-          whileHover={{ scale: 1.2 }}
+          whileHover={{ scale: 1.3 }}
           whileTap={{ scale: 0.9 }}
           transition={{ type: "spring", stiffness: 400, damping: 10 }}
           className="transition-all"
