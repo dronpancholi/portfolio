@@ -1,3 +1,4 @@
+
 import React, { ErrorInfo, ReactNode } from 'react';
 
 interface Props {
@@ -9,10 +10,8 @@ interface State {
 }
 
 class ErrorBoundary extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = { hasError: false };
-  }
+  // Explicitly declare state to satisfy TypeScript strict property initialization
+  public state: State = { hasError: false };
 
   public static getDerivedStateFromError(_: Error): State {
     return { hasError: true };
