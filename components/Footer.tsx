@@ -4,8 +4,8 @@ import React from 'react';
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
   // Version structure: Main.Part.Patch
-  // v3.6.6: Added 'Engines' to splash + Locked splash interaction
-  const APP_VERSION = "v3.6.6";
+  // v3.6.7: Apple-style diagnostic splash screen
+  const APP_VERSION = "v3.6.7";
 
   return (
     <footer className="py-8 text-center">
