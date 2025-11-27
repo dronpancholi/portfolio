@@ -1,14 +1,14 @@
 
 import React from "react";
 
-// Version v3.6007.001
+// Version v3.6008.001
 // Engine: Realism Engine (Dual-Frequency + Gamma Compression)
 const LiquidFilters: React.FC = () => {
   return (
     <svg style={{ display: "none" }} aria-hidden="true">
       <defs>
         {/* 
-           REALISM ENGINE v3.6007.001
+           REALISM ENGINE v3.6008.001
            - Uses Gamma Compression to force the center to be 100% flat (0 displacement).
            - Uses Dual-Frequency noise for realistic liquid surface imperfections.
            - High displacement scale (100) for thick glass edge refraction.
