@@ -1,5 +1,7 @@
 import React from "react";
 
+// Version v2.5091.221
+// Engine: Crystal Clear Liquid
 type Props = {
   proxyRows: React.ReactNode[];
   children: React.ReactNode;
@@ -13,20 +15,25 @@ export default function LiquidPill({ proxyRows, children }: Props) {
         role="group" 
         aria-label="Social links"
         style={{
-            // CRYSTAL CLEAR SETTINGS
-            // 1. No background color (let the refraction do the work)
-            background: 'rgba(255, 255, 255, 0.001)', 
-            // 2. No Blur - this ensures the text behind is 100% sharp
+            // CRYSTAL CLEAR GLASS SETTINGS v2.5091.221
+            // 1. Absolute minimal background color. Just enough for events, effectively invisible.
+            background: 'rgba(255, 255, 255, 0.002)', 
+            // 2. NO BLUR. This allows the text behind to be 95-100% visible and sharp.
             backdropFilter: 'none',
             WebkitBackdropFilter: 'none',
-            // 3. Crisp border definition
-            border: '1px solid rgba(255, 255, 255, 0.3)',
-            boxShadow: '0 15px 40px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(255,255,255,0.1)',
+            // 3. Strong Specular Definition. We use borders and inset shadows to define the "Glass" 
+            //    without needing to fill it with white haze.
+            border: '1px solid rgba(255, 255, 255, 0.25)',
+            boxShadow: `
+              0 15px 40px rgba(0,0,0,0.05), 
+              inset 0 1px 0 0 rgba(255,255,255,0.4), 
+              inset 0 -1px 0 0 rgba(0,0,0,0.1)
+            `,
         }}
       >
         {/* 
           Proxy Layer: The "Lens"
-          This layer contains the text that gets distorted by the SVG filter.
+          This layer creates the distortion.
         */}
         <div className="liquid-pill__proxy" aria-hidden style={{ overflow: 'visible' }}> 
           <div
@@ -34,7 +41,7 @@ export default function LiquidPill({ proxyRows, children }: Props) {
             style={{
               filter: "url(#liquidRefraction)",
               WebkitFilter: "url(#liquidRefraction)",
-              opacity: 1, // Full opacity for the refracted text
+              opacity: 1, 
               transform: "translate3d(0,0,0)", 
               willChange: "transform",
             }}
@@ -56,9 +63,9 @@ export default function LiquidPill({ proxyRows, children }: Props) {
           className="liquid-pill__shine" 
           aria-hidden 
           style={{ 
-            opacity: 0.8, 
+            opacity: 0.9, 
             mixBlendMode: 'overlay',
-            background: 'linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0.1) 100%)',
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 45%, rgba(255,255,255,0.15) 100%)',
             pointerEvents: 'none'
           }} 
         />

@@ -1,5 +1,7 @@
-import React, { ErrorInfo, ReactNode } from 'react';
+import React, { Component, ErrorInfo, ReactNode } from 'react';
 
+// Version v2.5091.221
+// strict typing to prevent TS errors
 interface Props {
   children?: ReactNode;
 }
@@ -8,13 +10,11 @@ interface State {
   hasError: boolean;
 }
 
-class ErrorBoundary extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      hasError: false
-    };
-  }
+class ErrorBoundary extends Component<Props, State> {
+  // Explicit state initialization
+  state: State = {
+    hasError: false
+  };
 
   public static getDerivedStateFromError(_: Error): State {
     return { hasError: true };

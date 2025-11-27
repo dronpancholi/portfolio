@@ -113,7 +113,10 @@
         .perf-bg__blob { animation: none !important; }
       }
 
-      /* PREVIEW MATCH: Liquid Pill Engine */
+      /* 
+         PREVIEW MATCH: Liquid Pill Engine 
+         UPDATED v2.5091.221: Removed default background/blur to allow React component to fully control transparency 
+      */
       .liquid-pill {
         position: relative;
         display:inline-flex;
@@ -121,13 +124,8 @@
         gap:1rem;
         padding:10px 22px;
         border-radius:9999px;
-        /* Ultra-transparent base to let refraction shine */
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid var(--glass-border);
-        box-shadow: 0 10px 40px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(255,255,255,0.1);
         will-change: transform;
-        -webkit-backdrop-filter: blur(12px) saturate(180%);
-        backdrop-filter: blur(12px) saturate(180%);
+        /* Blur and background moved to React inline styles for Crystal Clear effect */
         overflow: visible; /* Important for filter edges */
         isolation: isolate;
         transform: translateZ(0);
@@ -153,11 +151,11 @@
         z-index: 1;
         pointer-events: none;
         border-radius: inherit;
-        background: radial-gradient(ellipse at center, rgba(0,0,0,0.15) 0%, transparent 80%);
+        background: radial-gradient(ellipse at center, rgba(0,0,0,0.05) 0%, transparent 80%);
       }
 
       html.dark .liquid-pill__readability-enhancer {
-        background: radial-gradient(ellipse at center, rgba(255,255,255,0.1) 0%, transparent 80%);
+        background: radial-gradient(ellipse at center, rgba(255,255,255,0.05) 0%, transparent 80%);
       }
 
       .liquid-pill__shine {
