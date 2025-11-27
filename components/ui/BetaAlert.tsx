@@ -15,7 +15,8 @@ import {
   Lock,
   Wifi,
   Database,
-  Server
+  Server,
+  Command
 } from 'lucide-react';
 
 // Version v3.6906.506
@@ -117,7 +118,7 @@ const BetaAlert: React.FC = () => {
         >
           {/* Backdrop - Locked (No interaction) */}
           <motion.div 
-            className="absolute inset-0 bg-black/70 backdrop-blur-md transition-all duration-1000"
+            className="absolute inset-0 bg-black/60 backdrop-blur-xl transition-all duration-1000"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -130,265 +131,163 @@ const BetaAlert: React.FC = () => {
           */}
           <motion.div
             layout
-            initial={{ scale: 0.95, opacity: 0, rotateX: 5 }}
+            initial={{ scale: 0.95, opacity: 0, rotateX: 2 }}
             animate={{ scale: 1, opacity: 1, rotateX: 0 }}
-            exit={{ scale: 0.98, opacity: 0, filter: 'blur(10px)' }}
-            transition={{ type: "spring", stiffness: 120, damping: 20 }}
-            className="relative w-full max-w-2xl rounded-[32px] overflow-hidden flex flex-col max-h-[85vh] shadow-2xl"
+            exit={{ scale: 0.98, opacity: 0, filter: 'blur(20px)' }}
+            transition={{ type: "spring", stiffness: 100, damping: 20 }}
+            className="relative w-full max-w-xl rounded-[32px] overflow-hidden flex flex-col shadow-2xl ring-1 ring-white/10"
             style={{
-                // Deep Crystal Glass
-                background: 'rgba(10, 15, 20, 0.4)', 
+                // Apple-Style Deep Crystal Glass
+                background: 'rgba(20, 20, 25, 0.4)', 
                 boxShadow: `
-                  0 0 0 1px rgba(255,255,255,0.08),
-                  0 40px 100px -20px rgba(0,0,0,0.8),
-                  inset 0 0 40px rgba(255,255,255,0.02)
+                  0 0 0 0.5px rgba(255,255,255,0.1),
+                  0 50px 100px -20px rgba(0,0,0,0.6),
+                  inset 0 0 60px rgba(255,255,255,0.02)
                 `,
-                backdropFilter: 'blur(50px) saturate(180%)',
-                WebkitBackdropFilter: 'blur(50px) saturate(180%)',
+                backdropFilter: 'blur(60px) saturate(180%)',
+                WebkitBackdropFilter: 'blur(60px) saturate(180%)',
             }}
           >
             {/* NOISE TEXTURE OVERLAY */}
-            <div className="absolute inset-0 opacity-[0.05] pointer-events-none mix-blend-overlay" 
-                 style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }} 
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay" 
+                 style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }} 
             />
 
-            {/* GRID BACKGROUND ANIMATION */}
-            <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] animate-[panGrid_20s_linear_infinite]" />
+            {/* SCAN LINE ANIMATION (Subtle) */}
+            <div className="absolute inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-20 animate-[scanline_4s_linear_infinite] pointer-events-none z-0" />
 
-            {/* SCAN LINE ANIMATION */}
-            <div className="absolute inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent opacity-20 animate-[scanline_3s_linear_infinite] pointer-events-none z-0" />
-
-            {/* HEADER: HUD STRIP */}
-            <div className="relative p-6 border-b border-white/10 flex items-center justify-between flex-shrink-0 z-10">
+            {/* HEADER: Minimalist Apple Style */}
+            <div className="relative p-8 pb-4 flex items-center justify-between z-10">
                 <div className="flex items-center gap-4">
-                     <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center bg-white/5 shadow-[0_0_15px_rgba(255,255,255,0.1)]">
-                        <Terminal size={18} className="text-white/80" />
+                     <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 flex items-center justify-center shadow-lg">
+                        <Command size={22} className="text-white/90" />
                      </div>
                      <div>
-                        <h1 className="text-lg font-bold text-white tracking-tight leading-none uppercase flex items-center gap-2">
-                            System Compatibility Check
-                            <span className="text-[9px] px-1.5 py-0.5 rounded bg-white/10 text-white/60 border border-white/10">RC-3</span>
+                        <h1 className="text-xl font-medium text-white tracking-tight leading-none mb-1.5">
+                            System Compatibility
                         </h1>
-                        <p className="text-[10px] font-mono text-white/40 mt-1.5 uppercase tracking-widest flex items-center gap-2">
-                           Pre-Flight Diagnostics // v3.6906.506 
+                        <p className="text-[11px] font-medium text-white/40 uppercase tracking-widest flex items-center gap-2">
+                           Version 3.6906.506
                            <span className="w-0.5 h-2 bg-white/20" />
-                           <Lock size={8} /> SECURE
+                           RC-3
                         </p>
                      </div>
                 </div>
-                {/* Status Indicator */}
-                <div className="flex flex-col items-end">
-                    <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-bold text-white/60 tracking-wider">SYSTEM</span>
-                        <div className={`w-2 h-2 rounded-full ${isReady ? 'bg-green-400 shadow-[0_0_8px_#4ade80]' : 'bg-amber-400 animate-pulse'}`} />
-                    </div>
-                    <span className="text-[10px] font-mono text-white/30 mt-0.5">
-                        {isReady ? 'ONLINE' : 'BOOTING...'}
-                    </span>
+            </div>
+
+            {/* BODY: WARNING & PRIMARY ACTION */}
+            <div className="relative p-8 pt-4 z-10">
+                
+                {/* AMBIENT HAZARD MODULE */}
+                <div className="relative p-5 rounded-2xl border border-white/5 bg-white/[0.02] overflow-hidden group">
+                     {/* Ambient Glow */}
+                     <div className="absolute -right-10 -bottom-10 text-amber-500/20 blur-[50px] transition-transform duration-1000 group-hover:scale-110">
+                         <div className="w-32 h-32 bg-amber-500 rounded-full" />
+                     </div>
+
+                     <div className="relative z-10 flex gap-4">
+                        <AlertTriangle className="text-amber-400 shrink-0" size={24} />
+                        <div>
+                            <h3 className="text-sm font-semibold text-white/90 mb-1">Performance Advisory</h3>
+                            <p className="text-xs text-white/50 leading-relaxed font-medium">
+                                High-fidelity Liquid Glass rendering enabled. This may impact thermal performance on non-accelerated GPUs. Proceed with caution.
+                            </p>
+                        </div>
+                     </div>
+                </div>
+
+                <div className="mt-6 flex flex-col gap-3">
+                    <motion.button
+                        whileHover={{ scale: 1.01 }}
+                        whileTap={{ scale: 0.99 }}
+                        onClick={handleDismiss}
+                        disabled={!isReady}
+                        className="w-full py-4 rounded-xl relative overflow-hidden group disabled:opacity-50 transition-all bg-white text-black font-semibold text-sm shadow-[0_4px_20px_rgba(255,255,255,0.1)] hover:shadow-[0_4px_25px_rgba(255,255,255,0.2)]"
+                    >
+                        {isReady ? 'Initialize Interface' : 'Mounting System...'}
+                    </motion.button>
+
+                    <button 
+                        onClick={() => setIsDetailsOpen(!isDetailsOpen)}
+                        className="text-[11px] font-medium text-white/40 hover:text-white/70 transition-colors py-2 flex items-center justify-center gap-1.5"
+                    >
+                        {isDetailsOpen ? 'Hide System Report' : 'View System Report'}
+                        <ChevronDown size={12} className={`transition-transform duration-300 ${isDetailsOpen ? 'rotate-180' : ''}`} />
+                    </button>
                 </div>
             </div>
 
-            {/* WARNING MODULE: AMBIENT HAZARD */}
-            <div className="relative mx-6 mt-6 p-4 rounded-xl border border-amber-500/20 bg-amber-500/5 overflow-hidden shadow-[inset_0_0_30px_rgba(245,158,11,0.05)] z-10">
-                 {/* Ambient Hazard Layer */}
-                 <div className="absolute -bottom-6 -right-6 text-amber-500/10 blur-xl pointer-events-none transform rotate-12">
-                     <AlertTriangle size={140} />
-                 </div>
-
-                 <div className="relative z-10">
-                    <h3 className="text-xs font-bold text-amber-200 uppercase tracking-wide mb-1 flex items-center gap-2">
-                        Performance Advisory
-                    </h3>
-                    <p className="text-[11px] text-amber-100/70 leading-relaxed font-medium max-w-[90%]">
-                        This environment is running in a High-Fidelity Beta State. Heavy SVG refraction and physics calculations may cause GPU thermal throttling or frame drops on non-accelerated devices.
-                    </p>
-                 </div>
-            </div>
-
-            {/* BODY: TELEMETRY GRID */}
-            <div className="p-6 space-y-6 overflow-y-auto scrollbar-none relative z-10">
-                
-                {/* 4-Column Live Data Grid with Visualizers */}
-                <div className="grid grid-cols-4 gap-px bg-white/10 border border-white/10 rounded-xl overflow-hidden shadow-inner">
-                    {[
-                        { label: 'Latency', val: telemetry.latency, icon: Activity },
-                        { label: 'V-Sync', val: telemetry.fps, icon: Zap },
-                        { label: 'Memory', val: telemetry.mem, icon: Layers },
-                        { label: 'Threads', val: telemetry.threads, icon: Cpu },
-                    ].map((item, i) => (
-                        <div key={i} className="bg-black/20 p-3 flex flex-col justify-between h-20 hover:bg-white/5 transition-colors group">
-                            <div className="flex justify-between items-start">
-                                <item.icon size={12} className="text-white/40 mb-2 group-hover:text-white/80 transition-colors" />
-                                {/* Mini Bar Graph Visualizer */}
-                                <div className="flex gap-[1px] items-end h-3">
-                                    {[1,2,3,4].map(bar => (
-                                        <div key={bar} 
-                                            className="w-[2px] bg-white/20 rounded-t-sm"
-                                            style={{ 
-                                                height: `${Math.random() * 100}%`,
-                                                opacity: Math.random() > 0.5 ? 1 : 0.3
-                                            }} 
-                                        />
+            {/* EXPANDABLE: SYSTEM REPORT (Apple Style "About This Mac" Details) */}
+            <AnimatePresence>
+                {isDetailsOpen && (
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden bg-black/20 border-t border-white/5"
+                    >
+                        <div className="p-8 space-y-8">
+                            
+                            {/* TELEMETRY STRIP */}
+                            <div>
+                                <h4 className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-4">Real-Time Telemetry</h4>
+                                <div className="grid grid-cols-4 gap-px bg-white/5 border border-white/5 rounded-xl overflow-hidden">
+                                    {[
+                                        { label: 'Latency', val: telemetry.latency, icon: Activity },
+                                        { label: 'V-Sync', val: telemetry.fps, icon: Zap },
+                                        { label: 'Memory', val: telemetry.mem, icon: Layers },
+                                        { label: 'Threads', val: telemetry.threads, icon: Cpu },
+                                    ].map((item: { label: string; val: string; icon: any }, i: number) => (
+                                        <div key={i} className="bg-white/[0.02] p-3 text-center hover:bg-white/[0.05] transition-colors">
+                                            <div className="text-xs font-bold text-white mb-1">{item.val}</div>
+                                            <div className="text-[9px] font-medium text-white/40 uppercase">{item.label}</div>
+                                        </div>
                                     ))}
                                 </div>
                             </div>
+
+                            {/* ENGINE MANIFEST */}
                             <div>
-                                <div className="text-lg font-mono font-bold text-white tracking-tight">{item.val}</div>
-                                <div className="text-[9px] font-bold text-white/30 uppercase tracking-wider">{item.label}</div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {/* EXPANDABLE: ENGINE MANIFEST */}
-                <div className="border-t border-white/10 pt-4">
-                     <button 
-                        onClick={() => setIsDetailsOpen(!isDetailsOpen)}
-                        className="w-full flex items-center justify-between group"
-                    >
-                        <span className="text-xs font-bold text-white/80 flex items-center gap-2 group-hover:text-white transition-colors">
-                            <Grid size={14} className="text-[var(--accent)]" />
-                            Advanced Engine Manifest
-                        </span>
-                        <div className="flex items-center gap-2 text-[10px] font-mono text-white/40 group-hover:text-white/60">
-                            {isDetailsOpen ? 'COLLAPSE' : 'EXPAND'}
-                            <ChevronDown size={14} className={`transition-transform duration-300 ${isDetailsOpen ? 'rotate-180' : ''}`} />
-                        </div>
-                    </button>
-
-                    <AnimatePresence>
-                        {isDetailsOpen && (
-                            <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: 'auto', opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                className="overflow-hidden"
-                            >
-                                <div className="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                    {/* Interactive Engine List */}
+                                <h4 className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-4">Engine Manifest</h4>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                     {ENGINE_DATA.map((engine) => (
-                                        <button 
+                                        <div 
                                             key={engine.id} 
-                                            onClick={() => setSelectedEngine(engine)}
-                                            className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-left transition-all duration-200 ${
-                                                selectedEngine?.id === engine.id 
-                                                ? 'bg-white/10 border-white/30 shadow-[0_0_15px_rgba(255,255,255,0.05)]' 
-                                                : 'bg-white/[0.03] border-white/5 hover:bg-white/5'
-                                            }`}
+                                            className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/5"
                                         >
-                                            <div className={`w-1.5 h-1.5 rounded-full ${selectedEngine?.id === engine.id ? 'bg-[var(--accent)] shadow-[0_0_5px_var(--accent)]' : 'bg-white/20'}`} />
-                                            <span className={`text-[10px] font-mono truncate ${selectedEngine?.id === engine.id ? 'text-white' : 'text-white/60'}`}>
+                                            <div className="w-1 h-1 rounded-full bg-white/30" />
+                                            <span className="text-[10px] font-medium text-white/60 truncate">
                                                 {engine.name}
                                             </span>
-                                        </button>
+                                        </div>
                                     ))}
                                 </div>
+                            </div>
 
-                                {/* DIAGNOSTIC READOUT PANEL */}
-                                <AnimatePresence mode="wait">
-                                    {selectedEngine && (
-                                        <motion.div 
-                                            key={selectedEngine.id}
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, y: -10 }}
-                                            className="mt-4 p-4 rounded-xl border border-white/10 bg-black/40 shadow-inner"
-                                        >
-                                            <div className="flex items-center gap-2 mb-2 text-white/80">
-                                                <Info size={12} />
-                                                <span className="text-[10px] font-bold uppercase tracking-wider">Diagnostic Readout</span>
-                                            </div>
-                                            <h4 className="text-sm font-bold text-white mb-1">{selectedEngine.name}</h4>
-                                            <p className="text-xs text-white/60 font-mono leading-relaxed">
-                                                {selectedEngine.desc}
-                                            </p>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-
-                                {/* BOOT LOG TERMINAL */}
-                                <div className="mt-4 p-3 rounded-lg bg-black/50 border border-white/5 font-mono text-[9px] text-white/40 overflow-hidden">
-                                     <div className="flex items-center gap-2 mb-2 pb-2 border-b border-white/5">
-                                        <Terminal size={10} />
-                                        <span>KERNEL_LOG</span>
-                                     </div>
+                            {/* BOOT LOGS */}
+                            <div>
+                                <h4 className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-4">Kernel Log</h4>
+                                <div className="p-3 rounded-lg bg-black/30 border border-white/5 font-mono text-[9px] text-white/40 h-24 overflow-y-auto scrollbar-none shadow-inner">
                                      <div className="space-y-1 opacity-70">
                                         {BOOT_LOGS.map((log, i) => (
-                                            <motion.div 
-                                                key={i} 
-                                                initial={{ opacity: 0, x: -5 }} 
-                                                animate={{ opacity: 1, x: 0 }} 
-                                                transition={{ delay: i * 0.1 }}
-                                            >
-                                                {`> ${log}`}
-                                            </motion.div>
+                                            <div key={i} className="flex gap-2">
+                                                <span className="text-white/20">[{Date.now().toString().slice(-4)}]</span>
+                                                <span>{log}</span>
+                                            </div>
                                         ))}
                                      </div>
                                 </div>
-                                
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                </div>
+                            </div>
 
-            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
-            {/* FOOTER: ACTION & NETWORK VISUALIZER */}
-            <div className="p-6 bg-white/[0.02] border-t border-white/10 backdrop-blur-md relative z-20 flex flex-col gap-4">
-                
-                {/* Session Telemetry Strip */}
-                <div className="flex items-center justify-between opacity-40 text-[9px] font-mono tracking-wider">
-                     <span className="flex items-center gap-1"><Database size={8} /> SESSION: {Math.random().toString(36).substring(7).toUpperCase()}</span>
-                     <span className="flex items-center gap-1"><Server size={8} /> NODE: US-EAST-1A</span>
-                </div>
-
-                {/* Network Activity Visualizer */}
-                <div className="flex items-center gap-3 opacity-50">
-                    <Wifi size={10} className="text-white/40" />
-                    <div className="flex-1 flex items-end gap-[2px] h-3 overflow-hidden">
-                         {Array.from({ length: 40 }).map((_, i) => (
-                            <motion.div 
-                                key={i}
-                                className="w-1 bg-[var(--accent)] rounded-t-[1px]"
-                                animate={{ 
-                                    height: [`${Math.random() * 20 + 10}%`, `${Math.random() * 80 + 20}%`, `${Math.random() * 40 + 10}%`],
-                                    opacity: [0.3, 0.8, 0.3]
-                                }}
-                                transition={{ 
-                                    duration: Math.random() * 1.5 + 0.5, 
-                                    repeat: Infinity,
-                                    ease: "linear"
-                                }}
-                            />
-                         ))}
-                    </div>
-                </div>
-
-                <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={handleDismiss}
-                    disabled={!isReady}
-                    className="w-full py-4 rounded-xl relative overflow-hidden group disabled:opacity-50 disabled:grayscale transition-all"
-                    style={{ 
-                        background: 'rgba(255,255,255,0.1)',
-                        boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
-                        border: '1px solid rgba(255,255,255,0.1)'
-                    }}
-                >
-                    <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                    <span className="relative flex items-center justify-center gap-3 text-sm font-bold text-white tracking-wide">
-                        {isReady ? (
-                            <>
-                                INITIALIZE INTERFACE <Maximize2 size={14} />
-                            </>
-                        ) : (
-                            <>
-                                SYSTEM MOUNTING <span className="inline-block w-4 text-left">...</span>
-                            </>
-                        )}
-                    </span>
-                </motion.button>
+            {/* BOTTOM BAR: SESSION ID */}
+            <div className="p-3 bg-white/[0.02] border-t border-white/5 backdrop-blur-md flex items-center justify-between text-[9px] font-mono text-white/20 uppercase tracking-wider">
+                 <span className="flex items-center gap-1"><Database size={8} /> SID: {Math.random().toString(36).substring(7).toUpperCase()}</span>
+                 <span className="flex items-center gap-1"><Server size={8} /> US-EAST-1A</span>
             </div>
 
           </motion.div>
