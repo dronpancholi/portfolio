@@ -8,15 +8,13 @@ import {
   Zap,
   Layers,
   AlertTriangle,
-  Command,
+  Monitor,
   Database,
   Server,
-  Monitor,
-  Smartphone,
-  Info
+  Smartphone
 } from 'lucide-react';
 
-// Version v3.6.12
+// Version v3.6.13
 // Engine: Crystal HUD Interface with Interactive Diagnostics
 
 const ENGINE_DATA = [
@@ -47,17 +45,26 @@ const ENGINE_SEQUENCE = [
 const BetaAlert: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-  
-  // Simulated System Check State
   const [isReady, setIsReady] = useState(false);
 
-  // Simulated Telemetry Data
   const [telemetry, setTelemetry] = useState({
     latency: '14ms',
     fps: '60',
     mem: '128MB',
     threads: '4'
   });
+
+  // Scroll Lock Effect
+  useEffect(() => {
+    if (isVisible) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isVisible]);
 
   useEffect(() => {
     // Check session storage
@@ -103,7 +110,7 @@ const BetaAlert: React.FC = () => {
         >
           {/* Backdrop - Locked (No interaction) */}
           <motion.div 
-            className="absolute inset-0 bg-black/70 backdrop-blur-md transition-all duration-1000"
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-all duration-1000"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -121,31 +128,32 @@ const BetaAlert: React.FC = () => {
             transition={{ type: "spring", stiffness: 100, damping: 20 }}
             className="relative w-full max-w-xl rounded-[32px] overflow-hidden flex flex-col shadow-2xl ring-1 ring-white/10"
             style={{
-                // Apple-Style Deep Crystal Glass
-                background: 'rgba(20, 20, 25, 0.4)', 
+                // Apple-Style Deep Crystal Glass (Enhanced for v3.6.13)
+                background: 'rgba(30, 35, 45, 0.45)', 
                 boxShadow: `
-                  0 0 0 0.5px rgba(255,255,255,0.1),
-                  0 50px 100px -20px rgba(0,0,0,0.6),
-                  inset 0 0 60px rgba(255,255,255,0.02)
+                  0 0 0 1px rgba(255,255,255,0.1),
+                  0 50px 100px -20px rgba(0,0,0,0.7),
+                  inset 0 0 60px rgba(255,255,255,0.03),
+                  inset 0 1px 0 rgba(255,255,255,0.25)
                 `,
-                backdropFilter: 'blur(60px) saturate(180%)',
-                WebkitBackdropFilter: 'blur(60px) saturate(180%)',
+                backdropFilter: 'blur(50px) saturate(180%)',
+                WebkitBackdropFilter: 'blur(50px) saturate(180%)',
             }}
           >
             {/* NOISE TEXTURE OVERLAY */}
-            <div className="absolute inset-0 opacity-[0.04] pointer-events-none mix-blend-overlay" 
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay" 
                  style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }} 
             />
 
             {/* HEADER: Minimalist Apple Style */}
             <div className="relative p-8 pb-4 flex items-center justify-between z-10">
                 <div className="flex items-center gap-4">
-                     <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 flex items-center justify-center shadow-lg">
+                     <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-white/15 to-white/5 border border-white/10 flex items-center justify-center shadow-lg">
                         <Monitor size={22} className="text-white/90" />
                      </div>
                      <div>
                         <h1 className="text-xl font-medium text-white tracking-tight leading-none mb-1.5">
-                            Graphic Environment Analysis
+                            Beta Update Preview
                         </h1>
                         <p className="text-[11px] font-medium text-white/40 uppercase tracking-widest flex items-center gap-2">
                            Hardware Acceleration Check
@@ -160,24 +168,24 @@ const BetaAlert: React.FC = () => {
             <div className="relative p-8 pt-4 z-10">
                 
                 {/* AMBIENT HAZARD MODULE */}
-                <div className="relative p-6 rounded-2xl border border-white/5 bg-white/[0.02] overflow-hidden group min-h-[120px] flex flex-col justify-between">
+                <div className="relative p-6 rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden group min-h-[120px] flex flex-col justify-between">
                      
                      <div className="relative z-10 pr-8">
-                        <h3 className="text-sm font-semibold text-white/90 mb-2">Performance Advisory</h3>
-                        <p className="text-xs text-white/50 leading-relaxed font-medium">
+                        <h3 className="text-sm font-semibold text-white/90 mb-2">Graphic Environment Analysis</h3>
+                        <p className="text-xs text-white/60 leading-relaxed font-medium">
                             This interface utilizes a high-fidelity Liquid Glass rendering pipeline. 
-                            Visual performance and frame rates may degrade on devices without dedicated hardware acceleration, 
-                            such as legacy iOS devices, integrated Intel HD graphics, or non-Metal/Vulkan compliant renderers.
+                            Visual performance may degrade on devices without dedicated hardware acceleration, 
+                            such as legacy iOS devices, integrated Intel HD graphics, and non-Metal/Vulkan compliant renderers.
                         </p>
                      </div>
 
-                     {/* Hazard Sign - Bottom Right Watermark */}
-                     <div className="absolute bottom-[-10px] right-[-10px] opacity-10 rotate-[-12deg] pointer-events-none">
-                         <AlertTriangle size={140} className="text-white" />
+                     {/* Hazard Sign - Yellow, Ambient, Bottom Right */}
+                     <div className="absolute bottom-[-15px] right-[-15px] opacity-20 rotate-[-12deg] pointer-events-none mix-blend-screen">
+                         <AlertTriangle size={140} className="text-yellow-500 blur-sm" />
                      </div>
                      
                      {/* Active Indicator */}
-                     <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.5)] animate-pulse" />
+                     <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.6)] animate-pulse" />
                 </div>
 
                 <div className="mt-6 flex flex-col gap-3">
@@ -186,7 +194,7 @@ const BetaAlert: React.FC = () => {
                         whileTap={{ scale: 0.99 }}
                         onClick={handleDismiss}
                         disabled={!isReady}
-                        className="w-full py-4 rounded-xl relative overflow-hidden group disabled:opacity-50 transition-all bg-white text-black font-semibold text-sm shadow-[0_4px_20px_rgba(255,255,255,0.1)] hover:shadow-[0_4px_25px_rgba(255,255,255,0.2)]"
+                        className="w-full py-4 rounded-xl relative overflow-hidden group disabled:opacity-50 transition-all bg-white text-black font-semibold text-sm shadow-[0_4px_20px_rgba(255,255,255,0.15)] hover:shadow-[0_4px_25px_rgba(255,255,255,0.3)]"
                     >
                         {isReady ? 'Initialize Interface' : 'Mounting System...'}
                     </motion.button>
@@ -201,7 +209,7 @@ const BetaAlert: React.FC = () => {
                 </div>
             </div>
 
-            {/* EXPANDABLE: SYSTEM REPORT (Apple Style "About This Mac" Details) */}
+            {/* EXPANDABLE: SYSTEM REPORT */}
             <AnimatePresence>
                 {isDetailsOpen && (
                     <motion.div
