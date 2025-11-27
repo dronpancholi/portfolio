@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState, useCallback } from "react";
 // FIX: Removed `Transition` import which was causing a module resolution error.
 // The `spring` object's type is correctly inferred by TypeScript without explicit annotation.
@@ -44,8 +45,8 @@ export default function Header(){
   // UPDATED: Bouncier, elastic spring physics
   const spring = {
     type: "spring",
-    stiffness: 180,
-    damping: 14,
+    stiffness: 110,
+    damping: 22,
     mass: 0.9
   } as const;
 
@@ -63,16 +64,17 @@ export default function Header(){
           },
           expanded:  { 
             padding: "10px 18px", 
-            scale: 0.97,
+            scale: 0.98,
           },
           collapsed: { 
             padding: "6px 12px" , 
-            scale: 0.90,
+            scale: 0.92,
           }
         }}
         initial={false}
         animate={state}
         transition={spring}
+        style={{ transform: "translateZ(0)" }}
         aria-label="Primary navigation"
       >
         {/* Distortion Liquid Layer (inside only) */}
@@ -130,8 +132,8 @@ export default function Header(){
                 "
               >
                 <a href="#about"    className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">About</a>
-                <a href="#projects" className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">Projects</a>
                 <a href="#skills"   className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">Skills</a>
+                <a href="#projects" className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">Projects</a>
                 <a href="#contact"  className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">Contact</a>
               </motion.nav>
             )}

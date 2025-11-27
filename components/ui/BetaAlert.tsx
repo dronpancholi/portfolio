@@ -14,7 +14,7 @@ import {
   Smartphone
 } from 'lucide-react';
 
-// Version v3.6.13
+// Version v3.6.14
 // Engine: Crystal HUD Interface with Interactive Diagnostics
 
 const ENGINE_DATA = [
@@ -54,15 +54,25 @@ const BetaAlert: React.FC = () => {
     threads: '4'
   });
 
-  // Scroll Lock Effect
+  // Strict Scroll Lock Effect
   useEffect(() => {
     if (isVisible) {
+      // Lock both html and body to prevent mobile scroll propagation
+      document.documentElement.style.overflow = 'hidden';
       document.body.style.overflow = 'hidden';
+      document.body.style.height = '100vh';
+      document.body.style.touchAction = 'none'; // Disable touch scroll on body
     } else {
+      document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
+      document.body.style.height = '';
+      document.body.style.touchAction = '';
     }
     return () => {
+      document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
+      document.body.style.height = '';
+      document.body.style.touchAction = '';
     };
   }, [isVisible]);
 
@@ -105,7 +115,7 @@ const BetaAlert: React.FC = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 overflow-hidden"
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6"
           style={{ perspective: '1200px' }}
         >
           {/* Backdrop - Locked (No interaction) */}
@@ -118,7 +128,7 @@ const BetaAlert: React.FC = () => {
 
           {/* 
              MAIN HUD PANEL 
-             Realism Engine v3.6906.506 - Crystal HUD
+             Realism Engine v3.6.14 - Maximum Liquid Glass
           */}
           <motion.div
             layout
@@ -126,27 +136,33 @@ const BetaAlert: React.FC = () => {
             animate={{ scale: 1, opacity: 1, rotateX: 0 }}
             exit={{ scale: 0.98, opacity: 0, filter: 'blur(20px)' }}
             transition={{ type: "spring", stiffness: 100, damping: 20 }}
-            className="relative w-full max-w-xl rounded-[32px] overflow-hidden flex flex-col shadow-2xl ring-1 ring-white/10"
+            className="
+              relative w-full max-w-xl rounded-[32px] flex flex-col shadow-2xl ring-1 ring-white/10
+              max-h-[90vh] overflow-y-auto scrollbar-none overscroll-contain
+            "
             style={{
-                // Apple-Style Deep Crystal Glass (Enhanced for v3.6.13)
-                background: 'rgba(30, 35, 45, 0.45)', 
+                // Ultimate Liquid Glass Aesthetic
+                // Clearer background to see through, heavier blur, sharper edges
+                background: 'rgba(30, 35, 45, 0.3)', 
                 boxShadow: `
                   0 0 0 1px rgba(255,255,255,0.1),
-                  0 50px 100px -20px rgba(0,0,0,0.7),
-                  inset 0 0 60px rgba(255,255,255,0.03),
-                  inset 0 1px 0 rgba(255,255,255,0.25)
+                  0 50px 100px -20px rgba(0,0,0,0.8),
+                  inset 0 1px 0 rgba(255,255,255,0.4), /* Sharp top edge */
+                  inset 0 0 60px rgba(255,255,255,0.02)
                 `,
-                backdropFilter: 'blur(50px) saturate(180%)',
-                WebkitBackdropFilter: 'blur(50px) saturate(180%)',
+                backdropFilter: 'blur(60px) saturate(180%)',
+                WebkitBackdropFilter: 'blur(60px) saturate(180%)',
+                // Enable scroll on this element specifically
+                touchAction: 'pan-y'
             }}
           >
             {/* NOISE TEXTURE OVERLAY */}
-            <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay" 
+            <div className="absolute inset-0 opacity-[0.04] pointer-events-none mix-blend-overlay fixed" 
                  style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }} 
             />
 
             {/* HEADER: Minimalist Apple Style */}
-            <div className="relative p-8 pb-4 flex items-center justify-between z-10">
+            <div className="relative p-8 pb-4 flex items-center justify-between z-10 sticky top-0 bg-transparent">
                 <div className="flex items-center gap-4">
                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-white/15 to-white/5 border border-white/10 flex items-center justify-center shadow-lg">
                         <Monitor size={22} className="text-white/90" />
@@ -216,7 +232,7 @@ const BetaAlert: React.FC = () => {
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        className="overflow-hidden bg-black/20 border-t border-white/5"
+                        className="bg-black/20 border-t border-white/5"
                     >
                         <div className="p-8 space-y-8">
                             
@@ -290,7 +306,7 @@ const BetaAlert: React.FC = () => {
             </AnimatePresence>
 
             {/* BOTTOM BAR: SESSION ID */}
-            <div className="p-3 bg-white/[0.02] border-t border-white/5 backdrop-blur-md flex items-center justify-between text-[9px] font-mono text-white/20 uppercase tracking-wider">
+            <div className="p-3 bg-white/[0.02] border-t border-white/5 backdrop-blur-md flex items-center justify-between text-[9px] font-mono text-white/20 uppercase tracking-wider sticky bottom-0">
                  <span className="flex items-center gap-1"><Database size={8} /> SID: {Math.random().toString(36).substring(7).toUpperCase()}</span>
                  <span className="flex items-center gap-1"><Server size={8} /> US-EAST-1A</span>
             </div>
