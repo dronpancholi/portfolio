@@ -2,24 +2,40 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  ChevronRight, 
   ChevronDown,
   Activity, 
   Cpu,
   Zap,
   Layers,
-  ShieldCheck,
   Terminal,
   Grid,
-  Maximize2
+  Maximize2,
+  AlertTriangle,
+  Info
 } from 'lucide-react';
 
-// Version v3.6008.001
-// Engine: Crystal HUD Interface
+// Version v3.6009.001
+// Engine: Crystal HUD Interface with Interactive Diagnostics
+
+const ENGINE_DATA = [
+  { id: 'refraction', name: "Spectral Refraction Engine", desc: "Calculates real-time light bending paths through variable density media using dual-pass rendering." },
+  { id: 'physics', name: "Verlet Physics Integration", desc: "Simulates cloth-like physics and soft-body dynamics for fluid UI element interactions." },
+  { id: 'aa', name: "Sub-Pixel Antialiasing", desc: "Enhances edge clarity on high-DPI displays by sampling sub-pixel geometry during rasterization." },
+  { id: 'chromatic', name: "Chromatic Aberration Solver", desc: "Simulates lens dispersion effects by offsetting RGB channels based on radial distance." },
+  { id: 'gamma', name: "Gamma Luminance Corrector", desc: "Linearizes color space before blending to ensure physically accurate lighting falloff." },
+  { id: 'blur', name: "Dual-Pass Gaussian Blur", desc: "Optimized separate X/Y convolution passes to achieve high-radius blurs with minimal GPU cost." },
+  { id: 'turbulence', name: "SVG Turbulence Generator", desc: "Generates pseudo-random Perlin noise for organic surface displacement mapping." },
+  { id: 'caustics', name: "Ray-Cast Caustics Mapper", desc: "Approximates light concentration patterns on the 'floor' of the UI based on surface normals." },
+  { id: 'composite', name: "GPU Composite Layering", desc: "Forces browser to promote elements to separate compositor layers to prevent layout thrashing." },
+  { id: 'hydration', name: "Hydration Drift Compensator", desc: "Synchronizes server-rendered markup with client-side state to prevent layout shifts." },
+  { id: 'fluid', name: "Fluid Dynamics Simulator", desc: "Solves Navier-Stokes equations in simplified 2D space for cursor-trail effects." },
+  { id: 'vdom', name: "Virtual DOM Reconciler", desc: "Optimizes React rendering cycles by batching updates during animation frames." }
+];
 
 const BetaAlert: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [selectedEngine, setSelectedEngine] = useState<typeof ENGINE_DATA[0] | null>(null);
   
   // Simulated System Check State
   const [progress, setProgress] = useState(0);
@@ -35,7 +51,7 @@ const BetaAlert: React.FC = () => {
 
   useEffect(() => {
     // Check session storage
-    const hasSeenAlert = sessionStorage.getItem('dron_beta_alert_v3_6_8');
+    const hasSeenAlert = sessionStorage.getItem('dron_beta_alert_v3_6_9');
     if (!hasSeenAlert) {
       const timer = setTimeout(() => setIsVisible(true), 200);
 
@@ -69,7 +85,7 @@ const BetaAlert: React.FC = () => {
 
   const handleDismiss = () => {
     setIsVisible(false);
-    sessionStorage.setItem('dron_beta_alert_v3_6_8', 'true');
+    sessionStorage.setItem('dron_beta_alert_v3_6_9', 'true');
   };
 
   return (
@@ -84,7 +100,7 @@ const BetaAlert: React.FC = () => {
         >
           {/* Backdrop - Locked (No interaction) */}
           <motion.div 
-            className="absolute inset-0 bg-black/40 backdrop-blur-md transition-all duration-1000"
+            className="absolute inset-0 bg-black/60 backdrop-blur-md transition-all duration-1000"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -92,7 +108,7 @@ const BetaAlert: React.FC = () => {
 
           {/* 
              MAIN HUD PANEL 
-             Realism Engine v3.6008 - Crystal HUD
+             Realism Engine v3.6009 - Crystal HUD
              High transparency, heavy blur, etched details.
           */}
           <motion.div
@@ -104,10 +120,10 @@ const BetaAlert: React.FC = () => {
             className="relative w-full max-w-2xl rounded-[32px] overflow-hidden flex flex-col max-h-[85vh] shadow-2xl"
             style={{
                 // Deep Crystal Glass
-                background: 'rgba(20, 20, 20, 0.2)', 
+                background: 'rgba(20, 20, 20, 0.4)', 
                 boxShadow: `
                   0 0 0 1px rgba(255,255,255,0.1),
-                  0 40px 100px -20px rgba(0,0,0,0.6),
+                  0 40px 100px -20px rgba(0,0,0,0.8),
                   inset 0 0 40px rgba(255,255,255,0.02)
                 `,
                 backdropFilter: 'blur(50px) saturate(180%)',
@@ -115,7 +131,7 @@ const BetaAlert: React.FC = () => {
             }}
           >
             {/* NOISE TEXTURE OVERLAY */}
-            <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay" 
+            <div className="absolute inset-0 opacity-[0.04] pointer-events-none mix-blend-overlay" 
                  style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }} 
             />
 
@@ -126,24 +142,37 @@ const BetaAlert: React.FC = () => {
                         <Terminal size={18} className="text-white/80" />
                      </div>
                      <div>
-                        <h1 className="text-lg font-bold text-white tracking-tight leading-none">
-                            System Diagnostics
+                        <h1 className="text-lg font-bold text-white tracking-tight leading-none uppercase">
+                            Beta Update Protocol
                         </h1>
                         <p className="text-[10px] font-mono text-white/40 mt-1.5 uppercase tracking-widest">
-                            Release Candidate v3.6.8
+                           Engine v3.6009.001
                         </p>
                      </div>
                 </div>
                 {/* Status Indicator */}
                 <div className="flex flex-col items-end">
                     <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-bold text-white/60 tracking-wider">STATUS</span>
+                        <span className="text-[10px] font-bold text-white/60 tracking-wider">SYSTEM</span>
                         <div className={`w-2 h-2 rounded-full ${isReady ? 'bg-green-400 shadow-[0_0_8px_#4ade80]' : 'bg-amber-400 animate-pulse'}`} />
                     </div>
                     <span className="text-[10px] font-mono text-white/30 mt-0.5">
-                        {isReady ? 'READY TO MOUNT' : 'INITIALIZING...'}
+                        {isReady ? 'ONLINE' : 'BOOTING...'}
                     </span>
                 </div>
+            </div>
+
+            {/* WARNING MODULE: LIQUID AMBER */}
+            <div className="relative mx-6 mt-6 p-4 rounded-xl border border-amber-500/20 bg-amber-500/10 flex items-start gap-4 shadow-[inset_0_0_20px_rgba(245,158,11,0.05)]">
+                 <div className="p-2 rounded-lg bg-amber-500/20 text-amber-400 shadow-[0_0_10px_rgba(245,158,11,0.2)]">
+                    <AlertTriangle size={20} />
+                 </div>
+                 <div>
+                    <h3 className="text-xs font-bold text-amber-200 uppercase tracking-wide mb-1">Performance Advisory</h3>
+                    <p className="text-[11px] text-amber-100/70 leading-relaxed font-medium">
+                        This environment is running in a High-Fidelity Beta State. Heavy SVG refraction and physics calculations may cause GPU thermal throttling or frame drops on non-accelerated devices.
+                    </p>
+                 </div>
             </div>
 
             {/* BODY: TELEMETRY GRID */}
@@ -165,22 +194,6 @@ const BetaAlert: React.FC = () => {
                             </div>
                         </div>
                     ))}
-                </div>
-
-                {/* Progress Bar */}
-                <div className="space-y-1.5">
-                    <div className="flex justify-between text-[10px] font-medium text-white/50 uppercase tracking-widest">
-                        <span>Kernel Loading</span>
-                        <span>{progress}%</span>
-                    </div>
-                    <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
-                        <motion.div 
-                            className="h-full bg-white/80 shadow-[0_0_10px_rgba(255,255,255,0.5)]"
-                            initial={{ width: 0 }}
-                            animate={{ width: `${progress}%` }}
-                            transition={{ ease: "linear" }}
-                        />
-                    </div>
                 </div>
 
                 {/* EXPANDABLE: ENGINE MANIFEST */}
@@ -208,39 +221,47 @@ const BetaAlert: React.FC = () => {
                                 className="overflow-hidden"
                             >
                                 <div className="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                    {/* Tech Stack List - Apple Style */}
-                                    {[
-                                        "Spectral Refraction Engine",
-                                        "Verlet Physics Integration",
-                                        "Sub-Pixel Antialiasing",
-                                        "Chromatic Aberration Solver",
-                                        "Gamma Luminance Corrector",
-                                        "Dual-Pass Gaussian Blur",
-                                        "SVG Turbulence Generator",
-                                        "Ray-Cast Caustics Mapper",
-                                        "GPU Composite Layering",
-                                        "Hydration Drift Compensator",
-                                        "Fluid Dynamics Simulator",
-                                        "Virtual DOM Reconciler"
-                                    ].map((tech, i) => (
-                                        <div key={i} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/5">
-                                            <div className="w-1 h-1 rounded-full bg-[var(--accent)]" />
-                                            <span className="text-[10px] font-mono text-white/70 truncate">{tech}</span>
-                                        </div>
+                                    {/* Interactive Engine List */}
+                                    {ENGINE_DATA.map((engine) => (
+                                        <button 
+                                            key={engine.id} 
+                                            onClick={() => setSelectedEngine(engine)}
+                                            className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-left transition-all duration-200 ${
+                                                selectedEngine?.id === engine.id 
+                                                ? 'bg-white/10 border-white/30 shadow-[0_0_15px_rgba(255,255,255,0.05)]' 
+                                                : 'bg-white/[0.03] border-white/5 hover:bg-white/5'
+                                            }`}
+                                        >
+                                            <div className={`w-1.5 h-1.5 rounded-full ${selectedEngine?.id === engine.id ? 'bg-[var(--accent)] shadow-[0_0_5px_var(--accent)]' : 'bg-white/20'}`} />
+                                            <span className={`text-[10px] font-mono truncate ${selectedEngine?.id === engine.id ? 'text-white' : 'text-white/60'}`}>
+                                                {engine.name}
+                                            </span>
+                                        </button>
                                     ))}
                                 </div>
-                                
-                                {/* Visualizer Mockup */}
-                                <div className="mt-4 p-3 rounded-lg bg-black/30 border border-white/5 flex gap-1 items-end h-16 opacity-50">
-                                    {Array.from({ length: 40 }).map((_, i) => (
+
+                                {/* DIAGNOSTIC READOUT PANEL */}
+                                <AnimatePresence mode="wait">
+                                    {selectedEngine && (
                                         <motion.div 
-                                            key={i} 
-                                            className="flex-1 bg-white/40 rounded-sm"
-                                            animate={{ height: `${Math.random() * 100}%` }}
-                                            transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse", delay: i * 0.02 }}
-                                        />
-                                    ))}
-                                </div>
+                                            key={selectedEngine.id}
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -10 }}
+                                            className="mt-4 p-4 rounded-xl border border-white/10 bg-black/40 shadow-inner"
+                                        >
+                                            <div className="flex items-center gap-2 mb-2 text-white/80">
+                                                <Info size={12} />
+                                                <span className="text-[10px] font-bold uppercase tracking-wider">Diagnostic Readout</span>
+                                            </div>
+                                            <h4 className="text-sm font-bold text-white mb-1">{selectedEngine.name}</h4>
+                                            <p className="text-xs text-white/60 font-mono leading-relaxed">
+                                                {selectedEngine.desc}
+                                            </p>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                                
                             </motion.div>
                         )}
                     </AnimatePresence>
@@ -269,19 +290,12 @@ const BetaAlert: React.FC = () => {
                                 INITIALIZE INTERFACE <Maximize2 size={14} />
                             </>
                         ) : (
-                            "SYSTEM MOUNTING..."
+                            <>
+                                SYSTEM MOUNTING <span className="inline-block w-4 text-left">...</span>
+                            </>
                         )}
                     </span>
                 </motion.button>
-                
-                <div className="flex justify-between items-center mt-4 px-1">
-                     <span className="text-[9px] font-medium text-white/30 uppercase tracking-widest">
-                        Secure Connection
-                     </span>
-                     <span className="text-[9px] font-mono text-white/30 uppercase">
-                        ID: 8X-229-LQD
-                     </span>
-                </div>
             </div>
 
           </motion.div>
