@@ -1,7 +1,7 @@
 
 import React, { ErrorInfo, ReactNode, Component } from 'react';
 
-// Version v3.6005.001
+// Version v3.6006.001
 // strict typing to prevent TS errors
 interface Props {
   children?: ReactNode;
