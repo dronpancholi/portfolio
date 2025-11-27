@@ -3,9 +3,9 @@ import React from 'react';
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
-  // Version structure: Main.Part.Beta
-  // v3 (Realism Engine) . 5 (Liquid Updates) . 2 (Polishing)
-  const APP_VERSION = "v3.5.2";
+  // Version structure: Main.Part.Patch [Status]
+  // v3 (Realism Engine) . 6 (Beta Integration) . 1 (Initial)
+  const APP_VERSION = "v3.6.1 [BETA]";
 
   return (
     <footer className="py-8 text-center">

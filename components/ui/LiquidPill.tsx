@@ -1,6 +1,7 @@
+
 import React from "react";
 
-// Version v3.5091.222
+// Version v3.6001.001
 // Engine: Realism Engine
 type Props = {
   proxyRows: React.ReactNode[];
@@ -15,7 +16,7 @@ export default function LiquidPill({ proxyRows, children }: Props) {
         role="group" 
         aria-label="Social links"
         style={{
-            // REALISM ENGINE v3.5091.222 SETTINGS
+            // REALISM ENGINE v3.6001.001 SETTINGS
             // 99.5% Transparent
             background: 'rgba(255, 255, 255, 0.005)', 
             // Absolute clarity

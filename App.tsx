@@ -8,6 +8,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import LiquidFilters from './components/ui/LiquidFilters';
 import HeaderPillGlassFilter from './components/ui/HeaderPillGlassFilter';
 import PerformanceOptimizedBackground from './components/ui/PerformanceOptimizedBackground';
+import BetaAlert from './components/ui/BetaAlert';
 
 const Skills = lazy(() => import('./components/Skills'));
 const Projects = lazy(() => import('./components/Projects'));
@@ -45,7 +46,7 @@ const App: React.FC = () => {
     };
 
     window.addEventListener("pointermove", handleMove, { passive: true });
-    return () => window.removeEventListener("pointermove", handleMove);
+    return () => window.removeEventListener("pointermove", handleMove, { capture: false });
   }, []);
 
   return (
@@ -54,6 +55,10 @@ const App: React.FC = () => {
       <div className="relative isolate min-h-screen text-[var(--text-main)] selection:bg-[var(--accent)]/30">
         <LiquidFilters />
         <HeaderPillGlassFilter />
+        
+        {/* New Beta Alert Splash Screen */}
+        <BetaAlert />
+
         <Header />
         <main className="container mx-auto px-6 md:px-8 pt-24">
           <Hero />
