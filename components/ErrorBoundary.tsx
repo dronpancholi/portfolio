@@ -1,4 +1,4 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import React, { ErrorInfo, ReactNode } from 'react';
 
 // Version v2.5091.221
 // strict typing to prevent TS errors
@@ -10,9 +10,9 @@ interface State {
   hasError: boolean;
 }
 
-class ErrorBoundary extends Component<Props, State> {
+class ErrorBoundary extends React.Component<Props, State> {
   // Explicit state initialization
-  state: State = {
+  public state: State = {
     hasError: false
   };
 

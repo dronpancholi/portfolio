@@ -1,43 +1,55 @@
 import React from "react";
 
-// Version v2.5091.221
-// Engine: Ring Distortion / Clean Center
+// Version v3.0
+// Engine: Realism Engine (Dual-Frequency + Gamma Compression)
 const LiquidFilters: React.FC = () => {
   return (
     <svg style={{ display: "none" }} aria-hidden="true">
       <defs>
         {/* 
-           RING-DISTORTION FILTER v2.5091.221
-           - Creates a clear "eye" in the center where text is untouched.
-           - Pushes all turbulence/distortion to the perimeter.
-           - Ensures 100% readability for the main content (95% visible rule).
+           REALISM ENGINE v3.0
+           - Uses Gamma Compression to force the center to be 100% flat (0 displacement).
+           - Uses Dual-Frequency noise for realistic liquid surface imperfections.
+           - High displacement scale (100) for thick glass edge refraction.
         */}
         <filter id="liquidRefraction" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
-          {/* 1. Generate heavy, liquid-like noise */}
-          <feTurbulence type="turbulence" baseFrequency="0.015" numOctaves="1" seed="5" result="noise" />
+          {/* Layer 1: Global Lens Shape (Low Frequency) */}
+          <feTurbulence type="turbulence" baseFrequency="0.012" numOctaves="1" seed="5" result="noiseLow" />
+
+          {/* Layer 2: Surface Detail (High Frequency) */}
+          <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="2" result="noiseHigh" />
           
-          {/* 2. Create a solid 'island' from the noise (the center of the lens) */}
-          <feMorphology operator="dilate" radius="16" in="noise" result="island" />
-          
-          {/* 3. Smooth the island to create a slope at the edges */}
-          <feGaussianBlur in="island" stdDeviation="10" result="smoothIsland" />
+          {/* Combine layers */}
+          <feComposite in="noiseLow" in2="noiseHigh" operator="arithmetic" k1="0" k2="0.8" k3="0.2" k4="0" result="noiseMix" />
 
           {/* 
-             4. EDGE DETECTION MATRIX
-             The center becomes neutral (no displacement). The edges become active.
+             GAMMA COMPRESSION:
+             Flatten the mid-tones (0.5) to ensure the center of the lens has no displacement.
+             Ramp up the extremes (0 and 1) to create steep edges.
           */}
+          <feComponentTransfer in="noiseMix" result="compressedNoise">
+            <feFuncR type="table" tableValues="0 0 0.5 0.5 0.5 1 1"/>
+            <feFuncG type="table" tableValues="0 0 0.5 0.5 0.5 1 1"/>
+          </feComponentTransfer>
+
+          {/* 
+             Create the island mask for the pill shape 
+          */}
+          <feMorphology operator="dilate" radius="12" in="compressedNoise" result="island" />
+          <feGaussianBlur in="island" stdDeviation="8" result="smoothIsland" />
+
+          {/* Edge Map Calculation */}
           <feColorMatrix in="smoothIsland" type="matrix" 
             values="1 0 0 0 0
                     0 1 0 0 0
                     0 0 1 0 0
-                    0 0 0 15 -7" 
+                    0 0 0 18 -9" 
             result="edgeMap" 
           />
 
-          {/* 5. Displace using the Edge Map. Center remains sharp. High scale for strong edge distortion. */}
-          <feDisplacementMap in="SourceGraphic" in2="edgeMap" scale="50" xChannelSelector="A" yChannelSelector="A" result="distort" />
+          {/* High Scale Displacement */}
+          <feDisplacementMap in="SourceGraphic" in2="edgeMap" scale="100" xChannelSelector="R" yChannelSelector="G" result="distort" />
           
-          {/* 6. Composite to ensure clean edges */}
           <feComposite in="distort" in2="SourceGraphic" operator="in" />
         </filter>
       </defs>
