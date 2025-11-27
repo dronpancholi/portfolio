@@ -7,19 +7,16 @@ import {
   Cpu,
   Zap,
   Layers,
-  Terminal,
-  Grid,
-  Maximize2,
   AlertTriangle,
-  Info,
-  Lock,
-  Wifi,
+  Command,
   Database,
   Server,
-  Command
+  Monitor,
+  Smartphone,
+  Info
 } from 'lucide-react';
 
-// Version v3.6906.506
+// Version v3.6.12
 // Engine: Crystal HUD Interface with Interactive Diagnostics
 
 const ENGINE_DATA = [
@@ -33,30 +30,25 @@ const ENGINE_DATA = [
   { id: 'caustics', name: "Ray-Cast Caustics Mapper", desc: "Approximates light concentration patterns on the 'floor' of the UI based on surface normals." },
   { id: 'composite', name: "GPU Composite Layering", desc: "Forces browser to promote elements to separate compositor layers to prevent layout thrashing." },
   { id: 'hydration', name: "Hydration Drift Compensator", desc: "Synchronizes server-rendered markup with client-side state to prevent layout shifts." },
-  { id: 'fluid', name: "Fluid Dynamics Simulator", desc: "Solves Navier-Stokes equations in simplified 2D space for cursor-trail effects." },
-  { id: 'vdom', name: "Virtual DOM Reconciler", desc: "Optimizes React rendering cycles by batching updates during animation frames." }
 ];
 
-const BOOT_LOGS = [
-    "initializing_kernel...",
-    "allocating_virtual_memory_pages...",
-    "mounting_react_fiber_root...",
-    "hydrating_suspense_boundaries...",
-    "injecting_css_variables...",
-    "compiling_glsl_shaders...",
-    "optimizing_svg_paths...",
-    "connecting_telemetry_stream...",
-    "resolving_dns_prefetch...",
-    "rendering_frame_buffer..."
+const ENGINE_SEQUENCE = [
+    "mounting_accelerated_compositor...",
+    "detecting_device_pixel_ratio...",
+    "allocating_frame_buffer...",
+    "compiling_fragment_shaders...",
+    "initializing_physics_world...",
+    "precaching_glass_assets...",
+    "optimizing_render_tree...",
+    "verifying_webgl_context...",
+    "starting_main_loop..."
 ];
 
 const BetaAlert: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-  const [selectedEngine, setSelectedEngine] = useState<typeof ENGINE_DATA[0] | null>(null);
   
   // Simulated System Check State
-  const [progress, setProgress] = useState(0);
   const [isReady, setIsReady] = useState(false);
 
   // Simulated Telemetry Data
@@ -75,14 +67,7 @@ const BetaAlert: React.FC = () => {
 
       // Simulate loading progress
       const interval = setInterval(() => {
-        setProgress(prev => {
-          if (prev >= 100) {
-            clearInterval(interval);
-            setIsReady(true);
-            return 100;
-          }
-          return prev + Math.floor(Math.random() * 15);
-        });
+        setIsReady(true);
         
         // Jitter telemetry
         setTelemetry({
@@ -118,7 +103,7 @@ const BetaAlert: React.FC = () => {
         >
           {/* Backdrop - Locked (No interaction) */}
           <motion.div 
-            className="absolute inset-0 bg-black/60 backdrop-blur-xl transition-all duration-1000"
+            className="absolute inset-0 bg-black/70 backdrop-blur-md transition-all duration-1000"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -127,7 +112,6 @@ const BetaAlert: React.FC = () => {
           {/* 
              MAIN HUD PANEL 
              Realism Engine v3.6906.506 - Crystal HUD
-             High transparency, heavy blur, etched details.
           */}
           <motion.div
             layout
@@ -149,27 +133,24 @@ const BetaAlert: React.FC = () => {
             }}
           >
             {/* NOISE TEXTURE OVERLAY */}
-            <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay" 
+            <div className="absolute inset-0 opacity-[0.04] pointer-events-none mix-blend-overlay" 
                  style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }} 
             />
-
-            {/* SCAN LINE ANIMATION (Subtle) */}
-            <div className="absolute inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-20 animate-[scanline_4s_linear_infinite] pointer-events-none z-0" />
 
             {/* HEADER: Minimalist Apple Style */}
             <div className="relative p-8 pb-4 flex items-center justify-between z-10">
                 <div className="flex items-center gap-4">
                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 flex items-center justify-center shadow-lg">
-                        <Command size={22} className="text-white/90" />
+                        <Monitor size={22} className="text-white/90" />
                      </div>
                      <div>
                         <h1 className="text-xl font-medium text-white tracking-tight leading-none mb-1.5">
-                            System Compatibility
+                            Graphic Environment Analysis
                         </h1>
                         <p className="text-[11px] font-medium text-white/40 uppercase tracking-widest flex items-center gap-2">
-                           Version 3.6906.506
+                           Hardware Acceleration Check
                            <span className="w-0.5 h-2 bg-white/20" />
-                           RC-3
+                           v3.6906.506
                         </p>
                      </div>
                 </div>
@@ -179,21 +160,24 @@ const BetaAlert: React.FC = () => {
             <div className="relative p-8 pt-4 z-10">
                 
                 {/* AMBIENT HAZARD MODULE */}
-                <div className="relative p-5 rounded-2xl border border-white/5 bg-white/[0.02] overflow-hidden group">
-                     {/* Ambient Glow */}
-                     <div className="absolute -right-10 -bottom-10 text-amber-500/20 blur-[50px] transition-transform duration-1000 group-hover:scale-110">
-                         <div className="w-32 h-32 bg-amber-500 rounded-full" />
+                <div className="relative p-6 rounded-2xl border border-white/5 bg-white/[0.02] overflow-hidden group min-h-[120px] flex flex-col justify-between">
+                     
+                     <div className="relative z-10 pr-8">
+                        <h3 className="text-sm font-semibold text-white/90 mb-2">Performance Advisory</h3>
+                        <p className="text-xs text-white/50 leading-relaxed font-medium">
+                            This interface utilizes a high-fidelity Liquid Glass rendering pipeline. 
+                            Visual performance and frame rates may degrade on devices without dedicated hardware acceleration, 
+                            such as legacy iOS devices, integrated Intel HD graphics, or non-Metal/Vulkan compliant renderers.
+                        </p>
                      </div>
 
-                     <div className="relative z-10 flex gap-4">
-                        <AlertTriangle className="text-amber-400 shrink-0" size={24} />
-                        <div>
-                            <h3 className="text-sm font-semibold text-white/90 mb-1">Performance Advisory</h3>
-                            <p className="text-xs text-white/50 leading-relaxed font-medium">
-                                High-fidelity Liquid Glass rendering enabled. This may impact thermal performance on non-accelerated GPUs. Proceed with caution.
-                            </p>
-                        </div>
+                     {/* Hazard Sign - Bottom Right Watermark */}
+                     <div className="absolute bottom-[-10px] right-[-10px] opacity-10 rotate-[-12deg] pointer-events-none">
+                         <AlertTriangle size={140} className="text-white" />
                      </div>
+                     
+                     {/* Active Indicator */}
+                     <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.5)] animate-pulse" />
                 </div>
 
                 <div className="mt-6 flex flex-col gap-3">
@@ -264,12 +248,25 @@ const BetaAlert: React.FC = () => {
                                 </div>
                             </div>
 
-                            {/* BOOT LOGS */}
+                            {/* DEVICE COMPATIBILITY MATRIX */}
                             <div>
-                                <h4 className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-4">Kernel Log</h4>
+                                <h4 className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-4">Device Support Matrix</h4>
+                                <div className="flex gap-4">
+                                     <div className="flex items-center gap-2 text-white/40">
+                                        <Monitor size={12} /> <span className="text-[10px]">Desktop (Recommended)</span>
+                                     </div>
+                                     <div className="flex items-center gap-2 text-white/40">
+                                        <Smartphone size={12} /> <span className="text-[10px]">Mobile (Standard)</span>
+                                     </div>
+                                </div>
+                            </div>
+
+                            {/* ENGINE SEQUENCE */}
+                            <div>
+                                <h4 className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-4">Engine Sequence</h4>
                                 <div className="p-3 rounded-lg bg-black/30 border border-white/5 font-mono text-[9px] text-white/40 h-24 overflow-y-auto scrollbar-none shadow-inner">
                                      <div className="space-y-1 opacity-70">
-                                        {BOOT_LOGS.map((log, i) => (
+                                        {ENGINE_SEQUENCE.map((log, i) => (
                                             <div key={i} className="flex gap-2">
                                                 <span className="text-white/20">[{Date.now().toString().slice(-4)}]</span>
                                                 <span>{log}</span>
