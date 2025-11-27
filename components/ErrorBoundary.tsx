@@ -1,7 +1,7 @@
 
-import React, { ErrorInfo, ReactNode } from 'react';
+import React, { ErrorInfo, ReactNode, Component } from 'react';
 
-// Version v3.6003.001
+// Version v3.6004.001
 // strict typing to prevent TS errors
 interface Props {
   children?: ReactNode;
@@ -11,7 +11,7 @@ interface State {
   hasError: boolean;
 }
 
-class ErrorBoundary extends React.Component<Props, State> {
+class ErrorBoundary extends Component<Props, State> {
   // Explicitly initialize state as a class property
   state: State = {
     hasError: false
