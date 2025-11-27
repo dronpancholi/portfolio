@@ -13,7 +13,9 @@ import {
   AlertTriangle,
   Info,
   Lock,
-  Wifi
+  Wifi,
+  Database,
+  Server
 } from 'lucide-react';
 
 // Version v3.6906.506
@@ -32,6 +34,19 @@ const ENGINE_DATA = [
   { id: 'hydration', name: "Hydration Drift Compensator", desc: "Synchronizes server-rendered markup with client-side state to prevent layout shifts." },
   { id: 'fluid', name: "Fluid Dynamics Simulator", desc: "Solves Navier-Stokes equations in simplified 2D space for cursor-trail effects." },
   { id: 'vdom', name: "Virtual DOM Reconciler", desc: "Optimizes React rendering cycles by batching updates during animation frames." }
+];
+
+const BOOT_LOGS = [
+    "initializing_kernel...",
+    "allocating_virtual_memory_pages...",
+    "mounting_react_fiber_root...",
+    "hydrating_suspense_boundaries...",
+    "injecting_css_variables...",
+    "compiling_glsl_shaders...",
+    "optimizing_svg_paths...",
+    "connecting_telemetry_stream...",
+    "resolving_dns_prefetch...",
+    "rendering_frame_buffer..."
 ];
 
 const BetaAlert: React.FC = () => {
@@ -151,13 +166,13 @@ const BetaAlert: React.FC = () => {
                      </div>
                      <div>
                         <h1 className="text-lg font-bold text-white tracking-tight leading-none uppercase flex items-center gap-2">
-                            Beta Update Protocol
+                            System Compatibility Check
                             <span className="text-[9px] px-1.5 py-0.5 rounded bg-white/10 text-white/60 border border-white/10">RC-3</span>
                         </h1>
                         <p className="text-[10px] font-mono text-white/40 mt-1.5 uppercase tracking-widest flex items-center gap-2">
-                           v3.6906.506 
+                           Pre-Flight Diagnostics // v3.6906.506 
                            <span className="w-0.5 h-2 bg-white/20" />
-                           <Lock size={8} /> SECURE_CONNECTION
+                           <Lock size={8} /> SECURE
                         </p>
                      </div>
                 </div>
@@ -173,19 +188,20 @@ const BetaAlert: React.FC = () => {
                 </div>
             </div>
 
-            {/* WARNING MODULE: LIQUID AMBER (UPDATED LAYOUT) */}
-            <div className="relative mx-6 mt-6 p-4 rounded-xl border border-amber-500/20 bg-amber-500/5 flex flex-col gap-3 shadow-[inset_0_0_30px_rgba(245,158,11,0.05)] z-10">
-                 <div>
+            {/* WARNING MODULE: AMBIENT HAZARD */}
+            <div className="relative mx-6 mt-6 p-4 rounded-xl border border-amber-500/20 bg-amber-500/5 overflow-hidden shadow-[inset_0_0_30px_rgba(245,158,11,0.05)] z-10">
+                 {/* Ambient Hazard Layer */}
+                 <div className="absolute -bottom-6 -right-6 text-amber-500/10 blur-xl pointer-events-none transform rotate-12">
+                     <AlertTriangle size={140} />
+                 </div>
+
+                 <div className="relative z-10">
                     <h3 className="text-xs font-bold text-amber-200 uppercase tracking-wide mb-1 flex items-center gap-2">
                         Performance Advisory
                     </h3>
-                    <p className="text-[11px] text-amber-100/70 leading-relaxed font-medium">
+                    <p className="text-[11px] text-amber-100/70 leading-relaxed font-medium max-w-[90%]">
                         This environment is running in a High-Fidelity Beta State. Heavy SVG refraction and physics calculations may cause GPU thermal throttling or frame drops on non-accelerated devices.
                     </p>
-                 </div>
-                 {/* Icon Shifted to Bottom Right */}
-                 <div className="self-end p-1.5 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20 shadow-[0_0_10px_rgba(245,158,11,0.1)] animate-pulse">
-                    <AlertTriangle size={16} />
                  </div>
             </div>
 
@@ -289,6 +305,26 @@ const BetaAlert: React.FC = () => {
                                         </motion.div>
                                     )}
                                 </AnimatePresence>
+
+                                {/* BOOT LOG TERMINAL */}
+                                <div className="mt-4 p-3 rounded-lg bg-black/50 border border-white/5 font-mono text-[9px] text-white/40 overflow-hidden">
+                                     <div className="flex items-center gap-2 mb-2 pb-2 border-b border-white/5">
+                                        <Terminal size={10} />
+                                        <span>KERNEL_LOG</span>
+                                     </div>
+                                     <div className="space-y-1 opacity-70">
+                                        {BOOT_LOGS.map((log, i) => (
+                                            <motion.div 
+                                                key={i} 
+                                                initial={{ opacity: 0, x: -5 }} 
+                                                animate={{ opacity: 1, x: 0 }} 
+                                                transition={{ delay: i * 0.1 }}
+                                            >
+                                                {`> ${log}`}
+                                            </motion.div>
+                                        ))}
+                                     </div>
+                                </div>
                                 
                             </motion.div>
                         )}
@@ -300,6 +336,12 @@ const BetaAlert: React.FC = () => {
             {/* FOOTER: ACTION & NETWORK VISUALIZER */}
             <div className="p-6 bg-white/[0.02] border-t border-white/10 backdrop-blur-md relative z-20 flex flex-col gap-4">
                 
+                {/* Session Telemetry Strip */}
+                <div className="flex items-center justify-between opacity-40 text-[9px] font-mono tracking-wider">
+                     <span className="flex items-center gap-1"><Database size={8} /> SESSION: {Math.random().toString(36).substring(7).toUpperCase()}</span>
+                     <span className="flex items-center gap-1"><Server size={8} /> NODE: US-EAST-1A</span>
+                </div>
+
                 {/* Network Activity Visualizer */}
                 <div className="flex items-center gap-3 opacity-50">
                     <Wifi size={10} className="text-white/40" />
