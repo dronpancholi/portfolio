@@ -41,12 +41,12 @@ export default function Header(){
     ? 'url(#header-pill-glass-expanded)'
     : 'url(#header-pill-glass)';
 
-  // UPDATED: Bouncier, elastic spring physics
+  // OPTIMIZED: High-damping spring for buttery smooth, jitter-free transitions
   const spring = {
     type: "spring",
-    stiffness: 180,
-    damping: 14,
-    mass: 0.9
+    stiffness: 110,
+    damping: 22,
+    mass: 1
   } as const;
 
   return (
@@ -60,20 +60,24 @@ export default function Header(){
           top:       { 
             padding: "12px 22px", 
             scale: 1,
+            y: 0 
           },
           expanded:  { 
             padding: "10px 18px", 
-            scale: 0.97,
+            scale: 0.98,
+            y: 0
           },
           collapsed: { 
             padding: "6px 12px" , 
-            scale: 0.90,
+            scale: 0.92,
+            y: 0
           }
         }}
         initial={false}
         animate={state}
         transition={spring}
         aria-label="Primary navigation"
+        style={{ transform: "translateZ(0)" }} // Force GPU layer
       >
         {/* Distortion Liquid Layer (inside only) */}
         <div
