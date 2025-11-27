@@ -13,12 +13,15 @@ export default function LiquidPill({ proxyRows, children }: Props) {
         role="group" 
         aria-label="Social links"
         style={{
-            // PREVIEW MATCH: Tuned transparency and borders for the "Crystal" look
-            background: 'rgba(255, 255, 255, 0.01)', 
-            boxShadow: '0 15px 40px rgba(0,0,0,0.12), inset 0 0 0 1px rgba(255,255,255,0.2)',
-            border: '1px solid rgba(255, 255, 255, 0.25)',
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
+            // ULTRA-CLEAR GLASS SETTINGS
+            // Nearly invisible background to let the distortion do the work
+            background: 'rgba(255, 255, 255, 0.001)', 
+            // Stronger inner glow and outer shadow for 3D volume
+            boxShadow: '0 20px 50px rgba(0,0,0,0.15), inset 0 0 0 1px rgba(255,255,255,0.3), inset 0 1px 20px rgba(255,255,255,0.1)',
+            border: '1px solid rgba(255, 255, 255, 0.4)',
+            // High blur for the "frosted" edges look
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
         }}
       >
         {/* 
@@ -55,11 +58,14 @@ export default function LiquidPill({ proxyRows, children }: Props) {
           className="liquid-pill__shine" 
           aria-hidden 
           style={{ 
-            opacity: 0.85, 
-            mixBlendMode: 'soft-light',
-            background: 'linear-gradient(120deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 45%, rgba(255,255,255,0.15) 100%)'
+            opacity: 1, 
+            mixBlendMode: 'overlay', // Stronger highlight blend
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0.3) 100%)'
           }} 
         />
+
+        {/* Readability Vignette (Optional, kept subtle) */}
+        <div className="liquid-pill__readability-enhancer" />
 
         {/* Actual Interactive Content (Social Icons) */}
         <div className="liquid-pill__content">

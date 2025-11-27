@@ -15,14 +15,15 @@ export function applyQuality() {
   const el = document.querySelector(".liquid-pill__proxyInner") as HTMLElement|null;
 
   if (q.isHigh) {
-    document.documentElement.style.setProperty("--liquid-displace-scale", "6");
-    document.documentElement.style.setProperty("--glass-blur", "18px");
-    document.documentElement.style.setProperty("--glass-shine-opacity", "0.9");
+    // BOOSTED: Increased scale for high-end devices
+    document.documentElement.style.setProperty("--liquid-displace-scale", "90");
+    document.documentElement.style.setProperty("--glass-blur", "24px");
+    document.documentElement.style.setProperty("--glass-shine-opacity", "1");
     if (el) el.style.filter = "url(#liquidRefraction)";
   } else if (q.isMedium) {
-    document.documentElement.style.setProperty("--liquid-displace-scale", "3");
-    document.documentElement.style.setProperty("--glass-blur", "14px");
-    document.documentElement.style.setProperty("--glass-shine-opacity", "0.65");
+    document.documentElement.style.setProperty("--liquid-displace-scale", "40");
+    document.documentElement.style.setProperty("--glass-blur", "16px");
+    document.documentElement.style.setProperty("--glass-shine-opacity", "0.75");
     // For medium devices, keep the liquid effect but with a reduced, less costly displacement.
     if (el) el.style.filter = "url(#liquidRefraction)";
   } else {
