@@ -13,15 +13,14 @@ export default function LiquidPill({ proxyRows, children }: Props) {
         role="group" 
         aria-label="Social links"
         style={{
-            // ULTRA-CLEAR GLASS SETTINGS
-            // Nearly invisible background to let the distortion do the work
-            background: 'rgba(255, 255, 255, 0.001)', 
-            // Stronger inner glow and outer shadow for 3D volume
-            boxShadow: '0 20px 50px rgba(0,0,0,0.15), inset 0 0 0 1px rgba(255,255,255,0.3), inset 0 1px 20px rgba(255,255,255,0.1)',
-            border: '1px solid rgba(255, 255, 255, 0.4)',
-            // High blur for the "frosted" edges look
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
+            // ULTRA-TRANSPARENT SETTINGS (95% Visible)
+            background: 'rgba(255, 255, 255, 0.005)', 
+            // Subtle border and shadow to define edges without obscuring center
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.05), inset 0 0 0 1px rgba(255,255,255,0.1)',
+            // Minimal blur to keep background readable but "glassy"
+            backdropFilter: 'blur(2px)',
+            WebkitBackdropFilter: 'blur(2px)',
         }}
       >
         {/* 
@@ -34,7 +33,7 @@ export default function LiquidPill({ proxyRows, children }: Props) {
             style={{
               filter: "url(#liquidRefraction)",
               WebkitFilter: "url(#liquidRefraction)",
-              opacity: 1, 
+              opacity: 0.98, // High visibility for proxy content
               // PREVIEW MATCH: Strict GPU promotion for the filter layer
               transform: "translate3d(0,0,0)", 
               willChange: "transform",
@@ -53,19 +52,16 @@ export default function LiquidPill({ proxyRows, children }: Props) {
           </div>
         </div>
 
-        {/* Surface shine/caustics - Sharp overlay for crystal look */}
+        {/* Surface shine - sharper to emphasize the clear surface */}
         <div 
           className="liquid-pill__shine" 
           aria-hidden 
           style={{ 
-            opacity: 1, 
-            mixBlendMode: 'overlay', // Stronger highlight blend
-            background: 'linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0.3) 100%)'
+            opacity: 0.6, 
+            mixBlendMode: 'overlay',
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.2) 100%)'
           }} 
         />
-
-        {/* Readability Vignette (Optional, kept subtle) */}
-        <div className="liquid-pill__readability-enhancer" />
 
         {/* Actual Interactive Content (Social Icons) */}
         <div className="liquid-pill__content">
