@@ -11,10 +11,12 @@ import {
   Grid,
   Maximize2,
   AlertTriangle,
-  Info
+  Info,
+  Lock,
+  Wifi
 } from 'lucide-react';
 
-// Version v3.6009.001
+// Version v3.6906.506
 // Engine: Crystal HUD Interface with Interactive Diagnostics
 
 const ENGINE_DATA = [
@@ -51,7 +53,7 @@ const BetaAlert: React.FC = () => {
 
   useEffect(() => {
     // Check session storage
-    const hasSeenAlert = sessionStorage.getItem('dron_beta_alert_v3_6_9');
+    const hasSeenAlert = sessionStorage.getItem('dron_beta_alert_v3_6906');
     if (!hasSeenAlert) {
       const timer = setTimeout(() => setIsVisible(true), 200);
 
@@ -85,7 +87,7 @@ const BetaAlert: React.FC = () => {
 
   const handleDismiss = () => {
     setIsVisible(false);
-    sessionStorage.setItem('dron_beta_alert_v3_6_9', 'true');
+    sessionStorage.setItem('dron_beta_alert_v3_6906', 'true');
   };
 
   return (
@@ -100,7 +102,7 @@ const BetaAlert: React.FC = () => {
         >
           {/* Backdrop - Locked (No interaction) */}
           <motion.div 
-            className="absolute inset-0 bg-black/60 backdrop-blur-md transition-all duration-1000"
+            className="absolute inset-0 bg-black/70 backdrop-blur-md transition-all duration-1000"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -108,7 +110,7 @@ const BetaAlert: React.FC = () => {
 
           {/* 
              MAIN HUD PANEL 
-             Realism Engine v3.6009 - Crystal HUD
+             Realism Engine v3.6906.506 - Crystal HUD
              High transparency, heavy blur, etched details.
           */}
           <motion.div
@@ -120,9 +122,9 @@ const BetaAlert: React.FC = () => {
             className="relative w-full max-w-2xl rounded-[32px] overflow-hidden flex flex-col max-h-[85vh] shadow-2xl"
             style={{
                 // Deep Crystal Glass
-                background: 'rgba(20, 20, 20, 0.4)', 
+                background: 'rgba(10, 15, 20, 0.4)', 
                 boxShadow: `
-                  0 0 0 1px rgba(255,255,255,0.1),
+                  0 0 0 1px rgba(255,255,255,0.08),
                   0 40px 100px -20px rgba(0,0,0,0.8),
                   inset 0 0 40px rgba(255,255,255,0.02)
                 `,
@@ -131,22 +133,31 @@ const BetaAlert: React.FC = () => {
             }}
           >
             {/* NOISE TEXTURE OVERLAY */}
-            <div className="absolute inset-0 opacity-[0.04] pointer-events-none mix-blend-overlay" 
-                 style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }} 
+            <div className="absolute inset-0 opacity-[0.05] pointer-events-none mix-blend-overlay" 
+                 style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }} 
             />
 
+            {/* GRID BACKGROUND ANIMATION */}
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] animate-[panGrid_20s_linear_infinite]" />
+
+            {/* SCAN LINE ANIMATION */}
+            <div className="absolute inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent opacity-20 animate-[scanline_3s_linear_infinite] pointer-events-none z-0" />
+
             {/* HEADER: HUD STRIP */}
-            <div className="relative p-6 border-b border-white/10 flex items-center justify-between flex-shrink-0">
+            <div className="relative p-6 border-b border-white/10 flex items-center justify-between flex-shrink-0 z-10">
                 <div className="flex items-center gap-4">
                      <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center bg-white/5 shadow-[0_0_15px_rgba(255,255,255,0.1)]">
                         <Terminal size={18} className="text-white/80" />
                      </div>
                      <div>
-                        <h1 className="text-lg font-bold text-white tracking-tight leading-none uppercase">
+                        <h1 className="text-lg font-bold text-white tracking-tight leading-none uppercase flex items-center gap-2">
                             Beta Update Protocol
+                            <span className="text-[9px] px-1.5 py-0.5 rounded bg-white/10 text-white/60 border border-white/10">RC-3</span>
                         </h1>
-                        <p className="text-[10px] font-mono text-white/40 mt-1.5 uppercase tracking-widest">
-                           Engine v3.6009.001
+                        <p className="text-[10px] font-mono text-white/40 mt-1.5 uppercase tracking-widest flex items-center gap-2">
+                           v3.6906.506 
+                           <span className="w-0.5 h-2 bg-white/20" />
+                           <Lock size={8} /> SECURE_CONNECTION
                         </p>
                      </div>
                 </div>
@@ -162,23 +173,26 @@ const BetaAlert: React.FC = () => {
                 </div>
             </div>
 
-            {/* WARNING MODULE: LIQUID AMBER */}
-            <div className="relative mx-6 mt-6 p-4 rounded-xl border border-amber-500/20 bg-amber-500/10 flex items-start gap-4 shadow-[inset_0_0_20px_rgba(245,158,11,0.05)]">
-                 <div className="p-2 rounded-lg bg-amber-500/20 text-amber-400 shadow-[0_0_10px_rgba(245,158,11,0.2)]">
-                    <AlertTriangle size={20} />
-                 </div>
+            {/* WARNING MODULE: LIQUID AMBER (UPDATED LAYOUT) */}
+            <div className="relative mx-6 mt-6 p-4 rounded-xl border border-amber-500/20 bg-amber-500/5 flex flex-col gap-3 shadow-[inset_0_0_30px_rgba(245,158,11,0.05)] z-10">
                  <div>
-                    <h3 className="text-xs font-bold text-amber-200 uppercase tracking-wide mb-1">Performance Advisory</h3>
+                    <h3 className="text-xs font-bold text-amber-200 uppercase tracking-wide mb-1 flex items-center gap-2">
+                        Performance Advisory
+                    </h3>
                     <p className="text-[11px] text-amber-100/70 leading-relaxed font-medium">
                         This environment is running in a High-Fidelity Beta State. Heavy SVG refraction and physics calculations may cause GPU thermal throttling or frame drops on non-accelerated devices.
                     </p>
+                 </div>
+                 {/* Icon Shifted to Bottom Right */}
+                 <div className="self-end p-1.5 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20 shadow-[0_0_10px_rgba(245,158,11,0.1)] animate-pulse">
+                    <AlertTriangle size={16} />
                  </div>
             </div>
 
             {/* BODY: TELEMETRY GRID */}
             <div className="p-6 space-y-6 overflow-y-auto scrollbar-none relative z-10">
                 
-                {/* 4-Column Live Data Grid */}
+                {/* 4-Column Live Data Grid with Visualizers */}
                 <div className="grid grid-cols-4 gap-px bg-white/10 border border-white/10 rounded-xl overflow-hidden shadow-inner">
                     {[
                         { label: 'Latency', val: telemetry.latency, icon: Activity },
@@ -186,8 +200,22 @@ const BetaAlert: React.FC = () => {
                         { label: 'Memory', val: telemetry.mem, icon: Layers },
                         { label: 'Threads', val: telemetry.threads, icon: Cpu },
                     ].map((item, i) => (
-                        <div key={i} className="bg-black/20 p-3 flex flex-col justify-between h-20 hover:bg-white/5 transition-colors">
-                            <item.icon size={12} className="text-white/40 mb-2" />
+                        <div key={i} className="bg-black/20 p-3 flex flex-col justify-between h-20 hover:bg-white/5 transition-colors group">
+                            <div className="flex justify-between items-start">
+                                <item.icon size={12} className="text-white/40 mb-2 group-hover:text-white/80 transition-colors" />
+                                {/* Mini Bar Graph Visualizer */}
+                                <div className="flex gap-[1px] items-end h-3">
+                                    {[1,2,3,4].map(bar => (
+                                        <div key={bar} 
+                                            className="w-[2px] bg-white/20 rounded-t-sm"
+                                            style={{ 
+                                                height: `${Math.random() * 100}%`,
+                                                opacity: Math.random() > 0.5 ? 1 : 0.3
+                                            }} 
+                                        />
+                                    ))}
+                                </div>
+                            </div>
                             <div>
                                 <div className="text-lg font-mono font-bold text-white tracking-tight">{item.val}</div>
                                 <div className="text-[9px] font-bold text-white/30 uppercase tracking-wider">{item.label}</div>
@@ -269,8 +297,31 @@ const BetaAlert: React.FC = () => {
 
             </div>
 
-            {/* FOOTER: ACTION */}
-            <div className="p-6 bg-white/[0.02] border-t border-white/10 backdrop-blur-md relative z-20">
+            {/* FOOTER: ACTION & NETWORK VISUALIZER */}
+            <div className="p-6 bg-white/[0.02] border-t border-white/10 backdrop-blur-md relative z-20 flex flex-col gap-4">
+                
+                {/* Network Activity Visualizer */}
+                <div className="flex items-center gap-3 opacity-50">
+                    <Wifi size={10} className="text-white/40" />
+                    <div className="flex-1 flex items-end gap-[2px] h-3 overflow-hidden">
+                         {Array.from({ length: 40 }).map((_, i) => (
+                            <motion.div 
+                                key={i}
+                                className="w-1 bg-[var(--accent)] rounded-t-[1px]"
+                                animate={{ 
+                                    height: [`${Math.random() * 20 + 10}%`, `${Math.random() * 80 + 20}%`, `${Math.random() * 40 + 10}%`],
+                                    opacity: [0.3, 0.8, 0.3]
+                                }}
+                                transition={{ 
+                                    duration: Math.random() * 1.5 + 0.5, 
+                                    repeat: Infinity,
+                                    ease: "linear"
+                                }}
+                            />
+                         ))}
+                    </div>
+                </div>
+
                 <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
