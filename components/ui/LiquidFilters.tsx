@@ -8,17 +8,18 @@ const LiquidFilters: React.FC = () => {
     <svg style={{ display: "none" }} aria-hidden="true">
       <defs>
         {/* 
-           REALISM ENGINE v3.6906.506
+           REALISM ENGINE v3.6906.506 - SUPER LIQUID UPDATE
            - Uses Gamma Compression to force the center to be 100% flat (0 displacement).
            - Uses Dual-Frequency noise for realistic liquid surface imperfections.
-           - High displacement scale (100) for thick glass edge refraction.
+           - Ultra-High displacement scale (120) for "Super Liquid" thick glass.
+           - Lower base frequency for "viscous" heavy liquid feel.
         */}
         <filter id="liquidRefraction" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
-          {/* Layer 1: Global Lens Shape (Low Frequency) */}
-          <feTurbulence type="turbulence" baseFrequency="0.012" numOctaves="1" seed="5" result="noiseLow" />
+          {/* Layer 1: Global Lens Shape (Lower Frequency = Heavier Liquid) */}
+          <feTurbulence type="turbulence" baseFrequency="0.008" numOctaves="1" seed="5" result="noiseLow" />
 
           {/* Layer 2: Surface Detail (High Frequency) */}
-          <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="2" result="noiseHigh" />
+          <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="2" result="noiseHigh" />
           
           {/* Combine layers */}
           <feComposite in="noiseLow" in2="noiseHigh" operator="arithmetic" k1="0" k2="0.8" k3="0.2" k4="0" result="noiseMix" />
@@ -36,20 +37,20 @@ const LiquidFilters: React.FC = () => {
           {/* 
              Create the island mask for the pill shape 
           */}
-          <feMorphology operator="dilate" radius="12" in="compressedNoise" result="island" />
-          <feGaussianBlur in="island" stdDeviation="8" result="smoothIsland" />
+          <feMorphology operator="dilate" radius="16" in="compressedNoise" result="island" />
+          <feGaussianBlur in="island" stdDeviation="12" result="smoothIsland" />
 
           {/* Edge Map Calculation */}
           <feColorMatrix in="smoothIsland" type="matrix" 
             values="1 0 0 0 0
                     0 1 0 0 0
                     0 0 1 0 0
-                    0 0 0 18 -9" 
+                    0 0 0 20 -10" 
             result="edgeMap" 
           />
 
-          {/* High Scale Displacement */}
-          <feDisplacementMap in="SourceGraphic" in2="edgeMap" scale="100" xChannelSelector="R" yChannelSelector="G" result="distort" />
+          {/* High Scale Displacement - Boosted to 120 for Super Liquid effect */}
+          <feDisplacementMap in="SourceGraphic" in2="edgeMap" scale="120" xChannelSelector="R" yChannelSelector="G" result="distort" />
           
           <feComposite in="distort" in2="SourceGraphic" operator="in" />
         </filter>

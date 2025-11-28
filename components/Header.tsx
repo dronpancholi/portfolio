@@ -38,15 +38,14 @@ export default function Header(){
 
   const state = isAtTop ? "top" : expanded ? "expanded" : "collapsed";
 
-  const filterUrl = state === 'expanded'
-    ? 'url(#header-pill-glass-expanded)'
-    : 'url(#header-pill-glass)';
+  // Use CSS-based Liquid effect (no SVG filter on moving parts for performance)
+  // The 'Crystal Clear' styles are applied via inline styles or class utility
 
-  // UPDATED: Bouncier, elastic spring physics
+  // UPDATED: Restored Bouncy/Elastic Spring Physics
   const spring = {
     type: "spring",
-    stiffness: 110,
-    damping: 22,
+    stiffness: 180,
+    damping: 14,
     mass: 0.9
   } as const;
 
@@ -74,17 +73,19 @@ export default function Header(){
         initial={false}
         animate={state}
         transition={spring}
-        style={{ transform: "translateZ(0)" }}
+        style={{ 
+          transform: "translateZ(0)",
+          // Override default glass styles for Crystal Clear look
+          background: 'rgba(255, 255, 255, 0.005)',
+          backdropFilter: 'none',
+          WebkitBackdropFilter: 'none',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.1), inset 0 1px 0 0 rgba(255,255,255,0.4)',
+          border: '1px solid rgba(255,255,255,0.15)'
+        }}
         aria-label="Primary navigation"
       >
-        {/* Distortion Liquid Layer (inside only) */}
-        <div
-          className="absolute inset-0 rounded-full overflow-hidden pointer-events-none"
-          style={{ filter: filterUrl }}
-        />
-
         {/* Liquid Shine Sweep Layer */}
-        <div className="absolute inset-0 rounded-full pointer-events-none bg-[linear-gradient(115deg,rgba(255,255,255,0.25)_0%,rgba(255,255,255,0.05)_40%,rgba(255,255,255,0)_65%)] opacity-70 dark:opacity-60 mix-blend-overlay" />
+        <div className="absolute inset-0 rounded-full pointer-events-none bg-[linear-gradient(115deg,rgba(255,255,255,0.4)_0%,rgba(255,255,255,0.1)_40%,rgba(255,255,255,0)_65%)] opacity-70 dark:opacity-50 mix-blend-overlay" />
         
         {/* Content */}
         <div className="relative z-10 flex items-center justify-center gap-4">
