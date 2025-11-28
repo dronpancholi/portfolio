@@ -8,13 +8,14 @@ import {
   Zap,
   Layers,
   AlertTriangle,
-  Monitor,
+  Box,
   Database,
   Server,
-  Smartphone
+  Smartphone,
+  Monitor
 } from 'lucide-react';
 
-// Version v3.6.14
+// Version v3.6.15
 // Engine: Crystal HUD Interface with Interactive Diagnostics
 
 const ENGINE_DATA = [
@@ -128,7 +129,7 @@ const BetaAlert: React.FC = () => {
 
           {/* 
              MAIN HUD PANEL 
-             Realism Engine v3.6.14 - Maximum Liquid Glass
+             Realism Engine v3.6.15 - Maximum Liquid Glass
           */}
           <motion.div
             layout
@@ -163,13 +164,16 @@ const BetaAlert: React.FC = () => {
 
             {/* HEADER: Minimalist Apple Style */}
             <div className="relative p-8 pb-4 flex items-center justify-between z-10 sticky top-0 bg-transparent">
-                <div className="flex items-center gap-4">
+                {/* Header Glass Overlay for Scroll */}
+                <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" style={{ backdropFilter: 'blur(10px)', maskImage: 'linear-gradient(to bottom, black 50%, transparent 100%)' }} />
+                
+                <div className="flex items-center gap-4 relative z-10">
                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-white/15 to-white/5 border border-white/10 flex items-center justify-center shadow-lg">
-                        <Monitor size={22} className="text-white/90" />
+                        <Box size={22} className="text-white/90" />
                      </div>
                      <div>
                         <h1 className="text-xl font-medium text-white tracking-tight leading-none mb-1.5">
-                            Beta Update Preview
+                            Graphic Environment Analysis
                         </h1>
                         <p className="text-[11px] font-medium text-white/40 uppercase tracking-widest flex items-center gap-2">
                            Hardware Acceleration Check
@@ -184,10 +188,10 @@ const BetaAlert: React.FC = () => {
             <div className="relative p-8 pt-4 z-10">
                 
                 {/* AMBIENT HAZARD MODULE */}
-                <div className="relative p-6 rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden group min-h-[120px] flex flex-col justify-between">
+                <div className="relative p-6 rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden group min-h-[140px] flex flex-col justify-between">
                      
                      <div className="relative z-10 pr-8">
-                        <h3 className="text-sm font-semibold text-white/90 mb-2">Graphic Environment Analysis</h3>
+                        <h3 className="text-sm font-semibold text-white/90 mb-2">Performance Optimization Warning</h3>
                         <p className="text-xs text-white/60 leading-relaxed font-medium">
                             This interface utilizes a high-fidelity Liquid Glass rendering pipeline. 
                             Visual performance may degrade on devices without dedicated hardware acceleration, 
@@ -306,7 +310,7 @@ const BetaAlert: React.FC = () => {
             </AnimatePresence>
 
             {/* BOTTOM BAR: SESSION ID */}
-            <div className="p-3 bg-white/[0.02] border-t border-white/5 backdrop-blur-md flex items-center justify-between text-[9px] font-mono text-white/20 uppercase tracking-wider sticky bottom-0">
+            <div className="p-3 bg-white/[0.02] border-t border-white/5 backdrop-blur-md flex items-center justify-between text-[9px] font-mono text-white/20 uppercase tracking-wider sticky bottom-0 z-20">
                  <span className="flex items-center gap-1"><Database size={8} /> SID: {Math.random().toString(36).substring(7).toUpperCase()}</span>
                  <span className="flex items-center gap-1"><Server size={8} /> US-EAST-1A</span>
             </div>
