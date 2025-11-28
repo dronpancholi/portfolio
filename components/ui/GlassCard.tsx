@@ -1,4 +1,3 @@
-
 import React from "react";
 import { motion, MotionProps } from "framer-motion";
 
@@ -10,20 +9,23 @@ type GlassCardProps = MotionProps & {
 const GlassCard: React.FC<GlassCardProps> = ({ children, className = "", ...props }) => {
   return (
     <motion.div
-      className={`glass glass--panel min-glow ${className}`}
-      whileHover={{ y: -8, scale: 1.015 }}
-      transition={{ type: "spring", stiffness: 260, damping: 20 }}
+      className={`glass ${className}`}
+      whileHover={{ y: -6, scale: 1.01 }}
+      transition={{ type: "spring", stiffness: 200, damping: 20 }}
       style={{ 
-        // PREVIEW MATCH: Enforce own layer to prevent repaints affecting neighbors
+        // Ensure own layer
         transform: 'translate3d(0,0,0)',
-        // Professional Matte Finish Override (if specific instances need reinforcement)
-        backdropFilter: 'blur(30px) saturate(180%)',
-        WebkitBackdropFilter: 'blur(30px) saturate(180%)',
         ...props.style 
       }}
       {...props}
     >
-      {children}
+      {/* SHINE LAYER for Cards */}
+      <div className="glass__shine" aria-hidden="true" />
+      
+      {/* CONTENT */}
+      <div className="glass__content">
+        {children}
+      </div>
     </motion.div>
   );
 };
