@@ -27,7 +27,7 @@ const LiquidFilters: React.FC = () => {
           />
           
           {/* Slight saturation boost to make refracted colors pop */}
-          <feColorMatrix type="saturate" values="1.1" />
+          <feColorMatrix type="saturate" values="1.03" />
         </filter>
       </defs>
     </svg>

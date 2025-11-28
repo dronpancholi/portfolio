@@ -22,12 +22,13 @@ function optimizeForHardware() {
   const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   if (isLowEnd || prefersReduced) {
+    // Graceful degradation for low-end devices
     document.documentElement.style.setProperty("--refraction-scale", "2");
-    document.documentElement.style.setProperty("--glass-blur", "10px");
-    document.documentElement.style.setProperty("--specular-opacity", "0.5");
+    document.documentElement.style.setProperty("--glass-blur", "12px");
+    document.documentElement.style.setProperty("--specular-opacity", "0.55");
   } else {
-    // High-end default
-    document.documentElement.style.setProperty("--refraction-scale", "8");
+    // High-end default: Stronger refraction and blur
+    document.documentElement.style.setProperty("--refraction-scale", "6");
   }
 }
 
@@ -37,20 +38,23 @@ const App: React.FC = () => {
     // 1. Run Hardware Optimization
     optimizeForHardware();
 
-    // 2. Setup Pointer Tracking for Liquid Lighting
+    // 2. Setup Pointer Tracking for Liquid Lighting (Apple VisionOS style)
     let rafId = 0;
     const handleMove = (e: MouseEvent) => {
       cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(() => {
-        const px = (e.clientX / window.innerWidth) * 100;
-        const py = (e.clientY / window.innerHeight) * 100;
+        const px = Math.round((e.clientX / window.innerWidth) * 100);
+        const py = Math.round((e.clientY / window.innerHeight) * 100);
         const root = document.documentElement;
-        root.style.setProperty("--mx", `${px.toFixed(1)}%`);
-        root.style.setProperty("--my", `${py.toFixed(1)}%`);
+        root.style.setProperty("--mx", `${px}%`);
+        root.style.setProperty("--my", `${py}%`);
       });
     };
 
     window.addEventListener("mousemove", handleMove, { passive: true });
+    
+    // Cap DPR to avoid heavy shader work on very-high-dpi devices
+    (window as any).CAP_DEVICE_PIXEL_RATIO = Math.min(window.devicePixelRatio || 1, 1.5);
     
     return () => {
       window.removeEventListener("mousemove", handleMove);
