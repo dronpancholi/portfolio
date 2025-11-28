@@ -1,58 +1,33 @@
-
 import React from "react";
 
-// Version v3.6906.506
-// Engine: Realism Engine (Dual-Frequency + Gamma Compression)
+// Optimized Lightweight Liquid Filter
+// Uses smooth noise and low displacement for optical clarity + performance
 const LiquidFilters: React.FC = () => {
   return (
     <svg style={{ display: "none" }} aria-hidden="true">
       <defs>
-        {/* 
-           REALISM ENGINE v3.6906.506 - SUPER LIQUID UPDATE
-           - Uses Gamma Compression to force the center to be 100% flat (0 displacement).
-           - Uses Dual-Frequency noise for realistic liquid surface imperfections.
-           - Ultra-High displacement scale (120) for "Super Liquid" thick glass.
-           - Lower base frequency for "viscous" heavy liquid feel.
-        */}
-        <filter id="liquidRefraction" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
-          {/* Layer 1: Global Lens Shape (Lower Frequency = Heavier Liquid) */}
-          <feTurbulence type="turbulence" baseFrequency="0.008" numOctaves="1" seed="5" result="noiseLow" />
-
-          {/* Layer 2: Surface Detail (High Frequency) */}
-          <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="2" result="noiseHigh" />
+        <filter id="liquidRefraction" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+          {/* Smooth, low-frequency noise for 'glass' feel without heavy distortion */}
+          <feTurbulence type="fractalNoise" baseFrequency="0.0065" numOctaves="2" seed="7" result="noise" />
           
-          {/* Combine layers */}
-          <feComposite in="noiseLow" in2="noiseHigh" operator="arithmetic" k1="0" k2="0.8" k3="0.2" k4="0" result="noiseMix" />
-
+          {/* Soften the noise to create a lens-like curve */}
+          <feGaussianBlur in="noise" stdDeviation="0.9" result="softNoise" />
+          
           {/* 
-             GAMMA COMPRESSION:
-             Flatten the mid-tones (0.5) to ensure the center of the lens has no displacement.
-             Ramp up the extremes (0 and 1) to create steep edges.
+            Displacement Map:
+            Using 'var(--refraction-scale)' allows us to dynamically adjust intensity 
+            based on device capability (handled in App.tsx)
           */}
-          <feComponentTransfer in="noiseMix" result="compressedNoise">
-            <feFuncR type="table" tableValues="0 0 0.5 0.5 0.5 1 1"/>
-            <feFuncG type="table" tableValues="0 0 0.5 0.5 0.5 1 1"/>
-          </feComponentTransfer>
-
-          {/* 
-             Create the island mask for the pill shape 
-          */}
-          <feMorphology operator="dilate" radius="16" in="compressedNoise" result="island" />
-          <feGaussianBlur in="island" stdDeviation="12" result="smoothIsland" />
-
-          {/* Edge Map Calculation */}
-          <feColorMatrix in="smoothIsland" type="matrix" 
-            values="1 0 0 0 0
-                    0 1 0 0 0
-                    0 0 1 0 0
-                    0 0 0 20 -10" 
-            result="edgeMap" 
+          <feDisplacementMap 
+            in="SourceGraphic" 
+            in2="softNoise" 
+            scale="var(--refraction-scale)" 
+            xChannelSelector="R" 
+            yChannelSelector="G" 
           />
-
-          {/* High Scale Displacement - Boosted to 120 for Super Liquid effect */}
-          <feDisplacementMap in="SourceGraphic" in2="edgeMap" scale="120" xChannelSelector="R" yChannelSelector="G" result="distort" />
           
-          <feComposite in="distort" in2="SourceGraphic" operator="in" />
+          {/* Slight saturation boost to make refracted colors pop */}
+          <feColorMatrix type="saturate" values="1.1" />
         </filter>
       </defs>
     </svg>

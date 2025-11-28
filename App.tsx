@@ -1,4 +1,3 @@
-
 import React, { Suspense, lazy, useEffect } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -15,38 +14,48 @@ const Projects = lazy(() => import('./components/Projects'));
 const About = lazy(() => import('./components/About'));
 const Contact = lazy(() => import('./components/Contact'));
 
+// Capability Detection Helper
+function optimizeForHardware() {
+  const memory = (navigator as any).deviceMemory || 4;
+  const cores = navigator.hardwareConcurrency || 4;
+  const isLowEnd = memory <= 2 || cores <= 2;
+  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (isLowEnd || prefersReduced) {
+    document.documentElement.style.setProperty("--refraction-scale", "2");
+    document.documentElement.style.setProperty("--glass-blur", "10px");
+    document.documentElement.style.setProperty("--specular-opacity", "0.5");
+  } else {
+    // High-end default
+    document.documentElement.style.setProperty("--refraction-scale", "8");
+  }
+}
+
 const App: React.FC = () => {
 
-  // Subtle pointer-driven highlight for more “liquid” feel
   useEffect(() => {
-    let lastX = 0;
-    let lastY = 0;
-    let ticking = false;
+    // 1. Run Hardware Optimization
+    optimizeForHardware();
 
+    // 2. Setup Pointer Tracking for Liquid Lighting
+    let rafId = 0;
     const handleMove = (e: MouseEvent) => {
-      lastX = e.clientX;
-      lastY = e.clientY;
-
-      if (!ticking) {
-        ticking = true;
-
-        requestAnimationFrame(() => {
-          // Convert to % only once, no reflows, no expensive math
-          const px = (lastX / window.innerWidth) * 100;
-          const py = (lastY / window.innerHeight) * 100;
-
-          // Write to GPU-accelerated CSS variables
-          const root = document.documentElement;
-          root.style.setProperty("--mx", `${px}%`);
-          root.style.setProperty("--my", `${py}%`);
-
-          ticking = false;
-        });
-      }
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const px = (e.clientX / window.innerWidth) * 100;
+        const py = (e.clientY / window.innerHeight) * 100;
+        const root = document.documentElement;
+        root.style.setProperty("--mx", `${px.toFixed(1)}%`);
+        root.style.setProperty("--my", `${py.toFixed(1)}%`);
+      });
     };
 
-    window.addEventListener("pointermove", handleMove, { passive: true });
-    return () => window.removeEventListener("pointermove", handleMove, { capture: false });
+    window.addEventListener("mousemove", handleMove, { passive: true });
+    
+    return () => {
+      window.removeEventListener("mousemove", handleMove);
+      cancelAnimationFrame(rafId);
+    };
   }, []);
 
   return (
@@ -56,7 +65,7 @@ const App: React.FC = () => {
         <LiquidFilters />
         <HeaderPillGlassFilter />
         
-        {/* New Beta Alert Splash Screen */}
+        {/* Beta Alert Splash Screen */}
         <BetaAlert />
 
         <Header />

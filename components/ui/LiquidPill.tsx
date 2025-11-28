@@ -1,69 +1,66 @@
+import React, { useMemo } from "react";
 
-import React from "react";
-
-// Version v3.6906.506
-// Engine: Realism Engine
+// Version v3.7 - Apple-Grade Liquid Architecture
 type Props = {
   proxyRows: React.ReactNode[];
   children: React.ReactNode;
 };
 
 export default function LiquidPill({ proxyRows, children }: Props) {
+  // Memoize proxy DOM to prevent reflows during parent renders
+  const proxy = useMemo(()=>(
+    <div 
+      style={{ 
+        position: "absolute", 
+        left: "50%", 
+        top: "50%", 
+        transform: "translate(-50%, -50%) translateZ(0)", 
+        width: "min(100vw, 1100px)",
+        pointerEvents: "none"
+      }}
+    >
+      {proxyRows.map((r,i) => (
+        <div key={i} style={{ margin: "6px 0", opacity: 0.8 }}>{r}</div>
+      ))}
+    </div>
+  ), [proxyRows]);
+
   return (
     <div className="relative flex justify-center w-full z-10">
       <div 
-        className="liquid-pill mx-auto" 
+        className="glass liquid-pill" 
         role="group" 
         aria-label="Social links"
         style={{
-            // REALISM ENGINE v3.6906.506 SETTINGS
-            // 99.5% Transparent
-            background: 'rgba(255, 255, 255, 0.005)', 
-            // Absolute clarity
-            backdropFilter: 'none',
-            WebkitBackdropFilter: 'none',
-            // Physical Bezel Simulation (4mm Glass)
-            border: '1px solid rgba(255, 255, 255, 0.3)',
-            boxShadow: `
-              0 20px 50px rgba(0,0,0,0.1), 
-              inset 0 0 0 1px rgba(255,255,255,0.2), 
-              inset 0 1px 0 0 rgba(255,255,255,0.6), 
-              inset 0 -2px 5px 0 rgba(0,0,0,0.1)
-            `,
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "1rem",
+          padding: "10px 22px",
+          borderRadius: "9999px",
+          // Base glass override for the pill shape specifically
+          background: 'rgba(255, 255, 255, 0.005)', // Nearly clear
+          boxShadow: '0 15px 40px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.4)',
         }}
       >
-        <div className="liquid-pill__proxy" aria-hidden style={{ overflow: 'visible' }}> 
-          <div
-            className="liquid-pill__proxyInner"
-            style={{
-              filter: "url(#liquidRefraction)",
-              WebkitFilter: "url(#liquidRefraction)",
-              opacity: 1, 
-              transform: "translate3d(0,0,0)", 
-              willChange: "transform",
-            }}
-          >
-            <div 
-              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center gap-1 sm:gap-[7px]" 
-              style={{ width: "min(100vw, 1100px)" }}
-            >
-              {proxyRows}
-            </div>
-          </div>
+        {/* PROXY LAYER: This contains the 'refracted' text */}
+        <div 
+          className="glass__proxy" 
+          aria-hidden="true" 
+          style={{ 
+            // Apply the lightweight liquid filter here
+            filter: "url(#liquidRefraction)",
+            WebkitFilter: "url(#liquidRefraction)",
+            opacity: 1
+          }}
+        >
+          {proxy}
         </div>
 
-        <div 
-          className="liquid-pill__shine" 
-          aria-hidden 
-          style={{ 
-            opacity: 0.8, 
-            mixBlendMode: 'overlay',
-            background: 'linear-gradient(135deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0.2) 100%)',
-            pointerEvents: 'none'
-          }} 
-        />
+        {/* SHINE LAYER: Specular highlights & Caustics */}
+        <div className="glass__shine" aria-hidden="true" />
 
-        <div className="liquid-pill__content">
+        {/* CONTENT LAYER: The buttons sitting on top */}
+        <div className="glass__content flex items-center gap-4">
           {children}
         </div>
       </div>
