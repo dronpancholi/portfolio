@@ -1,33 +1,37 @@
 import React from "react";
 
-// Optimized Lightweight Liquid Filter
-// Uses smooth noise and low displacement for optical clarity + performance
+// Version v3.8 - Edge-Distortion Lens Engine
+// Uses dilation to create clear 'bubbles' for readability with heavy edge warping.
 const LiquidFilters: React.FC = () => {
   return (
     <svg style={{ display: "none" }} aria-hidden="true">
       <defs>
         <filter id="liquidRefraction" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
-          {/* Smooth, low-frequency noise for 'glass' feel without heavy distortion */}
-          <feTurbulence type="fractalNoise" baseFrequency="0.0065" numOctaves="2" seed="7" result="noise" />
+          {/* 1. Generate organic noise */}
+          <feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="2" seed="5" result="noise" />
           
-          {/* Soften the noise to create a lens-like curve */}
-          <feGaussianBlur in="noise" stdDeviation="0.9" result="softNoise" />
+          {/* 2. Dilate the noise to create large, flat 'clear zones' (bubbles) */}
+          <feMorphology operator="dilate" radius="4" in="noise" result="expandedNoise" />
           
-          {/* 
-            Displacement Map:
-            Using 'var(--refraction-scale)' allows us to dynamically adjust intensity 
-            based on device capability (handled in App.tsx)
+          {/* 3. Smooth the transitions between clear zones and distorted edges */}
+          <feGaussianBlur in="expandedNoise" stdDeviation="2" result="smoothNoise" />
+          
+          {/* 4. Apply heavy displacement. 
+              The flat areas (center of bubbles) will have 0 effective distortion (readable).
+              The edges will have massive warping.
           */}
           <feDisplacementMap 
             in="SourceGraphic" 
-            in2="softNoise" 
-            scale="var(--refraction-scale)" 
+            in2="smoothNoise" 
+            scale="50" 
             xChannelSelector="R" 
             yChannelSelector="G" 
           />
           
-          {/* Slight saturation boost to make refracted colors pop */}
-          <feColorMatrix type="saturate" values="1.1" />
+          {/* 5. Slight contrast boost to sharpen the refractive edges */}
+          <feComponentTransfer>
+             <feFuncA type="linear" slope="0.9" />
+          </feComponentTransfer>
         </filter>
       </defs>
     </svg>

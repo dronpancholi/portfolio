@@ -30,12 +30,12 @@
         --accent: #15803d;
         
         /* APPLE-GRADE GLASS TOKENS */
-        --glass-bg: rgba(255, 255, 255, 0.4);
-        --glass-border: rgba(255, 255, 255, 0.4);
-        --glass-blur: 20px;
-        --glass-blur-low: 10px;
-        --refraction-scale: 8; /* Tuned for optical realism */
-        --specular-opacity: 0.8;
+        --glass-bg: rgba(255, 255, 255, 0.01); /* Nearly invisible base */
+        --glass-border: rgba(255, 255, 255, 0.3);
+        --glass-blur: 24px; /* Strong blur for depth behind the glass */
+        --glass-blur-low: 12px;
+        --refraction-scale: 50; /* High scale for edge distortion */
+        --specular-opacity: 0.9;
         --caustic-opacity: 0.15;
         
         /* Dynamic Pointer Vars (updated via JS) */
@@ -54,9 +54,9 @@
         --accent: #4ade80;
 
         /* DARK MODE GLASS */
-        --glass-bg: rgba(20, 25, 35, 0.3);
+        --glass-bg: rgba(255, 255, 255, 0.005);
         --glass-border: rgba(255, 255, 255, 0.1);
-        --specular-opacity: 0.4;
+        --specular-opacity: 0.5;
         --caustic-opacity: 0.1;
         
         --particle-color-1: #1e293b; 
@@ -131,7 +131,7 @@
       @media (max-width: 520px), (prefers-reduced-motion: reduce) {
         :root { 
           --glass-blur: var(--glass-blur-low); 
-          --refraction-scale: 0; /* Disable heavy refraction */
+          --refraction-scale: 2; 
           --specular-opacity: 0.3;
         }
         .ticker-anim { animation-play-state: paused; }
