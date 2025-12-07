@@ -1,7 +1,4 @@
-
 import React, { useEffect, useRef, useState, useCallback } from "react";
-// FIX: Removed `Transition` import which was causing a module resolution error.
-// The `spring` object's type is correctly inferred by TypeScript without explicit annotation.
 import { motion, AnimatePresence } from "framer-motion";
 import ThemeToggle from "./ui/ThemeToggle";
 
@@ -9,7 +6,9 @@ export default function Header(){
   const pillRef = useRef<HTMLDivElement>(null);
   const [isAtTop, setIsAtTop] = useState(true);
   const [expanded, setExpanded] = useState(false);
+  const [filterId, setFilterId] = useState("header-pill-glass");
 
+  // Scroll detection
   useEffect(() => {
     const onScroll = () => {
       const atTop = window.scrollY < 8;
@@ -21,6 +20,7 @@ export default function Header(){
     return () => window.removeEventListener("scroll", onScroll);
   }, [expanded]);
 
+  // Click outside and Escape key
   useEffect(() => {
     const onClick = (e:MouseEvent) => {
       if (!expanded || isAtTop) return;
@@ -32,30 +32,65 @@ export default function Header(){
     return () => { document.removeEventListener("mousedown", onClick); document.removeEventListener("keydown", onKey); };
   }, [expanded, isAtTop]);
   
+  // Choose expanded filter when at top or expanded
+  useEffect(()=> setFilterId(isAtTop || expanded ? "header-pill-glass-expanded" : "header-pill-glass"), [isAtTop, expanded]);
+
+  // Pointer-driven highlight updates — rAF throttled
+  useEffect(()=>{
+    let raf = 0;
+    const onMove = (e: MouseEvent) => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(()=>{
+        const x = Math.round((e.clientX / window.innerWidth) * 100) + "%";
+        const y = Math.round((e.clientY / window.innerHeight) * 100) + "%";
+        document.documentElement.style.setProperty("--mx", x);
+        document.documentElement.style.setProperty("--my", y);
+      });
+    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return ()=>{ cancelAnimationFrame(raf); window.removeEventListener("mousemove", onMove); };
+  },[]);
+
+  // Runtime capability clamp: reduce effect on low-end devices
+  useEffect(()=>{
+    const isLowEnd = (navigator as any).hardwareConcurrency && (navigator as any).hardwareConcurrency <= 2;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // prefer-reduced-motion respects user; else clamp automatically for low-end
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced || isLowEnd || dpr > 1.6) {
+      document.documentElement.style.setProperty("--refraction-scale", "3");
+      document.documentElement.style.setProperty("--glass-blur", "14px");
+    } else {
+      document.documentElement.style.setProperty("--refraction-scale", "20");
+      document.documentElement.style.setProperty("--glass-blur", "26px");
+    }
+  },[]);
+
   const onPillClick = useCallback(() => {
     if (!isAtTop) setExpanded(v => !v);
   }, [isAtTop]);
 
   const state = isAtTop ? "top" : expanded ? "expanded" : "collapsed";
 
-  // Use CSS-based Liquid effect (no SVG filter on moving parts for performance)
-  // The 'Crystal Clear' styles are applied via inline styles or class utility
-
-  // UPDATED: Restored Bouncy/Elastic Spring Physics
   const spring = {
     type: "spring",
-    stiffness: 180,
-    damping: 14,
-    mass: 0.9
+    stiffness: 220, 
+    damping: 22
   } as const;
 
   return (
     <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full flex justify-center pointer-events-none">
-      <motion.header
+      <motion.div
         ref={pillRef}
         onClick={onPillClick}
         layout
-        className="glass pointer-events-auto relative flex items-center justify-center cursor-pointer select-none whitespace-nowrap rounded-full"
+        className="header-pill pointer-events-auto cursor-pointer select-none whitespace-nowrap"
+        style={{
+          // Apply SVG filter via CSS `filter` — switch filter ID based on state
+          filter: `url(#${filterId})`,
+          WebkitFilter: `url(#${filterId})`,
+          backfaceVisibility: "hidden",
+        }}
         variants={{
           top:       { 
             padding: "12px 22px", 
@@ -73,22 +108,20 @@ export default function Header(){
         initial={false}
         animate={state}
         transition={spring}
-        style={{ 
-          transform: "translateZ(0)",
-          // Override default glass styles for Crystal Clear look
-          background: 'rgba(255, 255, 255, 0.005)',
-          backdropFilter: 'none',
-          WebkitBackdropFilter: 'none',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.1), inset 0 1px 0 0 rgba(255,255,255,0.4)',
-          border: '1px solid rgba(255,255,255,0.15)'
-        }}
-        aria-label="Primary navigation"
       >
-        {/* Liquid Shine Sweep Layer */}
-        <div className="absolute inset-0 rounded-full pointer-events-none bg-[linear-gradient(115deg,rgba(255,255,255,0.4)_0%,rgba(255,255,255,0.1)_40%,rgba(255,255,255,0)_65%)] opacity-70 dark:opacity-50 mix-blend-overlay" />
-        
-        {/* Content */}
-        <div className="relative z-10 flex items-center justify-center gap-4">
+        {/* Proxy Layer: Rendered inside the pill but visually behind content via z-index */}
+        <div className="header-pill__proxy" aria-hidden="true">
+          <div
+            className="header-pill__proxyInner"
+            style={{ filter: `url(#${filterId})`, WebkitFilter: `url(#${filterId})` }}
+          />
+        </div>
+
+        {/* Shine Layer: Specular Highlights */}
+        <div className="header-pill__shine" />
+
+        {/* Content Layer: Icons and Text */}
+        <div className="header-pill__content">
           <motion.p
             layout
             animate={{ fontSize: state==="collapsed" ? "0.74rem" : "1.05rem" }}
@@ -140,7 +173,7 @@ export default function Header(){
             )}
           </AnimatePresence>
         </div>
-      </motion.header>
+      </motion.div>
     </div>
   );
 }
