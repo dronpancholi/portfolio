@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -42,6 +41,12 @@ const ENGINE_SEQUENCE = [
     "verifying_webgl_context...",
     "starting_main_loop..."
 ];
+
+interface TelemetryItem {
+  label: string;
+  val: string;
+  icon: any;
+}
 
 const BetaAlert: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -108,6 +113,13 @@ const BetaAlert: React.FC = () => {
     setIsVisible(false);
     sessionStorage.setItem('dron_beta_alert_v3_6906', 'true');
   };
+
+  const telemetryData: TelemetryItem[] = [
+    { label: 'Latency', val: telemetry.latency, icon: Activity },
+    { label: 'V-Sync', val: telemetry.fps, icon: Zap },
+    { label: 'Memory', val: telemetry.mem, icon: Layers },
+    { label: 'Threads', val: telemetry.threads, icon: Cpu },
+  ];
 
   return (
     <AnimatePresence>
@@ -244,12 +256,7 @@ const BetaAlert: React.FC = () => {
                             <div>
                                 <h4 className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-4">Real-Time Telemetry</h4>
                                 <div className="grid grid-cols-4 gap-px bg-white/5 border border-white/5 rounded-xl overflow-hidden">
-                                    {[
-                                        { label: 'Latency', val: telemetry.latency, icon: Activity },
-                                        { label: 'V-Sync', val: telemetry.fps, icon: Zap },
-                                        { label: 'Memory', val: telemetry.mem, icon: Layers },
-                                        { label: 'Threads', val: telemetry.threads, icon: Cpu },
-                                    ].map((item: { label: string; val: string; icon: any }, i: number) => (
+                                    {telemetryData.map((item, i) => (
                                         <div key={i} className="bg-white/[0.02] p-3 text-center hover:bg-white/[0.05] transition-colors">
                                             <div className="text-xs font-bold text-white mb-1">{item.val}</div>
                                             <div className="text-[9px] font-medium text-white/40 uppercase">{item.label}</div>

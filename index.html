@@ -29,15 +29,15 @@
         --text-secondary: #475569;
         --accent: #15803d;
         
-        /* APPLE-GRADE HEADER PILL TOKENS */
+        /* APPLE-GRADE LIQUID GLASS TOKENS */
+        --refraction-scale: 20;      /* runtime will clamp this */
         --glass-blur: 26px;
         --glass-blur-min: 14px;
-        --refraction-scale: 20; /* tuned for high-end; runtime will clamp this per device */
+        --pill-bg: linear-gradient(180deg, rgba(255,255,255,0.48), rgba(255,255,255,0.34));
+        --pill-border: rgba(255,255,255,0.36);
+        --pill-accent-opacity: 0.92;
         --mx: 50%;
         --my: 50%;
-        --pill-bg: linear-gradient(180deg, rgba(255,255,255,0.50), rgba(255,255,255,0.34));
-        --pill-border: rgba(255,255,255,0.38);
-        --pill-accent-opacity: 0.9;
         
         --glass-bg: rgba(255, 255, 255, 0.01);
         --glass-border: rgba(255, 255, 255, 0.3);
@@ -76,9 +76,72 @@
         overscroll-behavior: none;
       }
       
-      /* --- HEADER PILL SYSTEM --- */
+      /* --- LIQUID PILL SYSTEM --- */
       
-      /* pill base (always present) */
+      /* Core pill layout */
+      .liquid-pill {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 10px 22px;
+        border-radius: 9999px;
+        background: var(--pill-bg);
+        border: 1px solid var(--pill-border);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.36);
+        -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+        backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+        transform: translateZ(0); /* promote GPU layer */
+        will-change: transform, opacity;
+        overflow: clip;
+      }
+
+      /* Proxy layer (re-render of background content) */
+      .liquid-pill__proxy {
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 0;
+        /* apply SVG filter via CSS inline */
+      }
+
+      /* Inner filtered content that the SVG filter acts on */
+      .liquid-pill__proxyInner {
+        position: absolute;
+        inset: 0;
+        -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.95)) saturate(200%);
+        backdrop-filter: blur(calc(var(--glass-blur) * 0.95)) saturate(200%);
+        transform: translateZ(0); /* GPU layer */
+        will-change: transform;
+      }
+
+      /* Specular highlight & caustics */
+      .liquid-pill__shine {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+        background:
+          radial-gradient(160% 60% at var(--mx) var(--my), rgba(255,255,255,0.56), rgba(255,255,255,0.12) 36%, transparent 60%),
+          radial-gradient(60% 48% at 72% 34%, rgba(255,255,255,0.14), transparent 60%);
+        mix-blend-mode: screen;
+        opacity: var(--pill-accent-opacity);
+      }
+
+      /* Foreground content (icons / text) */
+      .liquid-pill__content { position: relative; z-index: 2; display:flex; gap: 1rem; align-items:center; }
+
+      /* Low-end & reduced-motion fallback */
+      @media (max-width:520px), (prefers-reduced-motion: reduce) {
+        :root { --refraction-scale: 3; --glass-blur: 14px; --pill-accent-opacity: 0.55; }
+        .liquid-pill__shine { opacity: 0.35; }
+        .liquid-pill__proxyInner { filter: none !important; } /* Remove heavy filter on small devices */
+      }
+
+      /* --- HEADER PILL ADAPTATION --- */
+      /* Extending liquid-pill styles for the header specific layout */
       .header-pill {
         position: relative;
         display: inline-flex;
@@ -90,13 +153,16 @@
         -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
         backdrop-filter: blur(var(--glass-blur)) saturate(160%);
         box-shadow: 0 10px 30px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.35);
-        transform: translateZ(0); /* promote to its own GPU layer */
+        transform: translateZ(0);
         will-change: transform, opacity;
       }
-
-      /* proxy + shine layers (under icons/text) */
       .header-pill__proxy { position:absolute; inset:0; border-radius:inherit; overflow:hidden; z-index:0; pointer-events:none; }
-      .header-pill__proxyInner { position:absolute; inset:0; transform:translateZ(0); filter: none; } /* filter applied inline via style */
+      .header-pill__proxyInner { 
+        position:absolute; inset:0; 
+        transform:translateZ(0); 
+        -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.95)) saturate(200%);
+        backdrop-filter: blur(calc(var(--glass-blur) * 0.95)) saturate(200%);
+      }
       .header-pill__shine {
         position:absolute; inset:0; pointer-events:none; z-index:1;
         background:
@@ -107,10 +173,9 @@
       }
       .header-pill__content { position:relative; z-index:2; display:flex; align-items:center; gap:0.875rem; }
       
-      /* Fallback for low-end devices */
       @media (max-width:520px), (prefers-reduced-motion: reduce){ 
-        :root{ --refraction-scale: 3; --glass-blur: var(--glass-blur-min); } 
         .header-pill__shine{ opacity:0.35; } 
+        .header-pill__proxyInner { filter: none !important; }
       }
 
       /* --- GENERAL GLASS UTILS --- */

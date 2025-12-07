@@ -6,7 +6,7 @@ export default function Header(){
   const pillRef = useRef<HTMLDivElement>(null);
   const [isAtTop, setIsAtTop] = useState(true);
   const [expanded, setExpanded] = useState(false);
-  const [filterId, setFilterId] = useState("header-pill-glass");
+  const filterId = "liquidRefraction"; // Using the global unified filter
 
   // Scroll detection
   useEffect(() => {
@@ -32,40 +32,6 @@ export default function Header(){
     return () => { document.removeEventListener("mousedown", onClick); document.removeEventListener("keydown", onKey); };
   }, [expanded, isAtTop]);
   
-  // Choose expanded filter when at top or expanded
-  useEffect(()=> setFilterId(isAtTop || expanded ? "header-pill-glass-expanded" : "header-pill-glass"), [isAtTop, expanded]);
-
-  // Pointer-driven highlight updates — rAF throttled
-  useEffect(()=>{
-    let raf = 0;
-    const onMove = (e: MouseEvent) => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(()=>{
-        const x = Math.round((e.clientX / window.innerWidth) * 100) + "%";
-        const y = Math.round((e.clientY / window.innerHeight) * 100) + "%";
-        document.documentElement.style.setProperty("--mx", x);
-        document.documentElement.style.setProperty("--my", y);
-      });
-    };
-    window.addEventListener("mousemove", onMove, { passive: true });
-    return ()=>{ cancelAnimationFrame(raf); window.removeEventListener("mousemove", onMove); };
-  },[]);
-
-  // Runtime capability clamp: reduce effect on low-end devices
-  useEffect(()=>{
-    const isLowEnd = (navigator as any).hardwareConcurrency && (navigator as any).hardwareConcurrency <= 2;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    // prefer-reduced-motion respects user; else clamp automatically for low-end
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced || isLowEnd || dpr > 1.6) {
-      document.documentElement.style.setProperty("--refraction-scale", "3");
-      document.documentElement.style.setProperty("--glass-blur", "14px");
-    } else {
-      document.documentElement.style.setProperty("--refraction-scale", "20");
-      document.documentElement.style.setProperty("--glass-blur", "26px");
-    }
-  },[]);
-
   const onPillClick = useCallback(() => {
     if (!isAtTop) setExpanded(v => !v);
   }, [isAtTop]);
@@ -86,7 +52,7 @@ export default function Header(){
         layout
         className="header-pill pointer-events-auto cursor-pointer select-none whitespace-nowrap"
         style={{
-          // Apply SVG filter via CSS `filter` — switch filter ID based on state
+          // Apply SVG filter via CSS `filter`
           filter: `url(#${filterId})`,
           WebkitFilter: `url(#${filterId})`,
           backfaceVisibility: "hidden",

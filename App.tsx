@@ -14,48 +14,35 @@ const Projects = lazy(() => import('./components/Projects'));
 const About = lazy(() => import('./components/About'));
 const Contact = lazy(() => import('./components/Contact'));
 
-// Capability Detection Helper
-function optimizeForHardware() {
-  const memory = (navigator as any).deviceMemory || 4;
-  const cores = navigator.hardwareConcurrency || 4;
-  const isLowEnd = memory <= 2 || cores <= 2;
-  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  if (isLowEnd || prefersReduced) {
-    document.documentElement.style.setProperty("--refraction-scale", "2");
-    document.documentElement.style.setProperty("--glass-blur", "10px");
-    document.documentElement.style.setProperty("--specular-opacity", "0.5");
-  } else {
-    // High-end default
-    document.documentElement.style.setProperty("--refraction-scale", "8");
-  }
-}
-
 const App: React.FC = () => {
 
   useEffect(() => {
-    // 1. Run Hardware Optimization
-    optimizeForHardware();
+    // Runtime capability clamp
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const isLowEnd = (navigator as any).hardwareConcurrency && (navigator as any).hardwareConcurrency <= 2;
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // 2. Setup Pointer Tracking for Liquid Lighting
-    let rafId = 0;
-    const handleMove = (e: MouseEvent) => {
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
-        const px = (e.clientX / window.innerWidth) * 100;
-        const py = (e.clientY / window.innerHeight) * 100;
-        const root = document.documentElement;
-        root.style.setProperty("--mx", `${px.toFixed(1)}%`);
-        root.style.setProperty("--my", `${py.toFixed(1)}%`);
+    if (prefersReduced || isLowEnd || dpr > 1.6) {
+      document.documentElement.style.setProperty("--refraction-scale", "3");
+      document.documentElement.style.setProperty("--glass-blur", "14px");
+    } else {
+      document.documentElement.style.setProperty("--refraction-scale", "20");
+      document.documentElement.style.setProperty("--glass-blur", "26px");
+    }
+
+    // Pointer-driven highlight updates — rAF throttled
+    let raf = 0;
+    const onMove = (e: MouseEvent) => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const x = Math.round((e.clientX / window.innerWidth) * 100) + "%";
+        const y = Math.round((e.clientY / window.innerHeight) * 100) + "%";
+        document.documentElement.style.setProperty("--mx", x);
+        document.documentElement.style.setProperty("--my", y);
       });
     };
-
-    window.addEventListener("mousemove", handleMove, { passive: true });
-    
-    return () => {
-      window.removeEventListener("mousemove", handleMove);
-      cancelAnimationFrame(rafId);
-    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("mousemove", onMove); };
   }, []);
 
   return (
