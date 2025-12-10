@@ -1,4 +1,3 @@
-
 import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -12,7 +11,7 @@ import {
 } from "lucide-react";
 import { SOCIAL_LINKS } from "../constants";
 import GlassCard from "./ui/GlassCard";
-import LiquidPill from "./ui/LiquidPill";
+import LiquidGlass from "./ui/LiquidGlass";
 
 /* ------------------------ ICON TYPING ------------------------ */
 type SocialProfileName = typeof SOCIAL_LINKS.profiles[number]["name"];
@@ -117,6 +116,14 @@ const Contact: React.FC = () => {
         </div>
     </div>
   ], [chunk1, chunk2, chunk3]);
+
+  // The proxy content needs to be positioned absolutely within the glass container
+  // to align perfectly with the background it's supposed to be refracting.
+  const proxyContent = useMemo(() => (
+    <div style={{ position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%) translateZ(0)", width: "min(100%,1100px)", pointerEvents: "none" }}>
+      {proxyRows.map((row, i) => <div key={i} style={{ margin: "6px 0", opacity: 0.95 }}>{row}</div>)}
+    </div>
+  ), [proxyRows]);
 
   const socialLinksContent = SOCIAL_LINKS.profiles.map((profile) => {
     const Icon = ICON_MAP[profile.name] || Github;
@@ -261,8 +268,17 @@ const Contact: React.FC = () => {
           </div>
         </div>
 
-        {/* LIQUID PILL */}
-        <LiquidPill proxyRows={proxyRows} children={socialLinksContent} />
+        {/* LIQUID GLASS COMPONENT */}
+        <LiquidGlass 
+            displacementScale={30} 
+            blurAmount={26} 
+            saturation={160} 
+            cornerRadius={9999}
+            proxy={proxyContent}
+            elasticity={0.4}
+        >
+            {socialLinksContent}
+        </LiquidGlass>
       </motion.div>
     </section>
   );
