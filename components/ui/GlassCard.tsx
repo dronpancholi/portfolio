@@ -1,9 +1,7 @@
-
 import React from "react";
-import { motion, HTMLMotionProps } from "framer-motion";
+import { motion, MotionProps } from "framer-motion";
 
-// Use HTMLMotionProps<"div"> to ensure the component supports all motion-specific props like layoutId
-type GlassCardProps = HTMLMotionProps<"div"> & {
+type GlassCardProps = MotionProps & {
   children: React.ReactNode;
   className?: string;
 };
@@ -14,12 +12,12 @@ const GlassCard: React.FC<GlassCardProps> = ({ children, className = "", ...prop
       className={`glass ${className}`}
       whileHover={{ y: -6, scale: 1.01 }}
       transition={{ type: "spring", stiffness: 200, damping: 20 }}
-      {...props}
       style={{ 
-        // Ensure own layer for hardware acceleration
+        // Ensure own layer
         transform: 'translate3d(0,0,0)',
         ...props.style 
       }}
+      {...props}
     >
       {/* SHINE LAYER for Cards */}
       <div className="glass__shine" aria-hidden="true" />

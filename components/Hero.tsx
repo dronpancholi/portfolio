@@ -1,15 +1,17 @@
+
 import React from 'react';
 import { motion, useTransform, useScroll } from 'framer-motion';
 import TypingAnimation from './ui/TypingAnimation';
-import LiquidGlass from './ui/LiquidGlass';
+import GlassCard from './ui/GlassCard';
 
 const InteractivePortrait: React.FC = () => {
   return (
     <motion.div
-      className="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden cursor-pointer"
+      className="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden cursor-pointer shadow-2xl shadow-black/10"
       style={{ transformStyle: 'preserve-3d' }}
-      whileHover={{ scale: 1.05 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+      whileHover={{ scale: 1.1, rotate: 3 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 15 }}
     >
       <img
         src="https://i.ibb.co/YFJdKdD1/picofme-9.png"
@@ -20,65 +22,71 @@ const InteractivePortrait: React.FC = () => {
   );
 };
 
+
 const Hero: React.FC = () => {
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 800], [0, -100]);
   const opacity = useTransform(scrollY, [0, 600, 800], [1, 0.5, 0]);
 
+  // Elastic entrance transition
+  const entranceTransition = {
+    type: "spring",
+    stiffness: 70,
+    damping: 14,
+    mass: 1.2
+  } as const;
+
   return (
     <motion.section 
       id="home" 
-      className="min-h-[90vh] flex flex-col items-center justify-center py-24 scroll-mt-24"
+      className="min-h-[80vh] md:min-h-[90vh] flex flex-col items-center justify-center py-24 sm:py-28 md:py-32 scroll-mt-24"
       style={{ y, opacity }}
     >
-      <div className="relative w-full max-w-5xl mx-auto">
-        {/* Animated Background Blob for Refraction */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-20 blur-3xl pointer-events-none">
-          <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-blue-500 rounded-full animate-spin-slow" />
-        </div>
-
-        <LiquidGlass 
-          className="w-full"
-          cornerRadius={48}
-          padding="60px 20px"
-          displacementScale={45}
-          magnification={1.2}
-          proxy={
-            <div className="flex flex-col items-center text-center select-none">
-              <div className="w-64 h-64 rounded-full bg-white/20" />
-              <div className="mt-8 w-96 h-12 bg-white/20 rounded-full mx-auto" />
-              <div className="mt-4 w-72 h-8 bg-white/20 rounded-full mx-auto" />
-            </div>
-          }
+      <motion.div
+        style={{ perspective: 1200 }}
+        className="w-full"
+      >
+        <GlassCard
+          className="w-full max-w-5xl mx-auto"
+          style={{ transformStyle: 'preserve-3d' }}
         >
-          <div className="flex flex-col items-center justify-center text-center">
+          <div className="p-10 md:p-16 flex flex-col items-center justify-center text-center">
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
+              initial={{ opacity: 0, y: 40, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ ...entranceTransition, delay: 0.1 }}
               className="mb-8"
+              style={{ transform: 'translateZ(75px)', transformStyle: 'preserve-3d' }}
             >
               <InteractivePortrait />
             </motion.div>
             
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="w-full max-w-3xl"
+              transition={{ ...entranceTransition, delay: 0.3 }}
+              style={{ transform: 'translateZ(100px)', transformStyle: 'preserve-3d' }}
+              className="w-full max-w-4xl"
             >
               <TypingAnimation 
                 as="h1"
-                text="Systems with Depth. Clarity in Design."
-                className="text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tighter text-[var(--text-main)] mb-6"
+                text="Systems, designed with depth. Interfaces, designed with clarity."
+                className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tighter text-[var(--text-main)] mb-4"
               />
-              <p className="text-lg md:text-xl text-[var(--text-secondary)] font-light max-w-2xl mx-auto">
-                Engineering intelligent systems and premium digital experiences at the intersection of AI, Robotics, and human-centric design.
-              </p>
             </motion.div>
+            
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ ...entranceTransition, delay: 3.2 }}
+              className="max-w-2xl text-base sm:text-lg md:text-xl text-[var(--text-secondary)] font-light mx-auto"
+              style={{ transform: 'translateZ(60px)', transformStyle: 'preserve-3d' }}
+            >
+              I engineer intelligent systems and thoughtful digital experiences, focusing on the intersection of artificial intelligence, full-stack development, and design.
+            </motion.p>
           </div>
-        </LiquidGlass>
-      </div>
+        </GlassCard>
+      </motion.div>
     </motion.section>
   );
 };

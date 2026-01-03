@@ -1,120 +1,85 @@
-
-import React, { memo, useRef } from 'react';
-import { motion, HTMLMotionProps, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import React from 'react';
+import { motion, HTMLMotionProps } from 'framer-motion';
 
 interface LiquidGlassProps extends HTMLMotionProps<"div"> {
   children?: React.ReactNode;
   displacementScale?: number;
   blurAmount?: number;
-  magnification?: number;
   saturation?: number;
+  aberrationIntensity?: number; // Kept for API compatibility, can map to other filters if needed
   elasticity?: number;
   cornerRadius?: number;
   padding?: string | number;
-  proxy?: React.ReactNode; 
+  proxy?: React.ReactNode; // The content to be refracted (background)
   className?: string;
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
-  style?: React.CSSProperties;
 }
 
-const LiquidGlass: React.FC<LiquidGlassProps> = memo(({
+const LiquidGlass: React.FC<LiquidGlassProps> = ({
   children,
-  displacementScale = 30,
-  blurAmount = 32,
-  magnification = 1.15,
-  saturation = 180,
-  elasticity = 0.5,
+  displacementScale = 20,
+  blurAmount = 26,
+  saturation = 160,
+  elasticity = 0.35,
   cornerRadius = 9999,
-  padding = "14px 28px",
+  padding = "10px 22px",
   proxy,
   className = "",
   onClick,
   style,
   ...props
 }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  
-  // Interactive spring physics for the glass "tilt" or "movement"
-  const springConfig = { stiffness: 300, damping: 20, mass: 0.8 };
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const rotateX = useSpring(useTransform(y, [-100, 100], [10, -10]), springConfig);
-  const rotateY = useSpring(useTransform(x, [-100, 100], [-10, 10]), springConfig);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    x.set(e.clientX - centerX);
-    y.set(e.clientY - centerY);
-  };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
+  // Map library props to our CSS variable engine
   const dynamicStyle = {
     "--refraction-scale": displacementScale,
     "--glass-blur": `${blurAmount}px`,
-    "--glass-mag": magnification,
+    // We can use saturation in the backdrop filter
+    backdropFilter: `blur(${blurAmount}px) saturate(${saturation}%)`,
+    WebkitBackdropFilter: `blur(${blurAmount}px) saturate(${saturation}%)`,
     borderRadius: cornerRadius,
     padding: padding,
     ...style
   } as React.CSSProperties;
 
+  // Calculate spring physics based on elasticity (0 to 1)
+  // Higher elasticity = lower stiffness, higher damping for "bouncy" feel
+  const stiffness = 500 * (1 - elasticity * 0.5); 
+  const damping = 20 + (elasticity * 10);
+
   return (
     <motion.div
-      ref={containerRef}
-      className={`liquid-glass-container gpu-layer group ${className}`}
-      // Fixed: rotateX and rotateY (MotionValues) must be passed as props, not inside the style object
-      rotateX={rotateX}
-      rotateY={rotateY}
-      style={{
-        ...dynamicStyle,
-        transformStyle: "preserve-3d"
-      }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      className={`liquid-pill ${className}`}
+      style={dynamicStyle}
       onClick={onClick}
-      whileHover={{ scale: 1.02, transition: { duration: 0.4 } }}
-      whileTap={{ scale: 0.97 }}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ type: "spring", stiffness, damping }}
       {...props}
     >
-      {/* 1. Magnified Refraction Layer */}
-      {proxy && (
-        <div className="absolute inset-0 pointer-events-none z-0" aria-hidden="true">
-          <div 
-            className="liquid-glass-refraction" 
-            style={{ 
-              filter: 'url(#liquidRefractionMax)', 
-              WebkitFilter: 'url(#liquidRefractionMax)',
-            }}
-          >
-            {proxy}
-          </div>
+        {/* Proxy Layer: Refracts the content passed in 'proxy' */}
+        {proxy && (
+            <div className="liquid-pill__proxy" aria-hidden="true">
+                 <div 
+                    className="liquid-pill__proxyInner" 
+                    style={{ 
+                        filter: 'url(#liquidRefraction)', 
+                        WebkitFilter: 'url(#liquidRefraction)',
+                        transform: 'translateZ(0)' 
+                    }}
+                 >
+                    {proxy}
+                 </div>
+            </div>
+        )}
+
+        {/* Shine Layer */}
+        <div className="liquid-pill__shine" aria-hidden="true" />
+        
+        {/* Content Layer */}
+        <div className="liquid-pill__content">
+            {children}
         </div>
-      )}
-
-      {/* 2. Interactive Specular Sheen */}
-      <div className="glass-sheen" />
-
-      {/* 3. Surface Texture (Noise) */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
-
-      {/* 4. Internal Edge Lighting (Rim Light) */}
-      <div className="absolute inset-0 border border-white/40 dark:border-white/10 rounded-[inherit] pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
-      
-      {/* 5. Content Injection Layer */}
-      <div 
-        className="relative z-10 flex items-center justify-center gap-4 text-[var(--text-main)]"
-        style={{ transform: "translateZ(20px)" }}
-      >
-        {children}
-      </div>
     </motion.div>
   );
-});
+};
 
 export default LiquidGlass;
