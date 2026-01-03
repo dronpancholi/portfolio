@@ -17,6 +17,7 @@
             },
             animation: {
               'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'spin-slow': 'spin 8s linear infinite',
             }
           }
         }
@@ -31,20 +32,21 @@
         --text-main: #0f172a;
         --text-secondary: #475569;
         --accent: #15803d;
-        --refraction-scale: 20;
-        --glass-blur: 26px;
-        --pill-bg: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.4));
-        --pill-border: rgba(255,255,255,0.4);
+        --refraction-scale: 30;
+        --glass-blur: 32px;
+        --glass-mag: 1.15;
+        --pill-bg: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.4));
+        --pill-border: rgba(255,255,255,0.6);
         --mx: 50%; --my: 50%;
       }
       
       html.dark {
-        --bg-base: #060910;
-        --text-main: #f1f5f9;
+        --bg-base: #020617;
+        --text-main: #f8fafc;
         --text-secondary: #94a3b8;
         --accent: #4ade80;
-        --pill-bg: linear-gradient(180deg, rgba(15,23,42,0.6), rgba(2,6,23,0.4));
-        --pill-border: rgba(255,255,255,0.08);
+        --pill-bg: linear-gradient(135deg, rgba(15,23,42,0.6), rgba(2,6,23,0.3));
+        --pill-border: rgba(255,255,255,0.12);
       }
 
       body { 
@@ -56,31 +58,54 @@
         text-rendering: optimizeSpeed;
       }
 
-      /* High-performance layer promotion */
+      /* Max Liquid Glass Architecture */
+      .liquid-glass-container {
+        position: relative;
+        background: var(--pill-bg);
+        border: 1px solid var(--pill-border);
+        backdrop-filter: blur(var(--glass-blur)) saturate(180%) brightness(1.1);
+        -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%) brightness(1.1);
+        box-shadow: 
+          0 4px 24px -1px rgba(0,0,0,0.06),
+          0 1px 2px -1px rgba(0,0,0,0.06),
+          inset 0 1px 1px rgba(255,255,255,0.4);
+        overflow: hidden;
+      }
+
+      .dark .liquid-glass-container {
+        box-shadow: 
+          0 20px 40px -15px rgba(0,0,0,0.4),
+          inset 0 1px 0 rgba(255,255,255,0.05);
+      }
+
+      .liquid-glass-refraction {
+        position: absolute;
+        inset: -20%;
+        filter: url(#liquidRefractionMax);
+        pointer-events: none;
+        transform: scale(var(--glass-mag));
+        opacity: 0.95;
+        will-change: transform, filter;
+      }
+
+      .glass-sheen {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          circle at var(--mx) var(--my),
+          rgba(255, 255, 255, 0.45) 0%,
+          transparent 60%
+        );
+        mix-blend-mode: overlay;
+        pointer-events: none;
+        z-index: 5;
+      }
+
       .gpu-layer {
         transform: translate3d(0,0,0);
         backface-visibility: hidden;
         perspective: 1000px;
         will-change: transform, opacity;
-      }
-
-      /* Liquid Glass Engine */
-      .liquid-glass-container {
-        position: relative;
-        background: var(--pill-bg);
-        border: 1px solid var(--pill-border);
-        backdrop-filter: blur(var(--glass-blur)) saturate(150%);
-        -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
-        box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1);
-        overflow: hidden;
-      }
-
-      .liquid-glass-refraction {
-        position: absolute;
-        inset: -10%;
-        filter: url(#liquidRefraction);
-        pointer-events: none;
-        opacity: 0.8;
       }
 
       .ticker-rail {
@@ -98,12 +123,8 @@
       .scrollbar-hide::-webkit-scrollbar { display: none; }
       .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-      /* Section headings shadow */
       .heading-glow {
-        text-shadow: 0 0 30px rgba(255,255,255,0.1);
-      }
-      .dark .heading-glow {
-        text-shadow: 0 0 30px rgba(74, 222, 128, 0.15);
+        text-shadow: 0 0 40px rgba(74, 222, 128, 0.2);
       }
     </style>
   <script type="importmap">
