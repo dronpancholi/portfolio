@@ -1,6 +1,14 @@
+
 import React, { memo, useRef } from 'react';
 import { motion, HTMLMotionProps, useMotionValue, useSpring, useTransform } from 'framer-motion';
 
+/**
+ * LIQUID GLASS PROPS (Template Standard)
+ * @param children Visible foreground elements.
+ * @param proxy Refracted background elements (simulated depth).
+ * @param magnification Scale of the refracted layer (1.0 = flat).
+ * @param elasticity Bounce factor (0.1 = rigid, 1.0 = highly fluid).
+ */
 interface LiquidGlassProps extends HTMLMotionProps<"div"> {
   children?: React.ReactNode;
   displacementScale?: number;
@@ -14,22 +22,15 @@ interface LiquidGlassProps extends HTMLMotionProps<"div"> {
   className?: string;
 }
 
-/**
- * MAX LIQUID GLASS ENGINE v4.0
- * 
- * Performance: GPU-accelerated via `rotateX`, `rotateY`, and `translateZ`.
- * Optics: Simulates magnification (var(--glass-mag)) and refraction (SVG Filter).
- * Interaction: 3D parallax tilt based on mouse position.
- */
 const LiquidGlass: React.FC<LiquidGlassProps> = memo(({
   children,
-  displacementScale = 45,
-  blurAmount = 32,
-  magnification = 1.18,
-  saturation = 180,
+  displacementScale = 50,
+  blurAmount = 36,
+  magnification = 1.22,
+  saturation = 190,
   elasticity = 0.5,
-  cornerRadius = 9999,
-  padding = "16px 32px",
+  cornerRadius = 48,
+  padding = "24px 48px",
   proxy,
   className = "",
   onClick,
@@ -38,13 +39,15 @@ const LiquidGlass: React.FC<LiquidGlassProps> = memo(({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   
-  // Interactive 3D tilt logic
-  const springConfig = { stiffness: 260, damping: 24, mass: 0.9 };
+  // High-elasticity spring configuration
+  // stiffness: 420 for snappy response, damping: 28 for organic decay
+  const springConfig = { stiffness: 420 * (1 - elasticity * 0.2), damping: 28 + (elasticity * 10), mass: 1 };
+  
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   
-  const rotateX = useSpring(useTransform(mouseY, [-200, 200], [12, -12]), springConfig);
-  const rotateY = useSpring(useTransform(mouseX, [-200, 200], [-12, 12]), springConfig);
+  const rotateX = useSpring(useTransform(mouseY, [-250, 250], [14, -14]), springConfig);
+  const rotateY = useSpring(useTransform(mouseX, [-250, 250], [-14, 14]), springConfig);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current) return;
@@ -74,20 +77,22 @@ const LiquidGlass: React.FC<LiquidGlassProps> = memo(({
     <motion.div
       ref={containerRef}
       className={`liquid-glass-container gpu-layer group ${className}`}
+      // Fixed: Moved rotateX and rotateY into the style prop to comply with Framer Motion typing
       style={{
         ...dynamicStyle,
+        transformStyle: "preserve-3d",
         rotateX,
-        rotateY,
-        transformStyle: "preserve-3d"
+        rotateY
       }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
-      whileHover={{ scale: 1.02, transition: { duration: 0.5 } }}
-      whileTap={{ scale: 0.97 }}
+      whileHover={{ scale: 1.025 }}
+      whileTap={{ scale: 0.96 }}
+      transition={{ type: "spring", ...springConfig }}
       {...props}
     >
-      {/* 1. Magnified Refraction Buffer */}
+      {/* Stage 1: Optical Refraction Layer */}
       {proxy && (
         <div className="absolute inset-0 pointer-events-none z-0" aria-hidden="true">
           <div 
@@ -102,20 +107,19 @@ const LiquidGlass: React.FC<LiquidGlassProps> = memo(({
         </div>
       )}
 
-      {/* 2. Dynamic Specular Light Blending */}
+      {/* Stage 2: Specular Tracking Highlight */}
       <div className="glass-sheen" />
 
-      {/* 3. Micro-Noise Surface Texture */}
-      <div className="absolute inset-0 opacity-[0.05] pointer-events-none mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+      {/* Stage 3: Surface Noise Overlay */}
+      <div className="absolute inset-0 opacity-[0.04] pointer-events-none mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
 
-      {/* 4. Double-Pass Rim Lighting */}
-      <div className="absolute inset-0 border border-white/40 dark:border-white/10 rounded-[inherit] pointer-events-none opacity-60 group-hover:opacity-100 transition-opacity duration-700" />
-      <div className="absolute inset-[-1px] border border-white/20 dark:border-white/5 rounded-[inherit] pointer-events-none" />
+      {/* Stage 4: Double-Layer Inner Rim Lighting */}
+      <div className="absolute inset-0 border border-white/50 dark:border-white/10 rounded-[inherit] pointer-events-none opacity-40 group-hover:opacity-100 transition-opacity duration-700" />
       
-      {/* 5. Floating Content Layer */}
+      {/* Stage 5: Depth-Injected Content */}
       <div 
-        className="relative z-10 flex items-center justify-center gap-4 text-[var(--text-main)]"
-        style={{ transform: "translateZ(30px)" }}
+        className="relative z-10 flex items-center justify-center gap-4"
+        style={{ transform: "translateZ(40px)" }}
       >
         {children}
       </div>

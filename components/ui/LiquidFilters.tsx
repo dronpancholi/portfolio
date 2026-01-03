@@ -1,12 +1,12 @@
 import React, { memo } from "react";
 
 /**
- * Max Liquid Refraction Pipeline
+ * MAX LIQUID REFRACTION ENGINE (SVG Pipeline)
+ * 
  * Documentation:
- * - baseNoise: Broad displacement for large "liquid" waves.
- * - detailNoise: Fine-grained surface ripples.
- * - feComposite: Blends noises using arithmetic (k2=0.8 for primary wave dominance).
- * - feDisplacementMap: Uses R/G channels as X/Y offsets.
+ * - baseNoise: Large wave structure for broad distortion.
+ * - detailNoise: High-frequency surface ripples for texture.
+ * - displacement: Uses mixed noise to offset pixels based on intensity.
  */
 const LiquidFilters: React.FC = memo(() => (
   <svg aria-hidden="true" style={{ display: "none" }}>
@@ -16,31 +16,34 @@ const LiquidFilters: React.FC = memo(() => (
         x="-30%" y="-30%" width="160%" height="160%" 
         colorInterpolationFilters="sRGB"
       >
+        {/* Stage 1: Macro Liquid Waves */}
         <feTurbulence 
           type="fractalNoise" 
-          baseFrequency="0.007" 
+          baseFrequency="0.006" 
           numOctaves="2" 
           seed="42" 
-          result="baseNoise" 
+          result="macroNoise" 
         />
         
+        {/* Stage 2: Micro Surface Ripples */}
         <feTurbulence 
           type="turbulence" 
-          baseFrequency="0.04" 
+          baseFrequency="0.045" 
           numOctaves="1" 
-          seed="10" 
-          result="detailNoise" 
+          seed="12" 
+          result="microNoise" 
         />
         
+        {/* Blending Pipeline */}
         <feComposite 
-          in="baseNoise" 
-          in2="detailNoise" 
+          in="macroNoise" 
+          in2="microNoise" 
           operator="arithmetic" 
-          k1="0" k2="0.8" k3="0.2" k4="0" 
-          result="mixedNoise" 
+          k1="0" k2="0.85" k3="0.15" k4="0" 
+          result="masterNoise" 
         />
         
-        <feGaussianBlur in="mixedNoise" stdDeviation="1.8" result="softNoise" />
+        <feGaussianBlur in="masterNoise" stdDeviation="1.5" result="softNoise" />
         
         <feDisplacementMap 
           in="SourceGraphic" 
@@ -50,15 +53,8 @@ const LiquidFilters: React.FC = memo(() => (
           yChannelSelector="G" 
         />
         
-        <feColorMatrix type="saturate" values="1.25" />
-      </filter>
-
-      <filter id="glassInnerEdge">
-        <feMorphology operator="dilate" radius="1.5" in="SourceAlpha" result="dilated" />
-        <feGaussianBlur stdDeviation="3.5" in="dilated" result="blurred" />
-        <feComposite operator="out" in="blurred" in2="SourceAlpha" result="edge" />
-        <feFlood floodColor="white" floodOpacity="0.4" result="glowColor" />
-        <feComposite operator="in" in="glowColor" in2="edge" result="glow" />
+        {/* Final Polish: Saturation Boost for premium clarity */}
+        <feColorMatrix type="saturate" values="1.3" />
       </filter>
     </defs>
   </svg>
