@@ -1,4 +1,5 @@
-import React from 'react';
+
+import React, { memo } from 'react';
 import { motion, HTMLMotionProps } from 'framer-motion';
 
 interface LiquidGlassProps extends HTMLMotionProps<"div"> {
@@ -6,80 +7,91 @@ interface LiquidGlassProps extends HTMLMotionProps<"div"> {
   displacementScale?: number;
   blurAmount?: number;
   saturation?: number;
-  aberrationIntensity?: number; // Kept for API compatibility, can map to other filters if needed
   elasticity?: number;
   cornerRadius?: number;
   padding?: string | number;
-  proxy?: React.ReactNode; // The content to be refracted (background)
+  proxy?: React.ReactNode; 
   className?: string;
+  // Added explicit types for onClick and style to resolve property-not-found errors during destructuring
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
+  style?: React.CSSProperties;
 }
 
-const LiquidGlass: React.FC<LiquidGlassProps> = ({
+/**
+ * Premium Liquid Glass Component
+ * Performance Optimized: Uses CSS Variables and SVG Filters for 60FPS refraction.
+ * Includes Layer Promotion for GPU acceleration.
+ */
+const LiquidGlass: React.FC<LiquidGlassProps> = memo(({
   children,
   displacementScale = 20,
   blurAmount = 26,
   saturation = 160,
-  elasticity = 0.35,
+  elasticity = 0.4,
   cornerRadius = 9999,
-  padding = "10px 22px",
+  padding = "12px 24px",
   proxy,
   className = "",
   onClick,
   style,
   ...props
 }) => {
-  // Map library props to our CSS variable engine
   const dynamicStyle = {
     "--refraction-scale": displacementScale,
     "--glass-blur": `${blurAmount}px`,
-    // We can use saturation in the backdrop filter
-    backdropFilter: `blur(${blurAmount}px) saturate(${saturation}%)`,
-    WebkitBackdropFilter: `blur(${blurAmount}px) saturate(${saturation}%)`,
     borderRadius: cornerRadius,
     padding: padding,
     ...style
   } as React.CSSProperties;
 
-  // Calculate spring physics based on elasticity (0 to 1)
-  // Higher elasticity = lower stiffness, higher damping for "bouncy" feel
-  const stiffness = 500 * (1 - elasticity * 0.5); 
-  const damping = 20 + (elasticity * 10);
+  // Refined Spring Physics: Higher stiffness for professional "snappy" feedback
+  const transition = {
+    type: "spring",
+    stiffness: 400 * (1 - elasticity * 0.3),
+    damping: 25 + (elasticity * 5),
+    mass: 1,
+  };
 
   return (
     <motion.div
-      className={`liquid-pill ${className}`}
+      className={`liquid-glass-container gpu-layer ${className}`}
       style={dynamicStyle}
       onClick={onClick}
-      whileHover={{ scale: 1.02 }}
+      whileHover={{ scale: 1.01, y: -2 }}
       whileTap={{ scale: 0.98 }}
-      transition={{ type: "spring", stiffness, damping }}
+      transition={transition}
       {...props}
     >
-        {/* Proxy Layer: Refracts the content passed in 'proxy' */}
-        {proxy && (
-            <div className="liquid-pill__proxy" aria-hidden="true">
-                 <div 
-                    className="liquid-pill__proxyInner" 
-                    style={{ 
-                        filter: 'url(#liquidRefraction)', 
-                        WebkitFilter: 'url(#liquidRefraction)',
-                        transform: 'translateZ(0)' 
-                    }}
-                 >
-                    {proxy}
-                 </div>
-            </div>
-        )}
-
-        {/* Shine Layer */}
-        <div className="liquid-pill__shine" aria-hidden="true" />
-        
-        {/* Content Layer */}
-        <div className="liquid-pill__content">
-            {children}
+      {/* Background Refraction Layer */}
+      {proxy && (
+        <div className="absolute inset-0 pointer-events-none z-0" aria-hidden="true">
+          <div 
+            className="liquid-glass-refraction" 
+            style={{ 
+              filter: 'url(#liquidRefraction)', 
+              WebkitFilter: 'url(#liquidRefraction)',
+              transform: 'translate3d(0,0,0) scale(1.1)' 
+            }}
+          >
+            {proxy}
+          </div>
         </div>
+      )}
+
+      {/* Surface Specular Highlight */}
+      <div 
+        className="absolute inset-0 pointer-events-none z-1 opacity-40 mix-blend-screen"
+        style={{
+          background: 'radial-gradient(120% 100% at var(--mx) var(--my), rgba(255,255,255,0.4), transparent 50%)'
+        }}
+      />
+      
+      {/* Content Injection Layer */}
+      <div className="relative z-10 flex items-center justify-center gap-4">
+        {children}
+      </div>
     </motion.div>
   );
-};
+});
 
 export default LiquidGlass;
