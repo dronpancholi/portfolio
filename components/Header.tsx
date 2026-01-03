@@ -1,87 +1,145 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ThemeToggle from "./ui/ThemeToggle";
-import LiquidGlass from "./ui/LiquidGlass";
 
-export default function Header() {
+export default function Header(){
+  const pillRef = useRef<HTMLDivElement>(null);
   const [isAtTop, setIsAtTop] = useState(true);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const filterId = "liquidRefraction"; // Using the global unified filter
 
+  // Scroll detection
   useEffect(() => {
     const onScroll = () => {
-      const atTop = window.scrollY < 20;
+      const atTop = window.scrollY < 8;
       setIsAtTop(atTop);
-      if (!atTop && isExpanded) setIsExpanded(false);
+      if (!atTop && expanded) return;
+      if (!atTop) setExpanded(false);
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive:true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [isExpanded]);
+  }, [expanded]);
 
-  const toggleExpanded = useCallback(() => {
-    if (!isAtTop) setIsExpanded(prev => !prev);
+  // Click outside and Escape key
+  useEffect(() => {
+    const onClick = (e:MouseEvent) => {
+      if (!expanded || isAtTop) return;
+      if (pillRef.current && !pillRef.current.contains(e.target as Node)) setExpanded(false);
+    };
+    const onKey = (e:KeyboardEvent) => { if (expanded && !isAtTop && e.key==="Escape") setExpanded(false); };
+    document.addEventListener("mousedown", onClick);
+    document.addEventListener("keydown", onKey);
+    return () => { document.removeEventListener("mousedown", onClick); document.removeEventListener("keydown", onKey); };
+  }, [expanded, isAtTop]);
+  
+  const onPillClick = useCallback(() => {
+    if (!isAtTop) setExpanded(v => !v);
   }, [isAtTop]);
 
-  // Max Elastic Spring Configuration
-  const headerSpring = {
+  const state = isAtTop ? "top" : expanded ? "expanded" : "collapsed";
+
+  const spring = {
     type: "spring",
-    stiffness: 450,
-    damping: 30,
-    mass: 0.8
+    stiffness: 220, 
+    damping: 22
   } as const;
 
   return (
-    <div className="fixed top-8 left-1/2 -translate-x-1/2 z-50 w-full flex justify-center pointer-events-none px-4">
-      <LiquidGlass
-        className="pointer-events-auto cursor-pointer"
-        displacementScale={isAtTop ? 15 : isExpanded ? 50 : 35}
-        blurAmount={isAtTop ? 18 : isExpanded ? 36 : 24}
-        magnification={1.12}
-        elasticity={0.7}
-        cornerRadius={999}
-        padding={isAtTop ? "12px 32px" : "10px 24px"}
-        onClick={toggleExpanded}
-        transition={headerSpring}
-        proxy={
-          <div className="flex items-center gap-10 py-4 opacity-40 blur-md select-none">
-             <div className="w-24 h-5 bg-white/40 rounded-full" />
-             <div className="w-40 h-5 bg-white/40 rounded-full" />
-          </div>
-        }
+    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full flex justify-center pointer-events-none">
+      <motion.div
+        ref={pillRef}
+        onClick={onPillClick}
+        layout
+        className="header-pill pointer-events-auto cursor-pointer select-none whitespace-nowrap"
+        style={{
+          // Apply SVG filter via CSS `filter`
+          filter: `url(#${filterId})`,
+          WebkitFilter: `url(#${filterId})`,
+          backfaceVisibility: "hidden",
+        }}
+        variants={{
+          top:       { 
+            padding: "12px 22px", 
+            scale: 1,
+          },
+          expanded:  { 
+            padding: "10px 18px", 
+            scale: 0.98,
+          },
+          collapsed: { 
+            padding: "6px 12px" , 
+            scale: 0.92,
+          }
+        }}
+        initial={false}
+        animate={state}
+        transition={spring}
       >
-        <div className="flex items-center gap-8 relative overflow-hidden">
-          {/* Logo/Name with Elastic Morphing */}
-          <motion.p 
-            layout="position"
-            transition={headerSpring}
-            className={`font-black tracking-tighter text-base md:text-xl ${isAtTop ? 'opacity-100' : 'opacity-90'}`}
+        {/* Proxy Layer: Rendered inside the pill but visually behind content via z-index */}
+        <div className="header-pill__proxy" aria-hidden="true">
+          <div
+            className="header-pill__proxyInner"
+            style={{ filter: `url(#${filterId})`, WebkitFilter: `url(#${filterId})` }}
+          />
+        </div>
+
+        {/* Shine Layer: Specular Highlights */}
+        <div className="header-pill__shine" />
+
+        {/* Content Layer: Icons and Text */}
+        <div className="header-pill__content">
+          <motion.p
+            layout
+            animate={{ fontSize: state==="collapsed" ? "0.74rem" : "1.05rem" }}
+            transition={spring}
+            className="font-semibold tracking-tight text-[var(--text-main)]"
           >
             Dron Pancholi
           </motion.p>
           
-          <AnimatePresence mode="popLayout">
-            {(isAtTop || isExpanded) && (
-              <motion.nav
-                key="header-nav"
-                initial={{ opacity: 0, x: 20, filter: 'blur(10px)' }}
-                animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
-                exit={{ opacity: 0, x: 10, filter: 'blur(10px)', transition: { duration: 0.15 } }}
-                transition={headerSpring}
-                className="hidden lg:flex items-center gap-1 text-[10px] font-bold tracking-[0.2em] uppercase text-[var(--text-secondary)]"
+          <AnimatePresence>
+            {(state==="top") && (
+              <motion.div 
+                key="theme-toggle"
+                layout="position"
+                initial={{ opacity: 0, x: -10, scale: 0.8 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, x: -5, scale: 0.8, transition: { duration: 0.15 } }}
+                transition={spring}
+                onClick={(e) => e.stopPropagation()}
+                className="ml-auto"
               >
-                <div className="w-4 h-[1px] bg-[var(--text-secondary)]/20 mx-2" />
-                <a href="#about" className="px-4 py-2 hover:text-[var(--text-main)] transition-colors">About</a>
-                <a href="#skills" className="px-4 py-2 hover:text-[var(--text-main)] transition-colors">Skills</a>
-                <a href="#projects" className="px-2 py-2 hover:text-[var(--text-main)] transition-colors">Projects</a>
-                <a href="#contact" className="pl-4 py-2 hover:text-[var(--text-main)] transition-colors">Contact</a>
-              </motion.nav>
+                <ThemeToggle />
+              </motion.div>
             )}
           </AnimatePresence>
 
-          <motion.div layout transition={headerSpring}>
-            <ThemeToggle />
-          </motion.div>
+          <AnimatePresence initial={false} mode="popLayout">
+            {(state==="top" || state==="expanded") && (
+              <motion.nav
+                key="nav"
+                layout="position"
+                onClick={(e)=>e.stopPropagation()}
+                initial={{ opacity: 0, x: 10, scale: 0.9 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, x: 10, scale: 0.9, transition: { duration: 0.1 } }}
+                transition={spring}
+                className="
+                  flex items-center font-medium text-[var(--text-secondary)] 
+                  overflow-hidden
+                  sm:flex-nowrap flex-wrap
+                  sm:gap-0 gap-1
+                "
+              >
+                <a href="#about"    className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">About</a>
+                <a href="#skills"   className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">Skills</a>
+                <a href="#projects" className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">Projects</a>
+                <a href="#contact"  className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">Contact</a>
+              </motion.nav>
+            )}
+          </AnimatePresence>
         </div>
-      </LiquidGlass>
+      </motion.div>
     </div>
   );
 }
