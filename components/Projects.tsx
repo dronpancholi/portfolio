@@ -246,7 +246,15 @@ const Projects: React.FC = () => {
 
       <AnimatePresence>
         {selectedProject && (
-          <ProjectModal project={selectedProject} onClose={handleClose} />
+          <motion.div
+            key="modal-wrapper"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100]"
+          >
+            <ProjectModal project={selectedProject} onClose={handleClose} />
+          </motion.div>
         )}
       </AnimatePresence>
     </section>
