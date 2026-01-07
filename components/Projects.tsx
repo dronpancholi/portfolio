@@ -107,7 +107,7 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
               <h4 className="text-lg font-semibold text-[var(--text-main)] mb-3">Tech Stack</h4>
               <div className="flex flex-wrap gap-2">
                 {project.techStack.map(tech => (
-                  <span key={tech} className="bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] text-sm font-medium px-3 py-1 rounded-full">{tech}</span>
+                  <span key={tech} className="bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] text-sm font-medium px-3 py-1 rounded-full transition-all duration-200 hover:scale-105 hover:bg-[var(--accent)]/10 hover:text-[var(--accent)] cursor-default">{tech}</span>
                 ))}
               </div>
             </motion.div>
