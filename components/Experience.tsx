@@ -75,25 +75,23 @@ const LiquidModal = ({ item, onClose }: { item: typeof EXPERIENCE_DATA[number]; 
       <motion.div
         layoutId={`card-container-${item.company}`}
         transition={TRANSITION_OPEN}
-        className="relative w-full max-w-5xl h-[85vh] md:h-[80vh] rounded-[40px] overflow-hidden z-20 flex flex-col md:flex-row"
+        className="relative w-full max-w-5xl h-[85vh] md:h-[80vh] rounded-[40px] overflow-hidden z-20 flex flex-col md:flex-row bg-white/5 dark:bg-black/40"
         style={{
-            background: 'rgba(255, 255, 255, 0.05)',
-            boxShadow: `
-              0 20px 80px -20px rgba(0,0,0,0.5), 
-              inset 0 0 0 1px rgba(255,255,255,0.2),
-              inset 0 0 40px rgba(255,255,255,0.05)
-            `,
             backdropFilter: 'blur(50px) saturate(150%)',
             WebkitBackdropFilter: 'blur(50px) saturate(150%)',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)', // Clean shadow, no insets
         }}
       >
-        {/* LIQUID REFRACTION BORDER OVERLAY */}
-        <div className="absolute inset-0 pointer-events-none z-0 opacity-40 mix-blend-overlay">
-             <div className="absolute inset-0 bg-gradient-to-br from-white/30 to-transparent" style={{ filter: 'url(#liquidRefraction)' }} />
+        {/* Clean Border Layer */}
+        <div className="absolute inset-0 rounded-[40px] border border-white/10 pointer-events-none z-50" />
+
+        {/* LIQUID REFRACTION BORDER OVERLAY - Subtle and clean */}
+        <div className="absolute inset-0 pointer-events-none z-0 opacity-30 mix-blend-overlay">
+             <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" style={{ filter: 'url(#liquidRefraction)' }} />
         </div>
 
         {/* Specular Highlight Gradient */}
-        <div className="absolute top-0 left-0 right-0 h-[300px] bg-gradient-to-b from-white/20 to-transparent pointer-events-none z-0" />
+        <div className="absolute top-0 left-0 right-0 h-[300px] bg-gradient-to-b from-white/10 to-transparent pointer-events-none z-0" />
 
         {/* Floating Accent Orb in Background */}
         <motion.div 
@@ -109,16 +107,16 @@ const LiquidModal = ({ item, onClose }: { item: typeof EXPERIENCE_DATA[number]; 
             exit={{ opacity: 0 }}
             transition={{ delay: 0.3 }}
             onClick={onClose}
-            className="absolute top-6 right-6 z-50 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-md transition-all hover:scale-110 active:scale-95 group"
+            className="absolute top-6 right-6 z-50 p-3 rounded-full bg-black/20 hover:bg-black/40 text-white border border-white/10 backdrop-blur-md transition-all hover:scale-110 active:scale-95 group"
         >
             <X size={20} className="group-hover:rotate-90 transition-transform duration-300" />
         </motion.button>
 
         {/* --- LEFT COLUMN --- */}
-        <div className="w-full md:w-[35%] relative p-8 md:p-12 flex flex-col justify-between border-b md:border-b-0 md:border-r border-white/10 z-10 bg-gradient-to-b from-white/5 to-transparent">
+        <div className="w-full md:w-[35%] relative p-8 md:p-12 flex flex-col justify-between border-b md:border-b-0 md:border-r border-white/10 z-10 bg-white/5 dark:bg-white/[0.02]">
             <div>
                 <motion.div layoutId={`card-logo-wrapper-${item.company}`} className="mb-8">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white text-xs font-bold uppercase tracking-wider shadow-[0_0_20px_rgba(255,255,255,0.1)] backdrop-blur-md">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white text-xs font-bold uppercase tracking-wider shadow-sm backdrop-blur-md">
                         <Calendar size={12} />
                         <span>{item.period}</span>
                     </div>
@@ -126,15 +124,14 @@ const LiquidModal = ({ item, onClose }: { item: typeof EXPERIENCE_DATA[number]; 
                 
                 <motion.h2 
                     layoutId={`card-title-${item.company}`}
-                    className="text-4xl md:text-5xl font-bold text-white tracking-tight leading-[0.95] mb-4 drop-shadow-lg"
-                    style={{ textShadow: '0 4px 20px rgba(0,0,0,0.3)' }}
+                    className="text-4xl md:text-5xl font-bold text-white tracking-tight leading-[0.95] mb-4 drop-shadow-md"
                 >
                     {item.company}
                 </motion.h2>
                 
                 <motion.div 
                     layoutId={`card-role-${item.company}`}
-                    className="text-xl md:text-2xl text-[var(--accent)] font-medium tracking-wide drop-shadow-md"
+                    className="text-xl md:text-2xl text-[var(--accent)] font-medium tracking-wide"
                 >
                     {item.role}
                 </motion.div>
@@ -243,20 +240,21 @@ const ExperienceItem: React.FC<{ item: typeof EXPERIENCE_DATA[number]; index: nu
         transition={SPRING_HOVER}
         className="w-[calc(100%-3rem)] md:w-[calc(50%-3rem)] ml-12 md:ml-0 relative group cursor-pointer perspective-[1000px]"
       >
-         {/* FULL LIQUID GLASS CARD */}
+         {/* FULL LIQUID GLASS CARD - CLEAN VERSION */}
          <div 
-            className="relative overflow-hidden rounded-[32px] transition-all duration-500"
+            className="relative overflow-hidden rounded-[32px] transition-all duration-500 bg-white/5 dark:bg-white/[0.02]"
             style={{
-                // Ultra-premium Glass styling
-                background: 'rgba(255, 255, 255, 0.02)', 
                 backdropFilter: 'blur(24px) saturate(140%)',
                 WebkitBackdropFilter: 'blur(24px) saturate(140%)',
-                boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(255,255,255,0.15)',
+                boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)',
             }}
          >
-            {/* Liquid Refraction Overlay - The "Water" Effect */}
-            <div className="absolute inset-0 z-0 opacity-0 group-hover:opacity-30 transition-opacity duration-700 pointer-events-none mix-blend-overlay">
-                <div className="w-full h-full bg-gradient-to-br from-white/40 to-transparent" style={{ filter: 'url(#liquidRefraction)' }} />
+            {/* Clean Border */}
+            <div className="absolute inset-0 rounded-[32px] border border-white/10 pointer-events-none z-30" />
+
+            {/* Liquid Refraction Overlay - The "Water" Effect - Smoother */}
+            <div className="absolute inset-0 z-0 opacity-0 group-hover:opacity-25 transition-opacity duration-700 pointer-events-none mix-blend-overlay">
+                <div className="w-full h-full bg-gradient-to-br from-white/30 to-transparent" style={{ filter: 'url(#liquidRefraction)' }} />
             </div>
 
             {/* Specular Shine */}
@@ -268,7 +266,7 @@ const ExperienceItem: React.FC<{ item: typeof EXPERIENCE_DATA[number]; index: nu
             <div className="p-8 relative z-20">
                 <div className="flex justify-between items-start mb-4">
                     <motion.div layoutId={`card-logo-wrapper-${item.company}`}>
-                       <span className="inline-block px-3 py-1.5 rounded-lg bg-[var(--accent)]/10 border border-[var(--accent)]/20 text-[var(--accent)] text-[10px] font-bold uppercase tracking-widest mb-1 shadow-[0_0_10px_rgba(0,0,0,0.05)]">
+                       <span className="inline-block px-3 py-1.5 rounded-lg bg-[var(--accent)]/10 border border-[var(--accent)]/20 text-[var(--accent)] text-[10px] font-bold uppercase tracking-widest mb-1 shadow-sm">
                           {item.period}
                        </span>
                     </motion.div>
