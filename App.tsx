@@ -1,3 +1,4 @@
+
 import React, { Suspense, lazy, useEffect } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -7,10 +8,11 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import LiquidFilters from './components/ui/LiquidFilters';
 import HeaderPillGlassFilter from './components/ui/HeaderPillGlassFilter';
 import PerformanceOptimizedBackground from './components/ui/PerformanceOptimizedBackground';
-import BetaAlert from './components/ui/BetaAlert';
+import FloatingGeometries from './components/ui/FloatingGeometries';
 
 const Skills = lazy(() => import('./components/Skills'));
 const Projects = lazy(() => import('./components/Projects'));
+const Experience = lazy(() => import('./components/Experience'));
 const About = lazy(() => import('./components/About'));
 const Contact = lazy(() => import('./components/Contact'));
 
@@ -48,18 +50,18 @@ const App: React.FC = () => {
   return (
     <ThemeProvider>
       <PerformanceOptimizedBackground />
+      <FloatingGeometries />
+      
       <div className="relative isolate min-h-screen text-[var(--text-main)] selection:bg-[var(--accent)]/30">
         <LiquidFilters />
         <HeaderPillGlassFilter />
         
-        {/* Beta Alert Splash Screen */}
-        <BetaAlert />
-
         <Header />
         <main className="container mx-auto px-6 md:px-8 pt-24">
           <Hero />
           <Suspense fallback={<Loader />}>
             <About />
+            <Experience />
             <Skills />
             <Projects />
             <Contact />

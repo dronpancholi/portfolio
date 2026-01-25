@@ -1,9 +1,35 @@
+
 export const NAV_LINKS = [
   { href: '#home', label: 'Home' },
   { href: '#about', label: 'About' },
+  { href: '#experience', label: 'Experience' },
   { href: '#skills', label: 'Skills' },
   { href: '#projects', label: 'Projects' },
   { href: '#contact', label: 'Contact' },
+] as const;
+
+export const EXPERIENCE_DATA = [
+  {
+    company: "Neural Systems Inc.",
+    role: "Senior AI Engineer",
+    period: "2023 - Present",
+    description: "Leading the architecture of large-scale RAG pipelines and optimizing inference latency for edge devices.",
+    tech: ["Python", "TensorFlow", "Kubernetes"]
+  },
+  {
+    company: "Future Interfaces",
+    role: "Full Stack Developer",
+    period: "2021 - 2023",
+    description: "Developed immersive 3D web experiences and reactive interfaces using WebGL and React.",
+    tech: ["React", "Three.js", "WebGL"]
+  },
+  {
+    company: "Dataflow Corp",
+    role: "Data Scientist",
+    period: "2019 - 2021",
+    description: "Engineered predictive models for fintech applications, reducing fraud detection time by 40%.",
+    tech: ["Scikit-learn", "Pandas", "AWS"]
+  }
 ] as const;
 
 export const SKILLS_DATA = [

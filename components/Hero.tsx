@@ -3,22 +3,26 @@ import React from 'react';
 import { motion, useTransform, useScroll } from 'framer-motion';
 import TypingAnimation from './ui/TypingAnimation';
 import GlassCard from './ui/GlassCard';
+import TiltCard from './ui/TiltCard';
 
 const InteractivePortrait: React.FC = () => {
   return (
-    <motion.div
-      className="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden cursor-pointer shadow-2xl shadow-black/10"
-      style={{ transformStyle: 'preserve-3d' }}
-      whileHover={{ scale: 1.1, rotate: 3 }}
-      whileTap={{ scale: 0.95 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 15 }}
-    >
-      <img
-        src="https://i.ibb.co/YFJdKdD1/picofme-9.png"
-        alt="Dron Pancholi"
-        className="w-full h-full object-cover"
-      />
-    </motion.div>
+    <TiltCard intensity={25} perspective={800} className="w-48 h-48 md:w-64 md:h-64 rounded-full">
+        <div 
+          className="relative w-full h-full rounded-full overflow-hidden shadow-2xl shadow-black/10 border-4 border-white/20"
+          style={{ transform: 'translateZ(20px)' }}
+        >
+          <img
+            src="https://i.ibb.co/YFJdKdD1/picofme-9.png"
+            alt="Dron Pancholi"
+            className="w-full h-full object-cover"
+          />
+          
+          {/* Internal Shine for Globe effect */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-black/20 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.2),transparent)] pointer-events-none" />
+        </div>
+    </TiltCard>
   );
 };
 
@@ -39,7 +43,7 @@ const Hero: React.FC = () => {
   return (
     <motion.section 
       id="home" 
-      className="min-h-[80vh] md:min-h-[90vh] flex flex-col items-center justify-center py-24 sm:py-28 md:py-32 scroll-mt-24"
+      className="min-h-[80vh] md:min-h-[90vh] flex flex-col items-center justify-center py-24 sm:py-28 md:py-32 scroll-mt-24 relative z-10"
       style={{ y, opacity }}
     >
       <motion.div
