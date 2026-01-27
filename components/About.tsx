@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import GlassCard from './ui/GlassCard';
@@ -16,15 +17,15 @@ const About: React.FC = () => {
           <div className="p-10 md:p-16">
             <TypingAnimation
               as="h2"
-              text="A Study in Precision."
+              text="About Me"
               className="text-3xl md:text-4xl font-bold text-[var(--text-main)] mb-6 tracking-tight"
             />
             <div className="space-y-4 text-[var(--text-secondary)] text-lg leading-relaxed font-light">
               <p>
-                My work is guided by a single principle: build with intention. I specialize in developing intelligent systems where every component, from the backend architecture to the user interface, is crafted with precision and purpose.
+                [Your Bio Here]. This is where you can write a few paragraphs about your professional background, your philosophy, and what interests you.
               </p>
               <p>
-                My background in computer engineering provides a foundation in systems thinking, allowing me to create solutions that are not only technically robust but also clear and effective. My focus is on applied AI, building tools and platforms that solve complex problems with elegant simplicity.
+                You might want to mention your education, key areas of expertise, and what you are currently focused on learning or building. Keep it engaging and personal.
               </p>
             </div>
           </div>

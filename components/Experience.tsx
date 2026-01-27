@@ -201,7 +201,7 @@ const ModalExpanded = ({ item, onClose, id }: { item: typeof EXPERIENCE_DATA[num
                                 <Award size={14} /> Key Achievement
                             </div>
                             <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                                "Engineered critical pathways that increased system throughput by 300% while reducing infrastructure costs."
+                                "{item.achievement}"
                             </p>
                         </div>
                     </motion.div>
@@ -224,28 +224,19 @@ const ModalExpanded = ({ item, onClose, id }: { item: typeof EXPERIENCE_DATA[num
                         </p>
 
                         <div className="grid grid-cols-1 gap-4 mb-10">
-                            <div className="flex gap-4 p-4 rounded-2xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
-                                <div className="mt-1 p-2 rounded-lg bg-[var(--accent)]/10 text-[var(--accent)] h-fit">
-                                    <Cpu size={20} />
+                            {item.responsibilities.map((resp, i) => (
+                                <div key={i} className="flex gap-4 p-4 rounded-2xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+                                    <div className="mt-1 p-2 rounded-lg bg-[var(--accent)]/10 text-[var(--accent)] h-fit">
+                                        {i === 0 ? <Cpu size={20} /> : <Globe size={20} />}
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-[var(--text-main)] text-sm mb-1">{resp.title}</h4>
+                                        <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                                            {resp.description}
+                                        </p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h4 className="font-bold text-[var(--text-main)] text-sm mb-1">Architecture</h4>
-                                    <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                                        Designed fault-tolerant distributed systems capable of handling millions of concurrent requests.
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="flex gap-4 p-4 rounded-2xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
-                                <div className="mt-1 p-2 rounded-lg bg-[var(--accent)]/10 text-[var(--accent)] h-fit">
-                                    <Globe size={20} />
-                                </div>
-                                <div>
-                                    <h4 className="font-bold text-[var(--text-main)] text-sm mb-1">Global Scale</h4>
-                                    <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                                        Implemented horizontal scaling strategies and global CDNs for low-latency delivery.
-                                    </p>
-                                </div>
-                            </div>
+                            ))}
                         </div>
 
                         <div>

@@ -1,5 +1,4 @@
 
-
 export const NAV_LINKS = [
   { href: '#home', label: 'Home' },
   { href: '#about', label: 'About' },
@@ -11,95 +10,110 @@ export const NAV_LINKS = [
 
 export const EXPERIENCE_DATA = [
   {
-    company: "Neural Systems Inc.",
-    role: "Senior AI Engineer",
+    company: "Company Name",
+    role: "Senior Position",
     period: "2023 - Present",
-    description: "Leading the architecture of large-scale RAG pipelines and optimizing inference latency for edge devices.",
-    tech: ["Python", "TensorFlow", "Kubernetes"]
+    description: "A brief description of the company and your high-level role. Describe the scale of the systems you worked on and the impact of your contributions.",
+    achievement: "Driven significant improvements in system performance or revenue growth during tenure.",
+    responsibilities: [
+      { title: "Core Focus", description: "Description of your primary responsibility and the technologies used." },
+      { title: "Leadership", description: "Description of your leadership, mentorship, or strategic contributions." }
+    ],
+    tech: ["Tech A", "Tech B", "Tech C"]
   },
   {
-    company: "Future Interfaces",
-    role: "Full Stack Developer",
+    company: "Previous Company",
+    role: "Mid-Level Position",
     period: "2021 - 2023",
-    description: "Developed immersive 3D web experiences and reactive interfaces using WebGL and React.",
-    tech: ["React", "Three.js", "WebGL"]
+    description: "Description of your role at this previous company. Highlight specific projects or products you helped launch.",
+    achievement: "Successfully launched a key product feature that increased user engagement by X%.",
+    responsibilities: [
+      { title: "Development", description: "Built and maintained critical features using modern frameworks." },
+      { title: "Collaboration", description: "Worked closely with cross-functional teams to deliver product goals." }
+    ],
+    tech: ["Tech D", "Tech E", "Tech F"]
   },
   {
-    company: "Dataflow Corp",
-    role: "Data Scientist",
+    company: "Start-Up Name",
+    role: "Junior Position",
     period: "2019 - 2021",
-    description: "Engineered predictive models for fintech applications, reducing fraud detection time by 40%.",
-    tech: ["Scikit-learn", "Pandas", "AWS"]
+    description: "Description of your early career role. Focus on the foundational skills you developed and the fast-paced environment.",
+    achievement: "Optimized legacy codebases to improve load times and maintainability.",
+    responsibilities: [
+      { title: "Implementation", description: "Translated design mockups into responsive, interactive user interfaces." },
+      { title: "Testing", description: "Implemented automated testing suites to ensure code quality." }
+    ],
+    tech: ["Tech G", "Tech H", "Tech I"]
   }
 ] as const;
 
 export const SKILLS_DATA = [
   {
-    title: 'AI & Machine Learning',
-    icon: 'ai',
-    skills: ['TensorFlow', 'PyTorch', 'Scikit-learn', 'OpenCV', 'LangChain', 'LLMs'],
+    title: 'Category One',
+    icon: 'ai', // Options: 'ai', 'frontend', 'backend', 'fullstack', 'tools'
+    skills: ['Skill A', 'Skill B', 'Skill C', 'Skill D'],
   },
   {
-    title: 'Frontend Development',
+    title: 'Category Two',
     icon: 'frontend',
-    skills: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'JavaScript (ES6+)'],
+    skills: ['Skill E', 'Skill F', 'Skill G', 'Skill H'],
   },
   {
-    title: 'Backend Development',
+    title: 'Category Three',
     icon: 'backend',
-    skills: ['Node.js', 'Express', 'Python', 'Flask', 'MongoDB', 'PostgreSQL', 'REST APIs'],
+    skills: ['Skill I', 'Skill J', 'Skill K', 'Skill L'],
   },
    {
-    title: 'Full-Stack Expertise',
+    title: 'Category Four',
     icon: 'fullstack',
-    skills: ['CI/CD', 'Git & GitHub', 'Docker', 'Vercel', 'Agile Methodologies'],
+    skills: ['Skill M', 'Skill N', 'Skill O', 'Skill P'],
   },
   {
-    title: 'AI Development Tools',
+    title: 'Category Five',
     icon: 'tools',
-    skills: ['Google Colab', 'Jupyter Notebooks', 'Hugging Face', 'Gemini API', 'Vector Databases'],
+    skills: ['Skill Q', 'Skill R', 'Skill S', 'Skill T'],
   },
 ] as const;
 
 export const PROJECTS_DATA = [
   {
-    title: 'Predictive Health AI',
-    description: 'An exploration into real-time healthcare AI, designed for predictive diagnostics and personalized patient care.',
-    longDescription: 'A concept for a comprehensive healthcare ecosystem designed to bridge patients and medical professionals. By processing real-time data from wearables, its AI models are intended to provide early-stage diagnostic predictions, monitor chronic conditions, and suggest personalized wellness plans. The platform explores how to make proactive and preventative care more accessible through technology.',
-    techStack: ['TensorFlow', 'Python', 'React Native', 'Node.js', 'PostgreSQL', 'Google Cloud AI'],
-    features: ['Real-time Health Monitoring', 'AI-Powered Predictive Diagnostics', 'Telemedicine Integration', 'Personalized Wellness Plans'],
-    status: 'Coming Soon',
-    liveUrl: null,
-    repoUrl: null,
+    title: 'Project Title One',
+    description: 'A concise tagline describing the project.',
+    longDescription: 'A detailed description of the project. Explain the problem it solves, the user base it serves, and the technical challenges you overcame during development. This section can be a few paragraphs long.',
+    techStack: ['Tech 1', 'Tech 2', 'Tech 3', 'Tech 4'],
+    features: ['Key Feature 1', 'Key Feature 2', 'Key Feature 3', 'Key Feature 4'],
+    status: 'Live',
+    liveUrl: '#',
+    repoUrl: '#',
   },
   {
-    title: 'Generative Creative Suite',
-    description: 'A suite of generative AI tools designed to augment creative workflows, from text to image.',
-    longDescription: 'A collection of generative AI tools designed to augment the creative process. The suite includes models for high-fidelity image generation, artistic style transfer, and an AI co-writer for brainstorming content, all built with a focus on intuitive interfaces and fine-grained control over the output.',
-    techStack: ['PyTorch', 'Stable Diffusion', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Hugging Face'],
-    features: ['Text-to-Image Generation', 'AI-Assisted Writing & Editing', 'Artistic Style Transfer', 'Intuitive User Interface'],
+    title: 'Project Title Two',
+    description: 'A concise tagline describing the project.',
+    longDescription: 'A detailed description of the project. Focus on the unique value proposition and the architectural decisions made.',
+    techStack: ['Tech A', 'Tech B', 'Tech C'],
+    features: ['Feature A', 'Feature B', 'Feature C'],
     status: 'In Progress',
     liveUrl: '#',
-    repoUrl: 'https://github.com/your-username',
+    repoUrl: '#',
   },
   {
-    title: 'Reinforcement Learning for Navigation',
-    description: 'Research into reinforcement learning for autonomous navigation and decision-making in complex environments.',
-    longDescription: 'This research explores the application of deep reinforcement learning (DRL) for creating autonomous agents that navigate complex, dynamic environments. The focus is on training models in simulation to perform tasks like drone navigation or autonomous driving, with an emphasis on safety, efficiency, and adaptability.',
-    techStack: ['Reinforcement Learning', 'PyTorch', 'OpenAI Gym', 'CARLA Simulator', 'Python'],
-    features: ['Pathfinding in Dynamic Environments', 'Collision Avoidance Systems', 'Sim-to-Real Model Transfer', 'Behavioral Cloning'],
-    status: 'In Progress',
+    title: 'Project Title Three',
+    description: 'A concise tagline describing the project.',
+    longDescription: 'A detailed description of the project. Highlight any research or experimental technologies used.',
+    techStack: ['Tech X', 'Tech Y', 'Tech Z'],
+    features: ['Feature X', 'Feature Y', 'Feature Z'],
+    status: 'Concept',
     liveUrl: null,
-    repoUrl: 'https://github.com/your-username',
+    repoUrl: '#',
   },
 ] as const;
 
 export const SOCIAL_LINKS = {
-    email: 'email@example.com',
+    email: 'your.email@example.com',
     profiles: [
-        { name: 'LinkedIn', url: 'https://www.linkedin.com/in/your-profile' },
-        { name: 'GitHub', url: 'https://github.com/your-username' },
-        { name: 'Instagram', url: 'https://www.instagram.com/your-handle' },
-        { name: 'Discord', url: 'https://discord.com/users/your-id' },
+        { name: 'LinkedIn', url: 'https://linkedin.com' },
+        { name: 'GitHub', url: 'https://github.com' },
+        { name: 'Instagram', url: 'https://instagram.com' },
+        { name: 'Discord', url: 'https://discord.com' },
     ]
 } as const;

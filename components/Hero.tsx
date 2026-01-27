@@ -75,7 +75,7 @@ const Hero: React.FC = () => {
             >
               <TypingAnimation 
                 as="h1"
-                text="Systems, designed with depth. Interfaces, designed with clarity."
+                text="Your Creative Headline Goes Here."
                 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tighter text-[var(--text-main)] mb-4"
               />
             </motion.div>
@@ -87,7 +87,7 @@ const Hero: React.FC = () => {
               className="max-w-2xl text-base sm:text-lg md:text-xl text-[var(--text-secondary)] font-light mx-auto"
               style={{ transform: 'translateZ(60px)', transformStyle: 'preserve-3d' }}
             >
-              I engineer intelligent systems and thoughtful digital experiences, focusing on the intersection of artificial intelligence, full-stack development, and design.
+              A brief introduction about your background, expertise, and what drives your work. This is the first thing visitors will read.
             </motion.p>
           </div>
         </GlassCard>

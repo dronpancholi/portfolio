@@ -87,7 +87,7 @@ const ProjectModal = ({ project, onClose }: { project: Project; onClose: () => v
               <motion.h3 layoutId={`project-title-${project.title}`} id={`modal-title-${project.title}`} className="text-2xl md:text-3xl font-bold text-[var(--text-main)] pr-12">{project.title}</motion.h3>
               <motion.div variants={contentItemVariants}>
                 <span className={`text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap self-start ${
-                  project.status === 'Coming Soon' ? 'bg-[var(--accent)]/20 text-[var(--accent)] animate-pulse' : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)]'
+                  (project.status as string) === 'Coming Soon' ? 'bg-[var(--accent)]/20 text-[var(--accent)] animate-pulse' : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)]'
                 }`}>
                   {project.status}
                 </span>
@@ -222,7 +222,7 @@ const Projects: React.FC = () => {
                   <div className="flex justify-between items-start mb-4">
                     <motion.h3 layoutId={`project-title-${project.title}`} className="text-xl font-bold text-[var(--text-main)]">{project.title}</motion.h3>
                     <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
-                      project.status === 'Coming Soon' ? 'bg-[var(--accent)]/20 text-[var(--accent)] animate-pulse' : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)]'
+                      (project.status as string) === 'Coming Soon' ? 'bg-[var(--accent)]/20 text-[var(--accent)] animate-pulse' : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)]'
                     }`}>
                       {project.status}
                     </span>
