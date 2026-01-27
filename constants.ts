@@ -1,4 +1,5 @@
 
+
 export const NAV_LINKS = [
   { href: '#home', label: 'Home' },
   { href: '#about', label: 'About' },
@@ -79,7 +80,7 @@ export const PROJECTS_DATA = [
     features: ['Text-to-Image Generation', 'AI-Assisted Writing & Editing', 'Artistic Style Transfer', 'Intuitive User Interface'],
     status: 'In Progress',
     liveUrl: '#',
-    repoUrl: 'https://github.com/dronpancholi',
+    repoUrl: 'https://github.com/your-username',
   },
   {
     title: 'Reinforcement Learning for Navigation',
@@ -89,16 +90,16 @@ export const PROJECTS_DATA = [
     features: ['Pathfinding in Dynamic Environments', 'Collision Avoidance Systems', 'Sim-to-Real Model Transfer', 'Behavioral Cloning'],
     status: 'In Progress',
     liveUrl: null,
-    repoUrl: 'https://github.com/dronpancholi',
+    repoUrl: 'https://github.com/your-username',
   },
 ] as const;
 
 export const SOCIAL_LINKS = {
-    email: 'dronpancholi@gmail.com',
+    email: 'email@example.com',
     profiles: [
-        { name: 'LinkedIn', url: 'https://www.linkedin.com/in/dronpancholi' },
-        { name: 'GitHub', url: 'https://github.com/dronpancholi' },
-        { name: 'Instagram', url: 'https://www.instagram.com/dronpancholi' },
-        { name: 'Discord', url: 'https://discord.com/users/dronpancholi' },
+        { name: 'LinkedIn', url: 'https://www.linkedin.com/in/your-profile' },
+        { name: 'GitHub', url: 'https://github.com/your-username' },
+        { name: 'Instagram', url: 'https://www.instagram.com/your-handle' },
+        { name: 'Discord', url: 'https://discord.com/users/your-id' },
     ]
 } as const;

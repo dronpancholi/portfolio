@@ -1,5 +1,6 @@
 
-const CACHE_NAME = 'dron-pancholi-portfolio-v5';
+
+const CACHE_NAME = 'portfolio-v5';
 const urlsToCache = [
   '/',
   '/index.html',

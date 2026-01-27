@@ -84,7 +84,7 @@ const BetaAlert: React.FC = () => {
 
   useEffect(() => {
     // Check session storage
-    const hasSeenAlert = sessionStorage.getItem('dron_beta_alert_v3_6906');
+    const hasSeenAlert = sessionStorage.getItem('portfolio_beta_alert_v3_6906');
     if (!hasSeenAlert) {
       const timer = setTimeout(() => setIsVisible(true), 200);
 
@@ -111,7 +111,7 @@ const BetaAlert: React.FC = () => {
 
   const handleDismiss = () => {
     setIsVisible(false);
-    sessionStorage.setItem('dron_beta_alert_v3_6906', 'true');
+    sessionStorage.setItem('portfolio_beta_alert_v3_6906', 'true');
   };
 
   const telemetryData: TelemetryItem[] = [

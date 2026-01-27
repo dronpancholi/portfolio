@@ -13,9 +13,10 @@ const InteractivePortrait: React.FC = () => {
           style={{ transform: 'translateZ(20px)' }}
         >
           <img
-            src="https://i.ibb.co/YFJdKdD1/picofme-9.png"
-            alt="Dron Pancholi"
-            className="w-full h-full object-cover"
+            // src="https://i.ibb.co/YFJdKdD1/picofme-9.png"
+            src="" // Placeholder: Link commented out as requested
+            alt="Profile"
+            className="w-full h-full object-cover bg-gray-200 dark:bg-gray-800"
           />
           
           {/* Internal Shine for Globe effect */}

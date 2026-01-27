@@ -1,3 +1,4 @@
+
 import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -52,7 +53,7 @@ function Colorize(tokens: (string | { t: string; cls?: string })[]) {
 function Line1() {
   return Colorize([
     { t: "const" }, " ", { t: "identity" }, " ", "=", " ", "{", " ",
-    { t: "name" }, ":", " ", { t: `"Dron Pancholi"` }, ", ", { t: "focus" }, ":", " ",
+    { t: "name" }, ":", " ", { t: `"Your Name"` }, ", ", { t: "focus" }, ":", " ",
     "[", { t: `"AI"` }, ",", " ", { t: `"Systems"` }, ",", " ", { t: `"Design"` }, "]", " ", "};",
   ]);
 }

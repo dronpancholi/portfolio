@@ -94,7 +94,7 @@ export default function Header(){
             transition={spring}
             className="font-semibold tracking-tight text-[var(--text-main)]"
           >
-            Dron Pancholi
+            Portfolio
           </motion.p>
           
           <AnimatePresence>

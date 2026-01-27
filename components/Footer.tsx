@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
     <footer className="py-8 text-center">
       <div className="container mx-auto px-6">
         <p className="text-sm text-[var(--text-secondary)]">
-          Dron Pancholi © {currentYear}
+          Portfolio © {currentYear}
         </p>
         <p className="text-[10px] text-[var(--text-secondary)] opacity-40 mt-2 font-mono tracking-widest uppercase">
           {APP_VERSION}
