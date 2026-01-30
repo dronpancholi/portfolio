@@ -11,7 +11,9 @@ import { EXPERIENCE_DATA } from '../constants';
 import { Calendar, Layers, X, Cpu, Globe, Award, Zap, ArrowUpRight } from 'lucide-react';
 
 // --- PHYSICS & ANIMATION CONSTANTS ---
-const OPEN_SPRING = { type: "spring", stiffness: 220, damping: 25, mass: 0.8 } as const;
+// Tuned for "Buttery Smooth" feel: lower stiffness, sufficient damping to prevent wobble but allow flow
+const OPEN_SPRING = { type: "spring", stiffness: 150, damping: 20, mass: 1.1 } as const;
+const CONTENT_SPRING = { type: "spring", stiffness: 200, damping: 24 } as const;
 
 // --- UTILS ---
 const useScrollLock = (lock: boolean) => {
@@ -145,41 +147,61 @@ const ModalExpanded = ({ item, onClose, id }: { item: typeof EXPERIENCE_DATA[num
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="absolute inset-0 bg-black/40 backdrop-blur-[8px] z-0"
+                transition={{ duration: 0.4, ease: "easeInOut" }}
+                className="absolute inset-0 bg-black/40 backdrop-blur-[12px] z-0"
                 onClick={onClose}
             />
 
-            {/* 2. The Morphing Container */}
+            {/* 2. The Liquid Glass Morphing Container */}
             <motion.div
                 layoutId={id}
-                className="relative w-full max-w-5xl h-full max-h-[85vh] bg-[#fafafa] dark:bg-[#0f1115] rounded-[40px] shadow-2xl overflow-hidden z-20 flex flex-col md:flex-row ring-1 ring-white/10"
                 transition={OPEN_SPRING}
+                className="relative w-full max-w-5xl h-full max-h-[85vh] rounded-[40px] overflow-hidden z-20 flex flex-col md:flex-row group"
+                style={{
+                    // Liquid Glass Styles
+                    background: 'var(--modal-bg-alpha)', // Fallback if var not set, handled by classes below
+                    boxShadow: `
+                        0 50px 100px -20px rgba(0,0,0,0.25), 
+                        inset 0 0 0 1px rgba(255,255,255,0.1),
+                        inset 0 0 40px rgba(255,255,255,0.02)
+                    `,
+                    backdropFilter: 'blur(50px) saturate(180%)',
+                    WebkitBackdropFilter: 'blur(50px) saturate(180%)',
+                }}
             >
+                {/* Background Base with Opacity */}
+                <div className="absolute inset-0 bg-white/60 dark:bg-black/60 pointer-events-none z-[-1]" />
+
+                {/* Noise Overlay */}
+                <div 
+                    className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay z-[-1]"
+                    style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }} 
+                />
+
                 {/* Close Button */}
                 <motion.button
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ delay: 0.2 }}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ delay: 0.2, ...CONTENT_SPRING }}
                     onClick={(e) => { e.stopPropagation(); onClose(); }}
-                    className="absolute top-6 right-6 z-50 p-2.5 rounded-full bg-black/10 dark:bg-white/10 text-[var(--text-main)] hover:bg-[var(--accent)] hover:text-white transition-all backdrop-blur-md"
+                    className="absolute top-6 right-6 z-50 p-2.5 rounded-full bg-white/20 dark:bg-black/20 text-[var(--text-main)] hover:bg-[var(--accent)] hover:text-white transition-all backdrop-blur-md shadow-lg border border-white/10"
                 >
                     <X size={20} />
                 </motion.button>
 
-                {/* Left Panel: Header & Info */}
-                <div className="w-full md:w-[40%] bg-gray-50/50 dark:bg-white/[0.02] p-8 md:p-12 flex flex-col border-b md:border-b-0 md:border-r border-black/5 dark:border-white/5 relative">
+                {/* Left Panel: Header & Info (Frosted) */}
+                <div className="w-full md:w-[40%] p-8 md:p-12 flex flex-col relative border-b md:border-b-0 md:border-r border-white/10 bg-white/10 dark:bg-white/5">
                     <motion.div 
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2, duration: 0.5 }}
+                        transition={{ delay: 0.1, ...CONTENT_SPRING }}
                     >
-                        <div className="inline-flex items-center gap-2 px-3 py-1 mb-8 rounded-full bg-[var(--accent)]/10 text-[var(--accent)] border border-[var(--accent)]/20 text-[10px] font-bold uppercase tracking-wider">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 mb-8 rounded-full bg-[var(--accent)]/10 text-[var(--accent)] border border-[var(--accent)]/20 text-[10px] font-bold uppercase tracking-wider shadow-sm">
                             <Calendar size={12} /> {item.period}
                         </div>
                         
-                        <h2 className="text-4xl md:text-5xl font-extrabold text-[var(--text-main)] tracking-tight leading-[0.9] mb-4">
+                        <h2 className="text-3xl md:text-5xl font-extrabold text-[var(--text-main)] tracking-tight leading-[0.95] mb-4">
                             {item.company}
                         </h2>
                         
@@ -188,24 +210,24 @@ const ModalExpanded = ({ item, onClose, id }: { item: typeof EXPERIENCE_DATA[num
                         </div>
 
                         {/* Highlight Box */}
-                        <div className="p-6 rounded-2xl bg-[var(--bg-base)] border border-black/5 dark:border-white/5 shadow-sm">
+                        <div className="p-6 rounded-2xl bg-white/40 dark:bg-black/20 border border-white/20 shadow-inner">
                             <div className="flex items-center gap-2 text-xs font-bold text-[var(--accent)] uppercase tracking-widest mb-2">
                                 <Award size={14} /> Key Achievement
                             </div>
-                            <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                            <p className="text-sm text-[var(--text-secondary)] leading-relaxed font-medium">
                                 "{item.achievement}"
                             </p>
                         </div>
                     </motion.div>
                 </div>
 
-                {/* Right Panel: Scrollable Content */}
-                <div className="w-full md:w-[60%] overflow-y-auto scrollbar-none bg-[var(--bg-base)]">
+                {/* Right Panel: Scrollable Content (Transparent) */}
+                <div className="w-full md:w-[60%] overflow-y-auto scrollbar-none relative">
                     <motion.div 
                         className="p-8 md:p-12"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        transition={{ delay: 0.3, duration: 0.5 }}
+                        transition={{ delay: 0.2, duration: 0.5 }}
                     >
                          <div className="flex items-center gap-2 text-xs font-bold text-[var(--text-secondary)] opacity-50 uppercase tracking-widest mb-8">
                             <Zap size={14} /> Role Breakdown
@@ -217,7 +239,13 @@ const ModalExpanded = ({ item, onClose, id }: { item: typeof EXPERIENCE_DATA[num
 
                         <div className="grid grid-cols-1 gap-4 mb-10">
                             {item.responsibilities.map((resp, i) => (
-                                <div key={i} className="flex gap-4 p-4 rounded-2xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+                                <motion.div 
+                                    key={i} 
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.3 + (i * 0.1), ...CONTENT_SPRING }}
+                                    className="flex gap-4 p-4 rounded-2xl hover:bg-white/10 dark:hover:bg-white/5 transition-colors border border-transparent hover:border-white/10"
+                                >
                                     <div className="mt-1 p-2 rounded-lg bg-[var(--accent)]/10 text-[var(--accent)] h-fit">
                                         {i === 0 ? <Cpu size={20} /> : <Globe size={20} />}
                                     </div>
@@ -227,7 +255,7 @@ const ModalExpanded = ({ item, onClose, id }: { item: typeof EXPERIENCE_DATA[num
                                             {resp.description}
                                         </p>
                                     </div>
-                                </div>
+                                </motion.div>
                             ))}
                         </div>
 
@@ -239,10 +267,10 @@ const ModalExpanded = ({ item, onClose, id }: { item: typeof EXPERIENCE_DATA[num
                                 {item.tech.map((t, i) => (
                                     <motion.span 
                                         key={t}
-                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        initial={{ opacity: 0, scale: 0.8 }}
                                         animate={{ opacity: 1, scale: 1 }}
-                                        transition={{ delay: 0.4 + (i * 0.05) }}
-                                        className="px-3 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 text-sm font-medium text-[var(--text-secondary)]"
+                                        transition={{ delay: 0.4 + (i * 0.05), type: "spring" }}
+                                        className="px-3 py-1.5 rounded-lg bg-white/20 dark:bg-white/5 border border-white/10 text-sm font-medium text-[var(--text-secondary)] shadow-sm"
                                     >
                                         {t}
                                     </motion.span>
