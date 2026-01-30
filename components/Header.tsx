@@ -94,7 +94,7 @@ export default function Header(){
             transition={spring}
             className="font-semibold tracking-tight text-[var(--text-main)]"
           >
-            Portfolio
+            Dr. Darshan Shukla
           </motion.p>
           
           <AnimatePresence>
@@ -132,8 +132,8 @@ export default function Header(){
                 "
               >
                 <a href="#about"    className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">About</a>
-                <a href="#skills"   className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">Skills</a>
-                <a href="#projects" className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">Projects</a>
+                <a href="#skills"   className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">Expertise</a>
+                <a href="#projects" className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">Services</a>
                 <a href="#contact"  className="px-2 sm:px-3 py-1.5 hover:text-[var(--text-main)] transition-colors">Contact</a>
               </motion.nav>
             )}

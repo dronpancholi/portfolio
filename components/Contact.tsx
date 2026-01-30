@@ -15,10 +15,7 @@ import GlassCard from "./ui/GlassCard";
 import LiquidGlass from "./ui/LiquidGlass";
 
 /* ------------------------ ICON TYPING ------------------------ */
-type SocialProfileName = typeof SOCIAL_LINKS.profiles[number]["name"];
-const ICON_MAP: Partial<
-  Record<SocialProfileName, React.ComponentType<{ className?: string; style?: React.CSSProperties }>>
-> = {
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
   LinkedIn: Linkedin,
   GitHub: Github,
   Instagram: Instagram,
@@ -53,19 +50,19 @@ function Colorize(tokens: (string | { t: string; cls?: string })[]) {
 function Line1() {
   return Colorize([
     { t: "const" }, " ", { t: "identity" }, " ", "=", " ", "{", " ",
-    { t: "name" }, ":", " ", { t: `"Your Name"` }, ", ", { t: "focus" }, ":", " ",
-    "[", { t: `"AI"` }, ",", " ", { t: `"Systems"` }, ",", " ", { t: `"Design"` }, "]", " ", "};",
+    { t: "name" }, ":", " ", { t: `"Dr. Darshan Shukla"` }, ", ", { t: "focus" }, ":", " ",
+    "[", { t: `"Healthcare"` }, ",", " ", { t: `"Management"` }, ",", " ", { t: `"Critical Care"` }, "]", " ", "};",
   ]);
 }
 function Line2() {
   return Colorize([
-    { t: "const" }, " ", { t: "principles" }, " ", "=", " ", "[",
-    { t: `"Clarity"` }, ", ", { t: `"Depth"` }, ", ", { t: `"Intention"` }, "]", ";",
+    { t: "const" }, " ", { t: "values" }, " ", "=", " ", "[",
+    { t: `"Empathy"` }, ", ", { t: `"Excellence"` }, ", ", { t: `"Strategy"` }, "]", ";",
   ]);
 }
 function Line3(email: string) {
   return Colorize([
-    { t: "function" }, " ", { t: "contact" }, "(", { t: "email" }, ")", " ", "{", " ",
+    { t: "function" }, " ", { t: "inquire" }, "(", { t: "type" }, ")", " ", "{", " ",
     { t: "return" }, " ", { t: `\`mailto:\${email}\``}, ";", " ", "}",
   ]);
 }
@@ -176,7 +173,7 @@ const Contact: React.FC = () => {
         transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.1 }}
         className="text-lg text-[var(--text-secondary)] mb-12 max-w-xl mx-auto"
       >
-        I am open to new projects and collaborations. For inquiries, please reach out via email.
+        I am available for Management Consulting, Healthcare Strategy, and Leadership Development inquiries.
       </motion.p>
 
       {/* Email card */}
@@ -191,31 +188,24 @@ const Contact: React.FC = () => {
           <div className="p-8 md:p-10 flex flex-col items-center justify-center text-center">
             <Mail className="w-12 h-12 text-[var(--accent)] mb-4" />
             <h3 className="text-xl md:text-2xl font-bold text-[var(--text-main)] mb-6">
-              Email me directly at
+              Contact me via LinkedIn
             </h3>
 
             <div className="w-full max-w-md flex items-center justify-between bg-black/5 dark:bg-white/5 rounded-xl p-3">
               <span className="text-sm sm:text-base text-[var(--text-secondary)] font-mono truncate">
-                {SOCIAL_LINKS.email}
+                {SOCIAL_LINKS.profiles.find(p => p.name === 'LinkedIn')?.url || SOCIAL_LINKS.email}
               </span>
 
-              <button
-                onClick={handleCopy}
+               <a
+                href={SOCIAL_LINKS.profiles.find(p => p.name === 'LinkedIn')?.url}
+                target="_blank"
+                rel="noreferrer"
                 className="flex items-center justify-center gap-1 w-24 h-9 text-sm font-semibold bg-[var(--accent)] text-white dark:text-black rounded-lg hover:brightness-110 transition-all"
-                aria-label="Copy email address"
               >
-                {copied ? (
-                  <motion.span key="copied-text" initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} className="flex items-center gap-1">
-                    <Check size={16} />
-                    Copied
-                  </motion.span>
-                ) : (
                   <span className="flex items-center gap-1">
-                    <Clipboard size={16} />
-                    Copy
+                    Connect
                   </span>
-                )}
-              </button>
+              </a>
             </div>
           </div>
         </GlassCard>

@@ -15,7 +15,7 @@ const InteractivePortrait: React.FC = () => {
           <img
             // src="https://i.ibb.co/YFJdKdD1/picofme-9.png"
             src="" // Placeholder: Link commented out as requested
-            alt="Profile"
+            alt="Dr. Darshan Shukla"
             className="w-full h-full object-cover bg-gray-200 dark:bg-gray-800"
           />
           
@@ -75,7 +75,7 @@ const Hero: React.FC = () => {
             >
               <TypingAnimation 
                 as="h1"
-                text="Your Creative Headline Goes Here."
+                text="Hospital Director. Critical Care Consultant. Healthcare Entrepreneur."
                 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tighter text-[var(--text-main)] mb-4"
               />
             </motion.div>
@@ -87,7 +87,7 @@ const Hero: React.FC = () => {
               className="max-w-2xl text-base sm:text-lg md:text-xl text-[var(--text-secondary)] font-light mx-auto"
               style={{ transform: 'translateZ(60px)', transformStyle: 'preserve-3d' }}
             >
-              A brief introduction about your background, expertise, and what drives your work. This is the first thing visitors will read.
+              Managing ICUs and Hospitals since 2008 with a focus on critical care excellence and strategic healthcare expansion. Bridging clinical expertise with entrepreneurial vision in India and East Africa.
             </motion.p>
           </div>
         </GlassCard>

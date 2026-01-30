@@ -22,10 +22,13 @@ const About: React.FC = () => {
             />
             <div className="space-y-4 text-[var(--text-secondary)] text-lg leading-relaxed font-light">
               <p>
-                [Your Bio Here]. This is where you can write a few paragraphs about your professional background, your philosophy, and what interests you.
+                I am a Critical Care Consultant and Health Care Entrepreneur with over 16 years of experience managing ICUs and Hospitals. Currently, I serve as Hospital Director at Shree Bajrangdasbapa Arogyadham in Gujarat, India, and as Director at Aster Healthcare in Nairobi, Kenya.
               </p>
               <p>
-                You might want to mention your education, key areas of expertise, and what you are currently focused on learning or building. Keep it engaging and personal.
+                My foundation is built on a Doctor of Medicine (MD) in Anaesthesiology & Critical Care from M.P. Shah Medical College, Jamnagar. Bridging clinical expertise with efficient hospital administration, I focus on delivering high-quality patient care while managing complex healthcare operations.
+              </p>
+              <p>
+                Beyond my professional life, I have a deep interest in Teaching and Financial Markets. I am an avid outdoor enthusiast, enjoying Trekking, Walking, Running, and Cycling, as well as the creative art of Cooking.
               </p>
             </div>
           </div>

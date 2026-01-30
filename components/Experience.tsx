@@ -3,19 +3,15 @@ import React, { useRef, useState, useEffect } from 'react';
 import { 
   motion, 
   useScroll, 
-  useSpring, 
   useTransform, 
   AnimatePresence,
   LayoutGroup
 } from 'framer-motion';
 import { EXPERIENCE_DATA } from '../constants';
-import { Calendar, Layers, X, Cpu, Globe, Award, Zap, ArrowUpRight, CheckCircle2 } from 'lucide-react';
+import { Calendar, Layers, X, Cpu, Globe, Award, Zap, ArrowUpRight } from 'lucide-react';
 
 // --- PHYSICS & ANIMATION CONSTANTS ---
-// Tuned for "Apple-like" responsiveness: fast initial response, smooth settling.
-const OPEN_SPRING = { type: "spring", stiffness: 220, damping: 25, mass: 0.8 };
-const CLOSE_SPRING = { type: "spring", stiffness: 250, damping: 25, mass: 0.8 };
-const HOVER_SPRING = { type: "spring", stiffness: 400, damping: 20 };
+const OPEN_SPRING = { type: "spring", stiffness: 220, damping: 25, mass: 0.8 } as const;
 
 // --- UTILS ---
 const useScrollLock = (lock: boolean) => {
@@ -52,7 +48,7 @@ const TimelineNode = ({ isActive, index }: { isActive: boolean; index: number })
             ${isActive ? 'bg-white border-white' : 'bg-transparent border-[var(--text-secondary)]/50'}`} 
         />
         
-        {/* Liquid Halo (Only visually active, minimal DOM weight) */}
+        {/* Liquid Halo */}
         <div className="absolute inset-[-8px] rounded-full bg-[var(--accent)]/30 animate-pulse blur-md opacity-50" />
         
         {/* Connection Line */}
@@ -87,16 +83,12 @@ const CardCollapsed = ({ item, onClick, id }: { item: typeof EXPERIENCE_DATA[num
             }}
         >
             {/* --- PREMIUM GLASS LAYERS --- */}
-            {/* 1. Specular Gradient (Top Shine) */}
             <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/40 to-transparent opacity-50" />
-            
-            {/* 2. Liquid Hover Effect (Optimized: No SVG filter, just gradient) */}
             <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
             {/* Content */}
             <div className="relative p-6 md:p-8 z-10 flex flex-col h-full">
                 <div className="flex justify-between items-start mb-4">
-                    {/* Badge - No layoutId to prevent text stretching */}
                     <motion.div 
                         initial={{ opacity: 0, y: 5 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -148,7 +140,7 @@ const ModalExpanded = ({ item, onClose, id }: { item: typeof EXPERIENCE_DATA[num
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 md:p-12">
             
-            {/* 1. Backdrop (Separate animation) */}
+            {/* 1. Backdrop */}
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
